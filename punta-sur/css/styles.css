@@ -280,6 +280,9 @@ tbody td { padding: .6rem .9rem; }
   .user-email-sm { display: none; }
   table { font-size: .76rem; }
   thead th, tbody td { padding: .5rem .55rem; }
+  #nav-desktop { display: none; }
+  #nav-mobile  { display: block; position: relative; }
+  #cerrar-sesion-desktop { display: none; }
 }
 
 /* ── HAMBURGUESA ── */
