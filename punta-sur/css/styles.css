@@ -291,6 +291,8 @@ tbody td { padding: .6rem .9rem; }
   display: flex; flex-direction: column;
   transition: right .3s ease;
   padding-top: 1rem;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 #sidebar.open { right: 0; }
 
