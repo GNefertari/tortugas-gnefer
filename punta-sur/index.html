@@ -28,171 +28,154 @@
     body { font-family: var(--font); background: var(--sand); color: var(--ink); min-height: 100vh; }
 
     /* ── LOGIN ── */
-    #login-screen {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      min-height: 100vh;
-      background: linear-gradient(160deg, var(--sky-dk) 0%, var(--sky-lt) 60%, var(--sand) 100%);
-    }
-    .login-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2.5rem 2rem; width: 100%; max-width: 380px; text-align: center; }
-    .login-card .icon { font-size: 3rem; margin-bottom: .5rem; }
-    .login-card h1 { font-size: 1.2rem; font-weight: 700; color: var(--sky-dk); margin-bottom: .25rem; }
-    .login-card p.sub { font-size: .85rem; color: var(--ink-lt); margin-bottom: 1.75rem; }
-    .field { text-align: left; margin-bottom: 1rem; }
-    .field label { display: block; font-size: .75rem; font-weight: 600; color: var(--ink-lt); margin-bottom: .3rem; text-transform: uppercase; letter-spacing: .04em; }
-    .field input { width: 100%; padding: .65rem .85rem; border: 1.5px solid var(--sand-dk); border-radius: var(--radius); font-size: .95rem; background: var(--sand); color: var(--ink); outline: none; transition: border-color .2s; }
-    .field input:focus { border-color: var(--sky); }
-    .login-link { font-size: .82rem; color: var(--sky-dk); cursor: pointer; margin-top: .75rem; display: inline-block; }
-    .login-link:hover { text-decoration: underline; }
-    #login-msg { font-size: .83rem; margin-top: .6rem; min-height: 1.2em; }
-    #login-msg.err { color: var(--red); }
-    #login-msg.ok  { color: var(--green); }
+    #login-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; background:linear-gradient(160deg,var(--sky-dk) 0%,var(--sky-lt) 60%,var(--sand) 100%); }
+    .login-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:2.5rem 2rem; width:100%; max-width:380px; text-align:center; }
+    .login-card .icon { font-size:3rem; margin-bottom:.5rem; }
+    .login-card h1 { font-size:1.2rem; font-weight:700; color:var(--sky-dk); margin-bottom:.25rem; }
+    .login-card p.sub { font-size:.85rem; color:var(--ink-lt); margin-bottom:1.75rem; }
+    .field { text-align:left; margin-bottom:1rem; }
+    .field label { display:block; font-size:.75rem; font-weight:600; color:var(--ink-lt); margin-bottom:.3rem; text-transform:uppercase; letter-spacing:.04em; }
+    .field input { width:100%; padding:.65rem .85rem; border:1.5px solid var(--sand-dk); border-radius:var(--radius); font-size:.95rem; background:var(--sand); color:var(--ink); outline:none; transition:border-color .2s; }
+    .field input:focus { border-color:var(--sky); }
+    .login-link { font-size:.82rem; color:var(--sky-dk); cursor:pointer; margin-top:.75rem; display:inline-block; }
+    .login-link:hover { text-decoration:underline; }
+    #login-msg { font-size:.83rem; margin-top:.6rem; min-height:1.2em; }
+    #login-msg.err { color:var(--red); } #login-msg.ok { color:var(--green); }
 
     /* ── BOTONES ── */
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .65rem 1.3rem; border: none; border-radius: var(--radius); font-size: .9rem; font-weight: 600; cursor: pointer; transition: background .2s, transform .1s; font-family: var(--font); }
-    .btn:active { transform: scale(.97); }
-    .btn-primary   { background: var(--sky-dk); color: var(--white); }
-    .btn-primary:hover { background: var(--sky); }
-    .btn-secondary { background: var(--sand-dk); color: var(--ink); }
-    .btn-secondary:hover { background: #d4c9b5; }
-    .btn-danger    { background: var(--red); color: var(--white); }
-    .btn-danger:hover { background: #c04444; }
-    .btn-full { width: 100%; margin-top: .4rem; }
-    .btn-sm   { padding: .3rem .7rem; font-size: .78rem; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:.4rem; padding:.65rem 1.3rem; border:none; border-radius:var(--radius); font-size:.9rem; font-weight:600; cursor:pointer; transition:background .2s,transform .1s; font-family:var(--font); }
+    .btn:active { transform:scale(.97); }
+    .btn-primary { background:var(--sky-dk); color:var(--white); }
+    .btn-primary:hover { background:var(--sky); }
+    .btn-secondary { background:var(--sand-dk); color:var(--ink); }
+    .btn-secondary:hover { background:#d4c9b5; }
+    .btn-danger { background:var(--red); color:var(--white); }
+    .btn-danger:hover { background:#c04444; }
+    .btn-full { width:100%; margin-top:.4rem; }
+    .btn-sm { padding:.3rem .7rem; font-size:.78rem; }
 
     /* ── APP SHELL ── */
-    #app { display: none; flex-direction: column; height: 100vh; }
-    header { background: var(--sky-dk); color: var(--white); padding: .7rem 1.5rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,.15); z-index: 100; }
-    header h1 { font-size: .95rem; font-weight: 700; }
-    header .hdr-right { display: flex; align-items: center; gap: .75rem; }
-    header .user-info { font-size: .78rem; opacity: .85; text-align: right; line-height: 1.3; }
-    nav { background: var(--white); display: flex; border-bottom: 2px solid var(--sand-dk); overflow-x: auto; }
-    nav button { background: none; border: none; border-bottom: 3px solid transparent; padding: .75rem 1.2rem; font-size: .85rem; font-weight: 600; color: var(--ink-lt); cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s; margin-bottom: -2px; font-family: var(--font); }
-    nav button.active { color: var(--sky-dk); border-bottom-color: var(--sky-dk); }
-    nav button:hover:not(.active) { color: var(--ink); }
-    main { flex: 1; overflow: hidden; position: relative; }
-    .tab-panel { display: none; height: 100%; overflow-y: auto; padding: 1.5rem; }
-    .tab-panel.active { display: block; }
-    #panel-mapa { padding: 0; overflow: hidden; }
+    #app { display:none; flex-direction:column; height:100vh; }
+    header { background:var(--sky-dk); color:var(--white); padding:.7rem 1.5rem; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 8px rgba(0,0,0,.15); z-index:100; flex-shrink:0; }
+    header h1 { font-size:.95rem; font-weight:700; }
+    .hdr-right { display:flex; align-items:center; gap:.75rem; }
+    .user-info { font-size:.78rem; opacity:.85; text-align:right; line-height:1.4; }
+
+    nav { background:var(--white); display:flex; border-bottom:2px solid var(--sand-dk); overflow-x:auto; flex-shrink:0; scrollbar-width:none; }
+    nav::-webkit-scrollbar { display:none; }
+    nav button { background:none; border:none; border-bottom:3px solid transparent; padding:.75rem 1.2rem; font-size:.85rem; font-weight:600; color:var(--ink-lt); cursor:pointer; white-space:nowrap; transition:color .2s,border-color .2s; margin-bottom:-2px; font-family:var(--font); flex-shrink:0; }
+    nav button.active { color:var(--sky-dk); border-bottom-color:var(--sky-dk); }
+    nav button:hover:not(.active) { color:var(--ink); }
+
+    main { flex:1; overflow:hidden; position:relative; min-height:0; }
+    .tab-panel { display:none; height:100%; overflow-y:auto; padding:1.5rem; }
+    .tab-panel.active { display:block; }
+    #panel-mapa { padding:0; overflow:hidden; }
 
     /* ── MAPA ── */
-    #map-container { position: relative; height: 100%; }
-    #map { width: 100%; height: 100%; }
-    #map-filters {
-      position: absolute; top: 1rem; left: 1rem; z-index: 1000;
-      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
-      padding: .9rem 1rem; display: flex; flex-direction: column; gap: .55rem; width: 230px;
-    }
-    #map-filters h4 { font-size: .72rem; font-weight: 700; color: var(--ink-lt); text-transform: uppercase; letter-spacing: .05em; margin-bottom: .1rem; }
-    .filter-group { display: flex; flex-direction: column; gap: .25rem; }
-    .filter-group label { font-size: .72rem; font-weight: 600; color: var(--ink-lt); text-transform: uppercase; letter-spacing: .04em; }
-    .filter-group select, .filter-group input[type="date"] {
-      padding: .4rem .6rem; border: 1.5px solid var(--sand-dk); border-radius: 6px;
-      font-size: .82rem; color: var(--ink); background: var(--sand); outline: none; width: 100%;
-    }
-    .filter-group select:focus, .filter-group input[type="date"]:focus { border-color: var(--sky); }
-    .date-range { display: flex; flex-direction: column; gap: .25rem; }
-    .date-range-row { display: flex; align-items: center; gap: .4rem; font-size: .75rem; color: var(--ink-lt); }
-    .date-range-row input { flex: 1; }
-    .map-legend { position: absolute; bottom: 1.5rem; left: 1rem; z-index: 1000; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: .7rem .9rem; font-size: .79rem; }
-    .map-legend h4 { font-size: .7rem; color: var(--ink-lt); margin-bottom: .35rem; text-transform: uppercase; letter-spacing: .04em; }
-    .legend-item { display: flex; align-items: center; gap: .45rem; margin-bottom: .2rem; }
-    .legend-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    #map-container { position:relative; height:100%; }
+    #map { width:100%; height:100%; }
+    #map-filters { position:absolute; top:1rem; left:1rem; z-index:1000; background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:.9rem 1rem; display:flex; flex-direction:column; gap:.55rem; width:220px; }
+    #map-filters h4 { font-size:.72rem; font-weight:700; color:var(--ink-lt); text-transform:uppercase; letter-spacing:.05em; }
+    .filter-group { display:flex; flex-direction:column; gap:.22rem; }
+    .filter-group label { font-size:.7rem; font-weight:600; color:var(--ink-lt); text-transform:uppercase; letter-spacing:.04em; }
+    .filter-group select,.filter-group input[type="date"] { padding:.38rem .6rem; border:1.5px solid var(--sand-dk); border-radius:6px; font-size:.82rem; color:var(--ink); background:var(--sand); outline:none; width:100%; font-family:var(--font); }
+    .filter-group select:focus,.filter-group input[type="date"]:focus { border-color:var(--sky); }
+    .date-range { display:flex; flex-direction:column; gap:.25rem; }
+    .date-range-row { display:flex; align-items:center; gap:.4rem; }
+    .date-range-row span { font-size:.72rem; color:var(--ink-lt); width:32px; flex-shrink:0; }
+    .date-range-row input { flex:1; }
+    .map-legend { position:absolute; bottom:1.5rem; left:1rem; z-index:1000; background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:.7rem .9rem; font-size:.79rem; }
+    .map-legend h4 { font-size:.7rem; color:var(--ink-lt); margin-bottom:.35rem; text-transform:uppercase; letter-spacing:.04em; }
+    .legend-item { display:flex; align-items:center; gap:.45rem; margin-bottom:.2rem; }
+    .legend-dot { width:11px; height:11px; border-radius:50%; flex-shrink:0; }
 
-    /* ── FORMULARIOS ── */
-    .form-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.75rem; max-width: 720px; margin: 0 auto; }
-    .form-card h2 { font-size: 1.05rem; font-weight: 700; color: var(--sky-dk); margin-bottom: 1.2rem; padding-bottom: .7rem; border-bottom: 1.5px solid var(--sand-dk); }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .form-grid .full { grid-column: 1 / -1; }
-    .form-group { display: flex; flex-direction: column; gap: .28rem; }
-    .form-group label { font-size: .72rem; font-weight: 600; color: var(--ink-lt); text-transform: uppercase; letter-spacing: .04em; }
-    .form-group input, .form-group select, .form-group textarea {
-      padding: .58rem .8rem; border: 1.5px solid var(--sand-dk); border-radius: 7px;
-      font-size: .9rem; color: var(--ink); background: var(--sand); outline: none;
-      font-family: var(--font); transition: border-color .2s;
-    }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--sky); }
-    .form-group textarea { resize: vertical; min-height: 75px; }
-    .section-title { font-size: .75rem; font-weight: 700; color: var(--sky-dk); text-transform: uppercase; letter-spacing: .06em; grid-column: 1 / -1; margin-top: .5rem; padding-top: .75rem; border-top: 1px solid var(--sand-dk); }
-    .check-row { display: flex; align-items: center; gap: .5rem; }
-    .check-row input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--sky-dk); }
-    .check-row label { font-size: .88rem; color: var(--ink); }
-    .form-actions { display: flex; gap: .75rem; margin-top: 1.4rem; padding-top: 1rem; border-top: 1.5px solid var(--sand-dk); flex-wrap: wrap; }
+    /* ── FORMULARIO BASE ── */
+    .form-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:1.75rem; max-width:680px; margin:0 auto; }
+    .form-card h2 { font-size:1.05rem; font-weight:700; color:var(--sky-dk); margin-bottom:1.2rem; padding-bottom:.7rem; border-bottom:1.5px solid var(--sand-dk); }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:.9rem; }
+    .form-grid .full { grid-column:1/-1; }
+    .form-group { display:flex; flex-direction:column; gap:.28rem; }
+    .form-group label { font-size:.72rem; font-weight:600; color:var(--ink-lt); text-transform:uppercase; letter-spacing:.04em; }
+    .form-group input,.form-group select,.form-group textarea { padding:.58rem .8rem; border:1.5px solid var(--sand-dk); border-radius:7px; font-size:.9rem; color:var(--ink); background:var(--sand); outline:none; font-family:var(--font); transition:border-color .2s; }
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus { border-color:var(--sky); }
+    .form-group textarea { resize:vertical; min-height:75px; }
+    .section-divider { grid-column:1/-1; border:none; border-top:1.5px solid var(--sand-dk); margin:.3rem 0; }
+    .section-label { grid-column:1/-1; font-size:.72rem; font-weight:700; color:var(--sky-dk); text-transform:uppercase; letter-spacing:.06em; margin-bottom:-.2rem; }
+    .check-row { display:flex; align-items:center; gap:.5rem; }
+    .check-row input[type="checkbox"] { width:15px; height:15px; accent-color:var(--sky-dk); flex-shrink:0; }
+    .check-row label { font-size:.88rem; color:var(--ink); }
+    .form-actions { display:flex; gap:.75rem; margin-top:1.4rem; padding-top:1rem; border-top:1.5px solid var(--sand-dk); flex-wrap:wrap; }
 
-    /* Eclosión calc */
-    .eclosion-row { display: flex; gap: .5rem; align-items: flex-end; }
-    .eclosion-row input { flex: 1; }
-    .eclosion-row .days-input { width: 80px; flex: none; }
-    .eclosion-hint { font-size: .75rem; color: var(--ink-lt); margin-top: .2rem; }
+    /* eclosión */
+    .eclosion-row { display:flex; gap:.5rem; align-items:flex-end; flex-wrap:wrap; }
+    .eclosion-row input[type="number"] { width:80px; flex-shrink:0; }
+    .eclosion-row input[type="date"] { flex:1; min-width:130px; }
+    .eclosion-hint { font-size:.73rem; color:var(--ink-lt); margin-top:.2rem; }
 
     /* ── TABLA REGISTROS ── */
-    .registros-toolbar { display: flex; flex-wrap: wrap; gap: .6rem; align-items: flex-end; margin-bottom: 1rem; background: var(--white); padding: 1rem; border-radius: var(--radius); box-shadow: var(--shadow); }
-    .registros-toolbar .filter-group { min-width: 130px; }
-    .table-wrap { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: .83rem; }
-    thead th { background: var(--sky-dk); color: var(--white); padding: .65rem .9rem; text-align: left; font-weight: 600; white-space: nowrap; cursor: pointer; user-select: none; }
-    thead th:hover { background: var(--sky); }
-    thead th .sort-icon { font-size: .65rem; margin-left: .3rem; opacity: .6; }
-    tbody tr { border-bottom: 1px solid var(--sand-dk); }
-    tbody tr:hover { background: var(--sand); }
-    tbody td { padding: .6rem .9rem; }
-    .nido-link { color: var(--sky-dk); text-decoration: underline; cursor: pointer; font-weight: 600; }
-    .badge { display: inline-block; padding: .18rem .55rem; border-radius: 20px; font-size: .73rem; font-weight: 600; }
-    .badge-green  { background: #d4f1e4; color: #2e7d57; }
-    .badge-orange { background: #fde8d4; color: #c0622a; }
-    .badge-red    { background: #fdd4d4; color: #a83232; }
-    .badge-gray   { background: #e8e8e8; color: #5a5a5a; }
+    .registros-toolbar { display:flex; flex-wrap:wrap; gap:.55rem; align-items:flex-end; margin-bottom:1rem; background:var(--white); padding:.9rem 1rem; border-radius:var(--radius); box-shadow:var(--shadow); }
+    .registros-toolbar .filter-group { min-width:120px; }
+    .table-wrap { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); overflow:auto; }
+    table { width:100%; border-collapse:collapse; font-size:.83rem; }
+    thead th { background:var(--sky-dk); color:var(--white); padding:.65rem .9rem; text-align:left; font-weight:600; white-space:nowrap; cursor:pointer; user-select:none; }
+    thead th:hover { background:var(--sky); }
+    .sort-icon { font-size:.65rem; margin-left:.3rem; opacity:.6; }
+    tbody tr { border-bottom:1px solid var(--sand-dk); transition:background .15s; }
+    tbody tr:hover { background:var(--sand); }
+    tbody td { padding:.6rem .9rem; }
+    .nido-link { color:var(--sky-dk); text-decoration:underline; cursor:pointer; font-weight:600; }
+    .badge { display:inline-block; padding:.18rem .55rem; border-radius:20px; font-size:.73rem; font-weight:600; }
+    .badge-green  { background:#d4f1e4; color:#2e7d57; }
+    .badge-orange { background:#fde8d4; color:#c0622a; }
+    .badge-red    { background:#fdd4d4; color:#a83232; }
+    .badge-gray   { background:#e8e8e8; color:#5a5a5a; }
+    .temporada-chip { font-size:.7rem; background:var(--sky-lt); color:var(--sky-dk); padding:.1rem .4rem; border-radius:10px; font-weight:700; margin-left:.3rem; }
 
-    /* ── MODAL ── */
-    #modal-overlay { display: none; position: fixed; inset: 0; background: rgba(44,62,80,.45); z-index: 2000; align-items: center; justify-content: center; padding: 1rem; }
-    #modal-overlay.open { display: flex; }
-    #modal-box { background: var(--white); border-radius: var(--radius); box-shadow: 0 8px 32px rgba(0,0,0,.2); padding: 1.75rem; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; }
-    #modal-box h3 { font-size: 1.05rem; font-weight: 700; color: var(--sky-dk); margin-bottom: 1.1rem; }
-    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem 1.25rem; font-size: .86rem; }
-    .detail-item { display: flex; flex-direction: column; gap: .08rem; }
-    .detail-label { font-size: .68rem; font-weight: 700; color: var(--ink-lt); text-transform: uppercase; letter-spacing: .04em; }
-    .detail-value { color: var(--ink); }
-    .detail-full { grid-column: 1 / -1; }
-    .modal-actions { display: flex; gap: .6rem; margin-top: 1.25rem; padding-top: .9rem; border-top: 1.5px solid var(--sand-dk); flex-wrap: wrap; }
+    /* ── MODAL GENÉRICO ── */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(44,62,80,.45); z-index:2000; align-items:center; justify-content:center; padding:1rem; }
+    .modal-overlay.open { display:flex; }
+    .modal-box { background:var(--white); border-radius:var(--radius); box-shadow:0 8px 32px rgba(0,0,0,.2); padding:1.75rem; width:100%; max-width:620px; max-height:90vh; overflow-y:auto; }
+    .modal-box h3 { font-size:1.05rem; font-weight:700; color:var(--sky-dk); margin-bottom:1.1rem; }
+    .modal-actions { display:flex; gap:.6rem; margin-top:1.25rem; padding-top:.9rem; border-top:1.5px solid var(--sand-dk); flex-wrap:wrap; }
 
-    /* Edit form inside modal */
-    .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: .75rem; }
-    .edit-grid .full { grid-column: 1 / -1; }
-    .edit-group { display: flex; flex-direction: column; gap: .25rem; }
-    .edit-group label { font-size: .7rem; font-weight: 600; color: var(--ink-lt); text-transform: uppercase; letter-spacing: .04em; }
-    .edit-group input, .edit-group select, .edit-group textarea {
-      padding: .5rem .7rem; border: 1.5px solid var(--sand-dk); border-radius: 6px;
-      font-size: .88rem; color: var(--ink); background: var(--sand); outline: none; font-family: var(--font);
-    }
-    .edit-group input:focus, .edit-group select:focus { border-color: var(--sky); }
+    /* modal confirmación */
+    #confirm-modal .modal-box { max-width:400px; text-align:center; }
+    #confirm-modal .modal-box h3 { color:var(--red); }
+    #confirm-modal p { font-size:.92rem; color:var(--ink); margin-bottom:1.25rem; line-height:1.5; }
+    #confirm-modal .modal-actions { justify-content:center; border-top:none; margin-top:0; padding-top:0; }
 
     /* ── ADMIN ── */
-    .admin-section { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 1.25rem; max-width: 720px; }
-    .admin-section h3 { font-size: .95rem; font-weight: 700; color: var(--sky-dk); margin-bottom: 1rem; padding-bottom: .6rem; border-bottom: 1.5px solid var(--sand-dk); }
-    .user-row { display: flex; align-items: center; gap: .75rem; padding: .6rem 0; border-bottom: 1px solid var(--sand-dk); flex-wrap: wrap; }
-    .user-row:last-child { border-bottom: none; }
-    .user-email { flex: 1; font-size: .88rem; min-width: 180px; }
-    .user-rol { font-size: .75rem; font-weight: 600; padding: .2rem .55rem; border-radius: 20px; background: var(--sand-dk); color: var(--ink); }
+    .admin-wrap { max-width:800px; margin:0 auto; display:flex; flex-direction:column; gap:1.25rem; }
+    .admin-section { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:1.5rem; }
+    .admin-section h3 { font-size:.95rem; font-weight:700; color:var(--sky-dk); margin-bottom:1rem; padding-bottom:.6rem; border-bottom:1.5px solid var(--sand-dk); }
+    .user-row { display:grid; grid-template-columns:1fr 1fr auto auto; gap:.6rem; align-items:center; padding:.6rem 0; border-bottom:1px solid var(--sand-dk); }
+    .user-row:last-child { border-bottom:none; }
+    .user-name { font-weight:600; font-size:.88rem; }
+    .user-email-sm { font-size:.78rem; color:var(--ink-lt); }
+    .role-select { padding:.3rem .6rem; border:1.5px solid var(--sand-dk); border-radius:6px; font-size:.82rem; background:var(--sand); font-family:var(--font); }
 
     /* ── EXCEL ── */
-    .upload-zone { border: 2px dashed var(--sky); border-radius: var(--radius); padding: 2rem; text-align: center; color: var(--ink-lt); cursor: pointer; transition: background .2s; margin-bottom: 1rem; }
-    .upload-zone:hover { background: #e8f4fb; }
-    .upload-zone .icon { font-size: 2rem; margin-bottom: .5rem; }
+    .upload-zone { border:2px dashed var(--sky); border-radius:var(--radius); padding:2rem; text-align:center; color:var(--ink-lt); cursor:pointer; transition:background .2s; margin-bottom:1rem; }
+    .upload-zone:hover { background:#e8f4fb; }
+    .upload-zone .icon { font-size:2rem; margin-bottom:.5rem; }
 
     /* ── TOAST ── */
-    #toast { position: fixed; bottom: 1.5rem; right: 1.5rem; padding: .7rem 1.2rem; border-radius: var(--radius); font-size: .86rem; box-shadow: var(--shadow); z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; color: var(--white); background: var(--ink); }
-    #toast.show { opacity: 1; }
-    #toast.success { background: var(--green); }
-    #toast.error   { background: var(--red); }
+    #toast { position:fixed; bottom:1.5rem; right:1.5rem; padding:.7rem 1.2rem; border-radius:var(--radius); font-size:.86rem; box-shadow:var(--shadow); z-index:9999; opacity:0; transition:opacity .3s; pointer-events:none; color:var(--white); background:var(--ink); }
+    #toast.show { opacity:1; }
+    #toast.success { background:var(--green); }
+    #toast.error   { background:var(--red); }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 640px) {
-      .form-grid, .detail-grid, .edit-grid { grid-template-columns: 1fr; }
-      .form-grid .full, .detail-full, .edit-grid .full { grid-column: 1; }
-      #map-filters { width: calc(100vw - 2rem); }
-      .registros-toolbar { gap: .4rem; }
-      .registros-toolbar .filter-group { min-width: 100%; }
-      table { font-size: .76rem; }
-      thead th, tbody td { padding: .5rem .6rem; }
+    @media (max-width:640px) {
+      .form-grid { grid-template-columns:1fr; }
+      .form-grid .full,.section-divider,.section-label { grid-column:1; }
+      #map-filters { width:calc(100vw - 2rem); }
+      .registros-toolbar .filter-group { min-width:calc(50% - .3rem); }
+      .user-row { grid-template-columns:1fr auto auto; }
+      .user-row .user-email-sm { display:none; }
+      table { font-size:.76rem; }
+      thead th,tbody td { padding:.5rem .55rem; }
     }
   </style>
 </head>
@@ -204,14 +187,8 @@
     <div class="icon">🐢</div>
     <h1>Campamento Tortuguero<br>Punta Sur</h1>
     <p class="sub">Acceso restringido a personal autorizado</p>
-    <div class="field">
-      <label>Correo electrónico</label>
-      <input type="email" id="login-email" placeholder="correo@ejemplo.com" />
-    </div>
-    <div class="field">
-      <label>Contraseña</label>
-      <input type="password" id="login-password" placeholder="••••••••" />
-    </div>
+    <div class="field"><label>Correo electrónico</label><input type="email" id="login-email" placeholder="correo@ejemplo.com" /></div>
+    <div class="field"><label>Contraseña</label><input type="password" id="login-password" placeholder="••••••••" /></div>
     <button class="btn btn-primary btn-full" onclick="login()">Iniciar sesión</button>
     <span class="login-link" onclick="mostrarRecuperar()">¿Olvidaste tu contraseña?</span>
     <div id="login-msg"></div>
@@ -224,14 +201,14 @@
     <h1>🐢 Punta Sur — Sistema de Monitoreo</h1>
     <div class="hdr-right">
       <div class="user-info">
-        <div id="user-email"></div>
-        <div id="user-rol-label" style="font-weight:600;font-size:.72rem;opacity:.9"></div>
+        <div id="user-nombre"></div>
+        <div id="user-rol-label" style="font-weight:700;font-size:.7rem;letter-spacing:.05em"></div>
       </div>
       <button class="btn btn-secondary btn-sm" onclick="logout()">Cerrar sesión</button>
     </div>
   </header>
 
-  <nav id="main-nav">
+  <nav>
     <button class="active" onclick="showTab('mapa',this)">🗺 Mapa</button>
     <button onclick="showTab('registros',this)">📋 Registros</button>
     <button id="nav-registrar" onclick="showTab('monitoreo',this)">➕ Registrar nido</button>
@@ -242,30 +219,25 @@
 
   <main>
 
-    <!-- ── MAPA ── -->
+    <!-- MAPA -->
     <div id="panel-mapa" class="tab-panel active">
       <div id="map-container">
         <div id="map-filters">
           <h4>🔍 Filtros</h4>
-
           <div class="filter-group">
             <label>Especie</label>
             <select id="f-especie" onchange="applyFilters()">
               <option value="">Todas las especies</option>
-              <option value="Caretta caretta">Caretta caretta</option>
-              <option value="Chelonia mydas">Chelonia mydas</option>
+              <option>Caretta caretta</option><option>Chelonia mydas</option>
             </select>
           </div>
-
           <div class="filter-group">
             <label>Playa</label>
             <select id="f-playa" onchange="applyFilters()">
               <option value="">Todas las playas</option>
-              <option>Celarain</option><option>Caracol</option><option>Cuzam</option>
-              <option>5 de Junio</option><option>Caguama</option>
+              <option>Celarain</option><option>Caracol</option><option>Cuzam</option><option>5 de Junio</option><option>Caguama</option>
             </select>
           </div>
-
           <div class="filter-group">
             <label>Estado del nido</label>
             <select id="f-estado" onchange="applyFilters()">
@@ -276,26 +248,22 @@
               <option value="salvaje">Nido salvaje</option>
             </select>
           </div>
-
+          <div class="filter-group">
+            <label>Temporada</label>
+            <select id="f-temporada" onchange="applyFilters()">
+              <option value="">Todas</option>
+            </select>
+          </div>
           <div class="filter-group">
             <label>Fecha de registro</label>
             <div class="date-range">
-              <div class="date-range-row">
-                <span style="width:32px;flex:none">Desde</span>
-                <input type="date" id="f-fecha-desde" onchange="applyFilters()" />
-              </div>
-              <div class="date-range-row">
-                <span style="width:32px;flex:none">Hasta</span>
-                <input type="date" id="f-fecha-hasta" onchange="applyFilters()" />
-              </div>
+              <div class="date-range-row"><span>Desde</span><input type="date" id="f-desde" onchange="applyFilters()" /></div>
+              <div class="date-range-row"><span>Hasta</span><input type="date" id="f-hasta" onchange="applyFilters()" /></div>
             </div>
           </div>
-
           <button class="btn btn-secondary btn-sm" onclick="limpiarFiltrosMapa()">Limpiar filtros</button>
         </div>
-
         <div id="map"></div>
-
         <div class="map-legend">
           <h4>Estado</h4>
           <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>En incubación</div>
@@ -306,27 +274,21 @@
       </div>
     </div>
 
-    <!-- ── REGISTROS ── -->
+    <!-- REGISTROS -->
     <div id="panel-registros" class="tab-panel">
       <div class="registros-toolbar">
-        <div class="filter-group">
-          <label>Especie</label>
+        <div class="filter-group"><label>Especie</label>
           <select id="rt-especie" onchange="filtrarTabla()">
-            <option value="">Todas</option>
-            <option value="Caretta caretta">Caretta caretta</option>
-            <option value="Chelonia mydas">Chelonia mydas</option>
+            <option value="">Todas</option><option>Caretta caretta</option><option>Chelonia mydas</option>
           </select>
         </div>
-        <div class="filter-group">
-          <label>Playa</label>
+        <div class="filter-group"><label>Playa</label>
           <select id="rt-playa" onchange="filtrarTabla()">
             <option value="">Todas</option>
-            <option>Celarain</option><option>Caracol</option><option>Cuzam</option>
-            <option>5 de Junio</option><option>Caguama</option>
+            <option>Celarain</option><option>Caracol</option><option>Cuzam</option><option>5 de Junio</option><option>Caguama</option>
           </select>
         </div>
-        <div class="filter-group">
-          <label>Estado</label>
+        <div class="filter-group"><label>Estado</label>
           <select id="rt-estado" onchange="filtrarTabla()">
             <option value="">Todos</option>
             <option value="incubando">En incubación</option>
@@ -335,126 +297,114 @@
             <option value="salvaje">Nido salvaje</option>
           </select>
         </div>
-        <div class="filter-group">
-          <label>Desde</label>
-          <input type="date" id="rt-desde" onchange="filtrarTabla()" />
+        <div class="filter-group"><label>Temporada</label>
+          <select id="rt-temporada" onchange="filtrarTabla()"><option value="">Todas</option></select>
         </div>
-        <div class="filter-group">
-          <label>Hasta</label>
-          <input type="date" id="rt-hasta" onchange="filtrarTabla()" />
-        </div>
+        <div class="filter-group"><label>Desde</label><input type="date" id="rt-desde" onchange="filtrarTabla()" /></div>
+        <div class="filter-group"><label>Hasta</label><input type="date" id="rt-hasta" onchange="filtrarTabla()" /></div>
         <button class="btn btn-secondary btn-sm" onclick="limpiarFiltrosTabla()">Limpiar</button>
       </div>
       <div class="table-wrap">
         <table>
-          <thead>
-            <tr>
-              <th onclick="sortTabla('numero_nido')"># <span class="sort-icon">↕</span></th>
-              <th onclick="sortTabla('playa')">Playa <span class="sort-icon">↕</span></th>
-              <th onclick="sortTabla('fecha')">Fecha <span class="sort-icon">↕</span></th>
-              <th onclick="sortTabla('especie')">Especie <span class="sort-icon">↕</span></th>
-              <th onclick="sortTabla('zona')">Zona <span class="sort-icon">↕</span></th>
-              <th onclick="sortTabla('accion')">Acción <span class="sort-icon">↕</span></th>
-              <th onclick="sortTabla('fecha_eclosion_estimada')">Eclosión est. <span class="sort-icon">↕</span></th>
-              <th>Salvaje</th>
-              <th>Depredado</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-body">
-            <tr><td colspan="10" style="text-align:center;color:var(--ink-lt);padding:2rem">Cargando...</td></tr>
-          </tbody>
+          <thead><tr>
+            <th onclick="sortTabla('numero_nido')"># <span class="sort-icon">↕</span></th>
+            <th onclick="sortTabla('fecha')">Fecha <span class="sort-icon">↕</span></th>
+            <th>Temp.</th>
+            <th onclick="sortTabla('playa')">Playa <span class="sort-icon">↕</span></th>
+            <th onclick="sortTabla('especie')">Especie <span class="sort-icon">↕</span></th>
+            <th onclick="sortTabla('zona')">Zona <span class="sort-icon">↕</span></th>
+            <th onclick="sortTabla('accion')">Acción <span class="sort-icon">↕</span></th>
+            <th onclick="sortTabla('fecha_eclosion_estimada')">Eclosión est. <span class="sort-icon">↕</span></th>
+            <th>Salvaje</th><th>Depredado</th>
+            <th>Estado</th>
+          </tr></thead>
+          <tbody id="tabla-body"><tr><td colspan="11" style="text-align:center;color:var(--ink-lt);padding:2rem">Cargando...</td></tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- ── REGISTRAR NIDO ── -->
+    <!-- REGISTRAR NIDO -->
     <div id="panel-monitoreo" class="tab-panel">
       <div class="form-card">
         <h2>Registrar nido — Monitoreo</h2>
         <div class="form-grid">
-          <div class="form-group">
-            <label>Número de nido</label>
-            <input type="number" id="m-numero" min="1" placeholder="Ej. 42" />
-          </div>
-          <div class="form-group">
-            <label>Fecha de registro</label>
-            <input type="date" id="m-fecha" onchange="calcularEclosion()" />
-          </div>
-          <div class="form-group">
-            <label>Playa</label>
+
+          <!-- Fila 1 -->
+          <div class="form-group"><label>Número de nido</label><input type="number" id="m-numero" min="1" placeholder="Ej. 42" /></div>
+          <div class="form-group"><label>Fecha de registro</label><input type="date" id="m-fecha" onchange="onFechaCambio()" /></div>
+
+          <!-- Fila 2 -->
+          <div class="form-group"><label>Playa</label>
             <select id="m-playa">
               <option value="">— Seleccionar —</option>
-              <option>Celarain</option><option>Caracol</option><option>Cuzam</option>
-              <option>5 de Junio</option><option>Caguama</option>
+              <option>Celarain</option><option>Caracol</option><option>Cuzam</option><option>5 de Junio</option><option>Caguama</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Zona</label>
-            <select id="m-zona">
+          <div class="form-group"><label>Especie</label>
+            <select id="m-especie" onchange="onEspecieCambio()">
               <option value="">— Seleccionar —</option>
-              <option>1</option><option>2</option><option>3</option>
+              <option>Caretta caretta</option><option>Chelonia mydas</option>
             </select>
-          </div>
-          <div class="form-group">
-            <label>Acción</label>
-            <select id="m-accion">
-              <option value="">— Seleccionar —</option>
-              <option>1</option><option>2</option><option>3</option><option>4</option>
-              <option>5</option><option>6</option><option>7</option><option>8</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Especie</label>
-            <select id="m-especie" onchange="calcularEclosion()">
-              <option value="">— Seleccionar —</option>
-              <option>Caretta caretta</option>
-              <option>Chelonia mydas</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Coordenada X (UTM)</label>
-            <input type="number" id="m-coord-x" placeholder="Ej. 501703" />
-          </div>
-          <div class="form-group">
-            <label>Coordenada Y (UTM)</label>
-            <input type="number" id="m-coord-y" placeholder="Ej. 2242088" />
           </div>
 
-          <p class="section-title">Fecha estimada de eclosión</p>
+          <!-- Fila 3 -->
+          <div class="form-group"><label>Zona</label>
+            <select id="m-zona"><option value="">—</option><option>1</option><option>2</option><option>3</option></select>
+          </div>
+          <div class="form-group"><label>Acción</label>
+            <select id="m-accion"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select>
+          </div>
+
+          <!-- Fila 4 -->
+          <div class="form-group"><label>Coordenada X (UTM)</label><input type="number" id="m-coord-x" placeholder="Ej. 501703" /></div>
+          <div class="form-group"><label>Coordenada Y (UTM)</label><input type="number" id="m-coord-y" placeholder="Ej. 2242088" /></div>
+
+          <!-- Divisor -->
+          <hr class="section-divider" />
+
+          <!-- Fila 6: Eclosión -->
           <div class="form-group full">
-            <label>Días de incubación</label>
+            <label>Fecha estimada de eclosión</label>
             <div class="eclosion-row">
-              <input type="number" id="m-dias" class="days-input" min="1" max="120" placeholder="días" oninput="calcularEclosion()" />
-              <button class="btn btn-secondary btn-sm" onclick="calcularEclosion()">Calcular</button>
-              <input type="date" id="m-eclosion" />
+              <input type="number" id="m-dias" min="1" max="120" placeholder="días" oninput="calcularEclosion()" />
+              <button class="btn btn-secondary btn-sm" type="button" onclick="calcularEclosion()">Calcular</button>
+              <input type="date" id="m-eclosion" onchange="onEclosionManual()" />
             </div>
-            <span class="eclosion-hint" id="eclosion-hint">Selecciona especie y fecha para calcular automáticamente (Caretta: 50 días · Chelonia: 55 días)</span>
+            <span class="eclosion-hint" id="eclosion-hint">Selecciona especie y fecha · Caretta: 50 días · Chelonia: 55 días</span>
           </div>
 
-          <p class="section-title">Flags</p>
-          <div class="form-group" style="flex-direction:row;gap:1.5rem;align-items:center;flex-wrap:wrap;">
+          <!-- Divisor -->
+          <hr class="section-divider" />
+
+          <!-- Fila 8: Condición del nido -->
+          <p class="section-label">Condición del nido</p>
+          <div class="form-group full" style="flex-direction:row;gap:2rem;align-items:center;flex-wrap:wrap;">
             <div class="check-row"><input type="checkbox" id="m-salvaje" /><label for="m-salvaje">Nido salvaje</label></div>
-            <div class="check-row"><input type="checkbox" id="m-depredado" /><label for="m-depredado">Fue depredado</label></div>
+            <div class="check-row"><input type="checkbox" id="m-depredado" onchange="onDepredadoCambio()" /><label for="m-depredado">Depredado</label></div>
           </div>
 
-          <p class="section-title">Medidas de tortuga (opcional)</p>
-          <div class="form-group">
-            <label>Largo total (cm)</label>
-            <input type="number" step="0.1" id="m-largo-total" placeholder="—" />
-          </div>
-          <div class="form-group">
-            <label>Largo curvo (cm)</label>
-            <input type="number" step="0.1" id="m-largo-curvo" placeholder="—" />
-          </div>
-          <div class="form-group">
-            <label>Ancho curvo (cm)</label>
-            <input type="number" step="0.1" id="m-ancho-curvo" placeholder="—" />
-          </div>
-          <div class="form-group full">
-            <label>Observaciones</label>
-            <textarea id="m-observaciones" placeholder="Notas adicionales..."></textarea>
-          </div>
+          <!-- Divisor -->
+          <hr class="section-divider" />
+
+          <!-- Fila 10: Observaciones del nido -->
+          <div class="form-group full"><label>Observaciones del nido</label><textarea id="m-observaciones" placeholder="Notas sobre el nido..."></textarea></div>
+
+          <!-- Divisor + encabezado tortuga -->
+          <hr class="section-divider" />
+          <p class="section-label">Datos de la tortuga anidadora (opcional)</p>
+
+          <!-- Fila 12 -->
+          <div class="form-group"><label>Largo total (cm)</label><input type="number" step="0.1" id="m-largo-total" placeholder="—" /></div>
+          <div class="form-group"><label>Largo curvo (cm)</label><input type="number" step="0.1" id="m-largo-curvo" placeholder="—" /></div>
+
+          <!-- Fila 13 -->
+          <div class="form-group"><label>Ancho curvo (cm)</label><input type="number" step="0.1" id="m-ancho-curvo" placeholder="—" /></div>
+
+          <!-- Divisor -->
+          <hr class="section-divider" />
+
+          <!-- Fila 14: Observaciones de la tortuga -->
+          <div class="form-group full"><label>Observaciones de la tortuga</label><textarea id="m-obs-tortuga" placeholder="Anomalías, chip, marcas..."></textarea></div>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" onclick="guardarMonitoreo()">Guardar nido</button>
@@ -463,19 +413,13 @@
       </div>
     </div>
 
-    <!-- ── REGISTRAR LIMPIEZA ── -->
+    <!-- REGISTRAR LIMPIEZA -->
     <div id="panel-limpieza" class="tab-panel">
       <div class="form-card">
         <h2>Registrar limpieza de nido</h2>
         <div class="form-grid">
-          <div class="form-group">
-            <label>Nido</label>
-            <select id="l-nido"><option value="">— Seleccionar nido —</option></select>
-          </div>
-          <div class="form-group">
-            <label>Fecha de limpieza</label>
-            <input type="date" id="l-fecha" />
-          </div>
+          <div class="form-group"><label>Nido</label><select id="l-nido"><option value="">— Seleccionar nido —</option></select></div>
+          <div class="form-group"><label>Fecha de limpieza</label><input type="date" id="l-fecha" /></div>
           <div class="form-group"><label>Tortugas vivas</label><input type="number" id="l-vivas" min="0" value="0" /></div>
           <div class="form-group"><label>Tortugas muertas</label><input type="number" id="l-muertas" min="0" value="0" /></div>
           <div class="form-group"><label>Cascarones</label><input type="number" id="l-cascarones" min="0" value="0" /></div>
@@ -491,14 +435,11 @@
       </div>
     </div>
 
-    <!-- ── EXCEL ── -->
+    <!-- EXCEL -->
     <div id="panel-excel" class="tab-panel">
       <div class="form-card">
         <h2>Carga masiva desde Excel</h2>
-        <p style="font-size:.86rem;color:var(--ink-lt);margin-bottom:1.2rem">
-          El archivo debe tener dos hojas: <strong>Monitoreo</strong> y <strong>Limpieza</strong>.
-          <a href="#" onclick="descargarPlantilla()" style="color:var(--sky-dk)">Descargar plantilla</a>
-        </p>
+        <p style="font-size:.86rem;color:var(--ink-lt);margin-bottom:1.2rem">Dos hojas: <strong>Monitoreo</strong> y <strong>Limpieza</strong>. <a href="#" onclick="descargarPlantilla()" style="color:var(--sky-dk)">Descargar plantilla</a></p>
         <div class="upload-zone" onclick="document.getElementById('file-input').click()">
           <div class="icon">📂</div>
           <p>Haz clic para seleccionar un archivo .xlsx o .xls</p>
@@ -508,285 +449,273 @@
       </div>
     </div>
 
-    <!-- ── ADMIN ── -->
+    <!-- ADMIN -->
     <div id="panel-admin" class="tab-panel">
-      <div class="admin-section">
-        <h3>Crear nuevo usuario</h3>
-        <div class="form-grid" style="max-width:500px">
-          <div class="form-group">
-            <label>Correo electrónico</label>
-            <input type="email" id="a-email" placeholder="correo@ejemplo.com" />
-          </div>
-          <div class="form-group">
-            <label>Contraseña temporal</label>
-            <input type="password" id="a-pass" placeholder="mínimo 6 caracteres" />
-          </div>
-          <div class="form-group">
-            <label>Rol</label>
-            <select id="a-rol">
-              <option value="viewer">viewer — solo visualización</option>
-              <option value="editor">editor — registro y modificación</option>
-              <option value="admin">admin — acceso total</option>
-            </select>
+      <div class="admin-wrap">
+        <div class="admin-section">
+          <h3>Usuarios registrados</h3>
+          <p style="font-size:.82rem;color:var(--ink-lt);margin-bottom:1rem">Para crear un usuario nuevo, hazlo desde <strong>Supabase → Authentication → Users</strong> y luego agrégalo aquí con su nombre, email y rol.</p>
+          <div id="lista-usuarios"><p style="color:var(--ink-lt);font-size:.88rem">Cargando...</p></div>
+          <div style="margin-top:1.25rem;padding-top:1rem;border-top:1.5px solid var(--sand-dk)">
+            <p style="font-size:.8rem;font-weight:700;color:var(--ink-lt);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.6rem">Registrar usuario existente</p>
+            <div class="form-grid" style="max-width:560px">
+              <div class="form-group"><label>UUID (de Supabase)</label><input type="text" id="a-uid" placeholder="xxxxxxxx-xxxx-..." /></div>
+              <div class="form-group"><label>Nombre</label><input type="text" id="a-nombre" placeholder="Nombre del experto" /></div>
+              <div class="form-group"><label>Email (visible)</label><input type="email" id="a-email" placeholder="correo@ejemplo.com" /></div>
+              <div class="form-group"><label>Rol</label>
+                <select id="a-rol">
+                  <option value="viewer">viewer — solo visualización</option>
+                  <option value="editor">editor — registro y modificación</option>
+                  <option value="admin">admin — acceso total</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-primary" style="margin-top:.75rem" onclick="registrarPerfil()">Agregar usuario</button>
           </div>
         </div>
-        <div style="margin-top:1rem">
-          <button class="btn btn-primary" onclick="crearUsuario()">Crear usuario</button>
-        </div>
-      </div>
-
-      <div class="admin-section">
-        <h3>Usuarios registrados</h3>
-        <div id="lista-usuarios"><p style="color:var(--ink-lt);font-size:.88rem">Cargando usuarios...</p></div>
       </div>
     </div>
 
   </main>
 </div>
 
-<!-- ── MODAL DETALLE / EDICIÓN ── -->
-<div id="modal-overlay" onclick="cerrarModalClick(event)">
-  <div id="modal-box">
-    <h3 id="modal-titulo"></h3>
-    <div id="modal-contenido"></div>
-    <div class="modal-actions" id="modal-actions"></div>
+<!-- MODAL EDICIÓN NIDO -->
+<div id="edit-modal" class="modal-overlay" onclick="cerrarModalClick(event,'edit-modal')">
+  <div class="modal-box" style="max-width:680px">
+    <h3 id="edit-titulo"></h3>
+    <div id="edit-contenido"></div>
+    <div class="modal-actions" id="edit-actions"></div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMACIÓN -->
+<div id="confirm-modal" class="modal-overlay">
+  <div class="modal-box">
+    <h3>⚠️ Confirmar acción</h3>
+    <p id="confirm-msg"></p>
+    <div class="modal-actions">
+      <button class="btn btn-danger" id="confirm-ok">Eliminar</button>
+      <button class="btn btn-secondary" onclick="cerrarConfirm()">Cancelar</button>
+    </div>
   </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-// ══ SUPABASE ══
 const SUPA_URL  = 'https://buoiqfkcijrjhqjdddit.supabase.co';
 const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1b2lxZmtjaWpyamhxamRkZGl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NjgwNDUsImV4cCI6MjA5NDU0NDA0NX0.iCZv4dPx-JmEyVE2ZwfKGAv06tnxHTZZ0Dnfupo8sRo';
 const sb = supabase.createClient(SUPA_URL, SUPA_ANON);
 
-// ══ UTM 16Q → LatLng ══
 proj4.defs('EPSG:32616','+proj=utm +zone=16 +datum=WGS84 +units=m +no_defs');
-function utmToLatLng(x, y) {
-  const [lng, lat] = proj4('EPSG:32616','WGS84',[parseFloat(x),parseFloat(y)]);
-  return [lat, lng];
-}
+function utmToLatLng(x,y){ const [lng,lat]=proj4('EPSG:32616','WGS84',[+x,+y]); return [lat,lng]; }
+function temporadaDe(fecha){ return fecha ? new Date(fecha).getFullYear().toString() : '—'; }
+function hoy(){ return new Date().toISOString().split('T')[0]; }
 
-// ══ ESTADO GLOBAL ══
-let map, allNidos = [], markers = [], limpiezaIds = new Set();
-let sortCol = 'numero_nido', sortAsc = true;
-let currentUser = null, currentRol = 'viewer';
+let map, allNidos=[], markers=[], limpiezaIds=new Set();
+let sortCol='numero_nido', sortAsc=true;
+let currentRol='viewer';
 
-// ══ AUTH ══
-async function login() {
-  const email = document.getElementById('login-email').value.trim();
-  const pass  = document.getElementById('login-password').value;
-  const msg   = document.getElementById('login-msg');
-  msg.textContent = '';
-  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
-  if (error) { msg.className='err'; msg.textContent='Correo o contraseña incorrectos.'; return; }
+// ── AUTH
+async function login(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-password').value;
+  const msg=document.getElementById('login-msg');
+  msg.textContent='';
+  const {error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error){msg.className='err';msg.textContent='Correo o contraseña incorrectos.';return;}
   iniciarApp();
 }
-
-async function logout() {
+async function logout(){
   await sb.auth.signOut();
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('login-password').value = '';
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-password').value='';
 }
-
-async function mostrarRecuperar() {
-  const email = document.getElementById('login-email').value.trim();
-  const msg   = document.getElementById('login-msg');
-  if (!email) { msg.className='err'; msg.textContent='Escribe tu correo primero.'; return; }
-  const { error } = await sb.auth.resetPasswordForEmail(email, {
-    redirectTo: window.location.href
-  });
-  if (error) { msg.className='err'; msg.textContent='Error: ' + error.message; return; }
-  msg.className='ok'; msg.textContent='Revisa tu correo para restablecer la contraseña.';
+async function mostrarRecuperar(){
+  const email=document.getElementById('login-email').value.trim();
+  const msg=document.getElementById('login-msg');
+  if(!email){msg.className='err';msg.textContent='Escribe tu correo primero.';return;}
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
+  if(error){msg.className='err';msg.textContent='Error: '+error.message;return;}
+  msg.className='ok';msg.textContent='Revisa tu correo para restablecer la contraseña.';
 }
+document.getElementById('login-password').addEventListener('keydown',e=>{ if(e.key==='Enter') login(); });
+sb.auth.getSession().then(({data:{session}})=>{ if(session) iniciarApp(); });
 
-document.getElementById('login-password').addEventListener('keydown', e => {
-  if (e.key === 'Enter') login();
-});
-
-sb.auth.getSession().then(({ data: { session } }) => {
-  if (session) iniciarApp();
-});
-
-// ══ INIT ══
-async function iniciarApp() {
-  const { data: { user } } = await sb.auth.getUser();
-  currentUser = user;
-
-  // Cargar rol desde tabla perfiles
-  const { data: perfil } = await sb.from('perfiles').select('rol').eq('id', user.id).single();
-  currentRol = perfil?.rol || 'viewer';
-
-  document.getElementById('user-email').textContent = user.email;
-  document.getElementById('user-rol-label').textContent = currentRol.toUpperCase();
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
-
-  // Mostrar/ocultar nav según rol
-  const esEditor  = currentRol === 'editor' || currentRol === 'admin';
-  const esAdmin   = currentRol === 'admin';
-  document.getElementById('nav-registrar').style.display = esEditor ? '' : 'none';
-  document.getElementById('nav-limpieza').style.display  = esEditor ? '' : 'none';
-  document.getElementById('nav-excel').style.display     = esEditor ? '' : 'none';
-  document.getElementById('nav-admin').style.display     = esAdmin  ? '' : 'none';
-
+// ── INIT
+async function iniciarApp(){
+  const {data:{user}}=await sb.auth.getUser();
+  const {data:perfil}=await sb.from('perfiles').select('rol,nombre,email').eq('id',user.id).single();
+  currentRol=perfil?.rol||'viewer';
+  const nombre=perfil?.nombre||perfil?.email||user.email;
+  document.getElementById('user-nombre').textContent=nombre;
+  document.getElementById('user-rol-label').textContent=currentRol.toUpperCase();
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  const esEditor=currentRol==='editor'||currentRol==='admin';
+  const esAdmin=currentRol==='admin';
+  document.getElementById('nav-registrar').style.display=esEditor?'':'none';
+  document.getElementById('nav-limpieza').style.display=esEditor?'':'none';
+  document.getElementById('nav-excel').style.display=esEditor?'':'none';
+  document.getElementById('nav-admin').style.display=esAdmin?'':'none';
   initMap();
   await cargarDatos();
-  if (esAdmin) cargarUsuarios();
+  if(esAdmin) cargarUsuarios();
 }
 
-// ══ MAPA ══
-function initMap() {
-  if (map) return;
-  map = L.map('map').setView([20.35, -86.98], 13);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap', maxZoom: 19
-  }).addTo(map);
+// ── MAPA
+function initMap(){
+  if(map) return;
+  map=L.map('map').setView([20.35,-86.98],13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(map);
 }
+function colorNido(n,lim){ if(n.es_nido_salvaje) return '#9E9E9E'; if(n.fue_depredado) return '#D95F5F'; if(lim) return '#E8914A'; return '#4CAF82'; }
 
-function colorNido(n, tieneLimpieza) {
-  if (n.es_nido_salvaje) return '#9E9E9E';
-  if (n.fue_depredado)   return '#D95F5F';
-  if (tieneLimpieza)     return '#E8914A';
-  return '#4CAF82';
-}
-
-function renderMarkers(nidos, limpiezaSet) {
-  markers.forEach(m => m.remove()); markers = [];
-  nidos.forEach(n => {
-    if (!n.coord_x || !n.coord_y) return;
-    try {
-      const [lat, lng] = utmToLatLng(n.coord_x, n.coord_y);
-      if (isNaN(lat) || isNaN(lng)) return;
-      const color  = colorNido(n, limpiezaSet.has(n.id));
-      const circle = L.circleMarker([lat, lng], {
-        radius: 9, fillColor: color, color: '#fff', weight: 2, opacity: 1, fillOpacity: .9
-      }).addTo(map);
-      circle.bindPopup(`<strong>Nido #${n.numero_nido}</strong><br><em>${n.especie||'—'}</em><br>
-        Playa: ${n.playa||'—'}<br>Fecha: ${n.fecha||'—'}<br>
-        Eclosión est.: ${n.fecha_eclosion_estimada||'—'}`);
-      markers.push(circle);
-    } catch(e) {}
+function renderMarkers(nidos,limSet){
+  markers.forEach(m=>m.remove()); markers=[];
+  nidos.forEach(n=>{
+    if(!n.coord_x||!n.coord_y) return;
+    try{
+      const [lat,lng]=utmToLatLng(n.coord_x,n.coord_y);
+      if(isNaN(lat)||isNaN(lng)) return;
+      const color=colorNido(n,limSet.has(n.id));
+      const c=L.circleMarker([lat,lng],{radius:9,fillColor:color,color:'#fff',weight:2,opacity:1,fillOpacity:.9}).addTo(map);
+      const temp=temporadaDe(n.fecha);
+      c.bindPopup(`<strong>Nido #${n.numero_nido}</strong> <span style="font-size:.75rem;color:#4A86AD">${temp}</span><br>
+        <em>${n.especie||'—'}</em><br>Playa: ${n.playa||'—'}<br>
+        Fecha: ${n.fecha||'—'}<br>Eclosión est.: ${n.fecha_eclosion_estimada||'—'}`);
+      markers.push(c);
+    }catch(e){}
   });
 }
 
-function applyFilters() {
-  const esp   = document.getElementById('f-especie').value;
-  const playa = document.getElementById('f-playa').value;
-  const est   = document.getElementById('f-estado').value;
-  const desde = document.getElementById('f-fecha-desde').value;
-  const hasta = document.getElementById('f-fecha-hasta').value;
-  const filtered = allNidos.filter(n => {
-    if (esp   && n.especie !== esp)   return false;
-    if (playa && n.playa  !== playa)  return false;
-    if (desde && n.fecha  <  desde)   return false;
-    if (hasta && n.fecha  >  hasta)   return false;
-    if (est) {
-      if (est==='salvaje'     && !n.es_nido_salvaje)              return false;
-      if (est==='depredado'   && !n.fue_depredado)                return false;
-      if (est==='eclosionado' && !limpiezaIds.has(n.id))          return false;
-      if (est==='incubando'   && (n.fue_depredado||n.es_nido_salvaje||limpiezaIds.has(n.id))) return false;
+function applyFilters(){
+  const esp=document.getElementById('f-especie').value;
+  const pla=document.getElementById('f-playa').value;
+  const est=document.getElementById('f-estado').value;
+  const tmp=document.getElementById('f-temporada').value;
+  const des=document.getElementById('f-desde').value;
+  const has=document.getElementById('f-hasta').value;
+  const filtered=allNidos.filter(n=>{
+    if(esp && n.especie!==esp) return false;
+    if(pla && n.playa!==pla) return false;
+    if(des && n.fecha<des) return false;
+    if(has && n.fecha>has) return false;
+    if(tmp && temporadaDe(n.fecha)!==tmp) return false;
+    if(est){
+      if(est==='salvaje'     && !n.es_nido_salvaje) return false;
+      if(est==='depredado'   && !n.fue_depredado) return false;
+      if(est==='eclosionado' && !limpiezaIds.has(n.id)) return false;
+      if(est==='incubando'   && (n.fue_depredado||n.es_nido_salvaje||limpiezaIds.has(n.id))) return false;
     }
     return true;
   });
-  renderMarkers(filtered, limpiezaIds);
+  renderMarkers(filtered,limpiezaIds);
 }
-
-function limpiarFiltrosMapa() {
-  ['f-especie','f-playa','f-estado','f-fecha-desde','f-fecha-hasta'].forEach(id => document.getElementById(id).value='');
+function limpiarFiltrosMapa(){
+  ['f-especie','f-playa','f-estado','f-temporada','f-desde','f-hasta'].forEach(id=>document.getElementById(id).value='');
   applyFilters();
 }
 
-// ══ DATOS ══
-async function cargarDatos() {
-  const { data: nidos }     = await sb.from('monitoreo').select('*').order('numero_nido');
-  const { data: limpiezas } = await sb.from('limpieza').select('id_monitoreo');
-  allNidos    = nidos || [];
-  limpiezaIds = new Set((limpiezas||[]).map(l => l.id_monitoreo));
-  renderMarkers(allNidos, limpiezaIds);
+// ── DATOS
+async function cargarDatos(){
+  const {data:nidos}=await sb.from('monitoreo').select('*').order('numero_nido');
+  const {data:limpiezas}=await sb.from('limpieza').select('id_monitoreo');
+  allNidos=nidos||[];
+  limpiezaIds=new Set((limpiezas||[]).map(l=>l.id_monitoreo));
+  renderMarkers(allNidos,limpiezaIds);
+  poblarTemporadas();
   filtrarTabla();
   poblarSelectorNido(allNidos);
 }
 
-function poblarSelectorNido(nidos) {
-  const sel = document.getElementById('l-nido');
-  sel.innerHTML = '<option value="">— Seleccionar nido —</option>';
-  nidos.forEach(n => {
-    const o = document.createElement('option');
-    o.value = n.id;
-    o.textContent = `#${n.numero_nido} — ${n.playa||''} (${n.fecha||''})`;
+function poblarTemporadas(){
+  const years=[...new Set(allNidos.map(n=>temporadaDe(n.fecha)).filter(t=>t!=='—'))].sort((a,b)=>b-a);
+  ['f-temporada','rt-temporada'].forEach(id=>{
+    const sel=document.getElementById(id);
+    const val=sel.value;
+    sel.innerHTML='<option value="">Todas</option>';
+    years.forEach(y=>{ const o=document.createElement('option'); o.value=o.textContent=y; sel.appendChild(o); });
+    sel.value=val;
+  });
+}
+
+function poblarSelectorNido(nidos){
+  const sel=document.getElementById('l-nido');
+  sel.innerHTML='<option value="">— Seleccionar nido —</option>';
+  nidos.forEach(n=>{
+    const o=document.createElement('option');
+    o.value=n.id;
+    o.textContent=`#${n.numero_nido} (${temporadaDe(n.fecha)}) — ${n.playa||''} ${n.fecha||''}`;
     sel.appendChild(o);
   });
 }
 
-// ══ TABLA ══
-function estadoNido(n) {
-  if (n.es_nido_salvaje)          return {label:'Salvaje',    badge:'badge-gray'};
-  if (n.fue_depredado)            return {label:'Depredado',  badge:'badge-red'};
-  if (limpiezaIds.has(n.id))      return {label:'Eclosionado',badge:'badge-orange'};
-  return                                 {label:'Incubando',  badge:'badge-green'};
+// ── TABLA
+function estadoNido(n){
+  if(n.es_nido_salvaje)     return{label:'Salvaje',badge:'badge-gray'};
+  if(n.fue_depredado)       return{label:'Depredado',badge:'badge-red'};
+  if(limpiezaIds.has(n.id)) return{label:'Eclosionado',badge:'badge-orange'};
+  return {label:'Incubando',badge:'badge-green'};
 }
 
-function filtrarTabla() {
-  const esp   = document.getElementById('rt-especie').value;
-  const playa = document.getElementById('rt-playa').value;
-  const est   = document.getElementById('rt-estado').value;
-  const desde = document.getElementById('rt-desde').value;
-  const hasta = document.getElementById('rt-hasta').value;
-
-  let filtered = allNidos.filter(n => {
-    if (esp   && n.especie !== esp)   return false;
-    if (playa && n.playa  !== playa)  return false;
-    if (desde && n.fecha  <  desde)   return false;
-    if (hasta && n.fecha  >  hasta)   return false;
-    if (est) {
-      const s = estadoNido(n).label.toLowerCase();
-      if (est==='incubando'   && s!=='incubando')   return false;
-      if (est==='eclosionado' && s!=='eclosionado') return false;
-      if (est==='depredado'   && s!=='depredado')   return false;
-      if (est==='salvaje'     && s!=='salvaje')      return false;
+function filtrarTabla(){
+  const esp=document.getElementById('rt-especie').value;
+  const pla=document.getElementById('rt-playa').value;
+  const est=document.getElementById('rt-estado').value;
+  const tmp=document.getElementById('rt-temporada').value;
+  const des=document.getElementById('rt-desde').value;
+  const has=document.getElementById('rt-hasta').value;
+  let filtered=allNidos.filter(n=>{
+    if(esp && n.especie!==esp) return false;
+    if(pla && n.playa!==pla) return false;
+    if(des && n.fecha<des) return false;
+    if(has && n.fecha>has) return false;
+    if(tmp && temporadaDe(n.fecha)!==tmp) return false;
+    if(est){
+      const s=estadoNido(n).label.toLowerCase();
+      if(est==='incubando'   && s!=='incubando') return false;
+      if(est==='eclosionado' && s!=='eclosionado') return false;
+      if(est==='depredado'   && s!=='depredado') return false;
+      if(est==='salvaje'     && s!=='salvaje') return false;
     }
     return true;
   });
-
-  // Ordenar
-  filtered.sort((a,b) => {
-    let va = a[sortCol] ?? '', vb = b[sortCol] ?? '';
-    if (typeof va === 'number') return sortAsc ? va-vb : vb-va;
-    return sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+  filtered.sort((a,b)=>{
+    let va=a[sortCol]??'', vb=b[sortCol]??'';
+    if(typeof va==='number') return sortAsc?va-vb:vb-va;
+    return sortAsc?String(va).localeCompare(String(vb)):String(vb).localeCompare(String(va));
   });
-
   renderTabla(filtered);
 }
 
-function sortTabla(col) {
-  if (sortCol === col) sortAsc = !sortAsc; else { sortCol = col; sortAsc = true; }
+function sortTabla(col){
+  sortCol===col ? sortAsc=!sortAsc : (sortCol=col,sortAsc=true);
+  filtrarTabla();
+}
+function limpiarFiltrosTabla(){
+  ['rt-especie','rt-playa','rt-estado','rt-temporada','rt-desde','rt-hasta'].forEach(id=>document.getElementById(id).value='');
   filtrarTabla();
 }
 
-function limpiarFiltrosTabla() {
-  ['rt-especie','rt-playa','rt-estado','rt-desde','rt-hasta'].forEach(id => document.getElementById(id).value='');
-  filtrarTabla();
-}
-
-function renderTabla(nidos) {
-  const tbody = document.getElementById('tabla-body');
-  const esEditor = currentRol === 'editor' || currentRol === 'admin';
-  if (!nidos.length) {
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--ink-lt);padding:2rem">Sin registros.</td></tr>`;
-    return;
+function renderTabla(nidos){
+  const tbody=document.getElementById('tabla-body');
+  const esEditor=currentRol==='editor'||currentRol==='admin';
+  if(!nidos.length){
+    tbody.innerHTML=`<tr><td colspan="11" style="text-align:center;color:var(--ink-lt);padding:2rem">Sin registros.</td></tr>`;return;
   }
-  tbody.innerHTML = nidos.map(n => {
-    const {label, badge} = estadoNido(n);
-    const numCell = esEditor
-      ? `<span class="nido-link" onclick="abrirEdicion('${n.id}')">${n.numero_nido}</span>`
-      : n.numero_nido;
+  tbody.innerHTML=nidos.map(n=>{
+    const {label,badge}=estadoNido(n);
+    const temp=temporadaDe(n.fecha);
+    const numCell=esEditor
+      ?`<span class="nido-link" onclick="abrirEdicion('${n.id}')">${n.numero_nido}</span>`
+      :n.numero_nido;
     return `<tr>
       <td>${numCell}</td>
-      <td>${n.playa||'—'}</td>
       <td>${n.fecha||'—'}</td>
+      <td>${temp}</td>
+      <td>${n.playa||'—'}</td>
       <td><em>${n.especie||'—'}</em></td>
       <td>${n.zona||'—'}</td>
       <td>${n.accion||'—'}</td>
@@ -798,301 +727,313 @@ function renderTabla(nidos) {
   }).join('');
 }
 
-// ══ MODAL EDICIÓN ══
-function abrirEdicion(id) {
-  const n = allNidos.find(x => x.id === id);
-  if (!n) return;
-  document.getElementById('modal-titulo').textContent = `Editar nido #${n.numero_nido}`;
-  document.getElementById('modal-contenido').innerHTML = `
-    <div class="edit-grid">
-      <div class="edit-group"><label>Número de nido</label><input type="number" id="e-numero" value="${n.numero_nido||''}" /></div>
-      <div class="edit-group"><label>Fecha</label><input type="date" id="e-fecha" value="${n.fecha||''}" /></div>
-      <div class="edit-group"><label>Playa</label>
-        <select id="e-playa">
-          <option value="">—</option>
-          ${['Celarain','Caracol','Cuzam','5 de Junio','Caguama'].map(p=>`<option${n.playa===p?' selected':''}>${p}</option>`).join('')}
-        </select>
-      </div>
-      <div class="edit-group"><label>Zona</label>
-        <select id="e-zona">${['',...'123'.split('')].map(z=>`<option value="${z}"${n.zona==z?' selected':''}>${z||'—'}</option>`).join('')}</select>
-      </div>
-      <div class="edit-group"><label>Acción</label>
-        <select id="e-accion">${['',...'12345678'.split('')].map(a=>`<option value="${a}"${n.accion==a?' selected':''}>${a||'—'}</option>`).join('')}</select>
-      </div>
-      <div class="edit-group"><label>Especie</label>
+// ── MODAL EDICIÓN
+function abrirEdicion(id){
+  const n=allNidos.find(x=>x.id===id); if(!n) return;
+  const temp=temporadaDe(n.fecha);
+  document.getElementById('edit-titulo').textContent=`Editar nido #${n.numero_nido} — Temporada ${temp}`;
+
+  const playas=['Celarain','Caracol','Cuzam','5 de Junio','Caguama'];
+  const pOpts=playas.map(p=>`<option${n.playa===p?' selected':''}>${p}</option>`).join('');
+  const zOpts=['','1','2','3'].map(z=>`<option value="${z}"${(n.zona==z&&z!=='')||(!n.zona&&z==='')?' selected':''}>${z||'—'}</option>`).join('');
+  const aOpts=['','1','2','3','4','5','6','7','8'].map(a=>`<option value="${a}"${(n.accion==a&&a!=='')||(!n.accion&&a==='')?' selected':''}>${a||'—'}</option>`).join('');
+
+  document.getElementById('edit-contenido').innerHTML=`
+    <div class="form-grid">
+      <div class="form-group"><label>Número de nido</label><input type="number" id="e-numero" value="${n.numero_nido||''}" /></div>
+      <div class="form-group"><label>Fecha de registro</label><input type="date" id="e-fecha" value="${n.fecha||''}" /></div>
+      <div class="form-group"><label>Playa</label><select id="e-playa"><option value="">—</option>${pOpts}</select></div>
+      <div class="form-group"><label>Especie</label>
         <select id="e-especie">
           <option value="">—</option>
           <option${n.especie==='Caretta caretta'?' selected':''}>Caretta caretta</option>
           <option${n.especie==='Chelonia mydas'?' selected':''}>Chelonia mydas</option>
         </select>
       </div>
-      <div class="edit-group"><label>Coord X</label><input type="number" id="e-cx" value="${n.coord_x||''}" /></div>
-      <div class="edit-group"><label>Coord Y</label><input type="number" id="e-cy" value="${n.coord_y||''}" /></div>
-      <div class="edit-group"><label>Eclosión estimada</label><input type="date" id="e-eclosion" value="${n.fecha_eclosion_estimada||''}" /></div>
-      <div class="edit-group" style="flex-direction:row;gap:1rem;align-items:center;padding-top:.5rem">
-        <label style="display:flex;align-items:center;gap:.4rem;font-size:.85rem;text-transform:none;letter-spacing:0">
-          <input type="checkbox" id="e-salvaje" ${n.es_nido_salvaje?'checked':''} /> Nido salvaje
-        </label>
-        <label style="display:flex;align-items:center;gap:.4rem;font-size:.85rem;text-transform:none;letter-spacing:0">
-          <input type="checkbox" id="e-depredado" ${n.fue_depredado?'checked':''} /> Depredado
-        </label>
+      <div class="form-group"><label>Zona</label><select id="e-zona">${zOpts}</select></div>
+      <div class="form-group"><label>Acción</label><select id="e-accion">${aOpts}</select></div>
+      <div class="form-group"><label>Coord X</label><input type="number" id="e-cx" value="${n.coord_x||''}" /></div>
+      <div class="form-group"><label>Coord Y</label><input type="number" id="e-cy" value="${n.coord_y||''}" /></div>
+      <hr class="section-divider" />
+      <div class="form-group full"><label>Fecha estimada de eclosión</label><input type="date" id="e-eclosion" value="${n.fecha_eclosion_estimada||''}" /></div>
+      <hr class="section-divider" />
+      <p class="section-label">Condición del nido</p>
+      <div class="form-group full" style="flex-direction:row;gap:2rem;align-items:center;flex-wrap:wrap;">
+        <div class="check-row"><input type="checkbox" id="e-salvaje" ${n.es_nido_salvaje?'checked':''}/><label for="e-salvaje">Nido salvaje</label></div>
+        <div class="check-row"><input type="checkbox" id="e-depredado" ${n.fue_depredado?'checked':''}/><label for="e-depredado">Depredado</label></div>
       </div>
-      <div class="edit-group"><label>Largo total</label><input type="number" step="0.1" id="e-lt" value="${n.largo_total||''}" /></div>
-      <div class="edit-group"><label>Largo curvo</label><input type="number" step="0.1" id="e-lc" value="${n.largo_curvo||''}" /></div>
-      <div class="edit-group"><label>Ancho curvo</label><input type="number" step="0.1" id="e-ac" value="${n.ancho_curvo||''}" /></div>
-      <div class="edit-group full"><label>Observaciones</label><textarea id="e-obs">${n.observaciones||''}</textarea></div>
+      <hr class="section-divider" />
+      <div class="form-group full"><label>Observaciones del nido</label><textarea id="e-obs">${n.observaciones||''}</textarea></div>
+      <hr class="section-divider" />
+      <p class="section-label">Datos de la tortuga anidadora (opcional)</p>
+      <div class="form-group"><label>Largo total (cm)</label><input type="number" step="0.1" id="e-lt" value="${n.largo_total||''}" /></div>
+      <div class="form-group"><label>Largo curvo (cm)</label><input type="number" step="0.1" id="e-lc" value="${n.largo_curvo||''}" /></div>
+      <div class="form-group"><label>Ancho curvo (cm)</label><input type="number" step="0.1" id="e-ac" value="${n.ancho_curvo||''}" /></div>
+      <hr class="section-divider" />
+      <div class="form-group full"><label>Observaciones de la tortuga</label><textarea id="e-obs-tortuga">${n.obs_tortuga||''}</textarea></div>
     </div>`;
-  document.getElementById('modal-actions').innerHTML = `
+
+  document.getElementById('edit-actions').innerHTML=`
     <button class="btn btn-primary" onclick="guardarEdicion('${n.id}')">Guardar cambios</button>
-    <button class="btn btn-danger" onclick="eliminarNido('${n.id}')">Eliminar nido</button>
-    <button class="btn btn-secondary" onclick="document.getElementById('modal-overlay').classList.remove('open')">Cancelar</button>`;
-  document.getElementById('modal-overlay').classList.add('open');
+    <button class="btn btn-danger" onclick="confirmarEliminar('${n.id}')">Eliminar nido</button>
+    <button class="btn btn-secondary" onclick="cerrarModal('edit-modal')">Cancelar</button>`;
+
+  document.getElementById('edit-modal').classList.add('open');
 }
 
-async function guardarEdicion(id) {
-  const payload = {
-    numero_nido:             parseInt(document.getElementById('e-numero').value),
-    playa:                   document.getElementById('e-playa').value,
-    fecha:                   document.getElementById('e-fecha').value,
-    zona:                    parseInt(document.getElementById('e-zona').value)||null,
-    accion:                  parseInt(document.getElementById('e-accion').value)||null,
-    especie:                 document.getElementById('e-especie').value||null,
-    coord_x:                 parseFloat(document.getElementById('e-cx').value)||null,
-    coord_y:                 parseFloat(document.getElementById('e-cy').value)||null,
-    fecha_eclosion_estimada: document.getElementById('e-eclosion').value||null,
-    es_nido_salvaje:         document.getElementById('e-salvaje').checked,
-    fue_depredado:           document.getElementById('e-depredado').checked,
-    largo_total:             parseFloat(document.getElementById('e-lt').value)||null,
-    largo_curvo:             parseFloat(document.getElementById('e-lc').value)||null,
-    ancho_curvo:             parseFloat(document.getElementById('e-ac').value)||null,
-    observaciones:           document.getElementById('e-obs').value||null,
+async function guardarEdicion(id){
+  const payload={
+    numero_nido:parseInt(document.getElementById('e-numero').value),
+    playa:document.getElementById('e-playa').value,
+    fecha:document.getElementById('e-fecha').value,
+    zona:parseInt(document.getElementById('e-zona').value)||null,
+    accion:parseInt(document.getElementById('e-accion').value)||null,
+    especie:document.getElementById('e-especie').value||null,
+    coord_x:parseFloat(document.getElementById('e-cx').value)||null,
+    coord_y:parseFloat(document.getElementById('e-cy').value)||null,
+    fecha_eclosion_estimada:document.getElementById('e-eclosion').value||null,
+    es_nido_salvaje:document.getElementById('e-salvaje').checked,
+    fue_depredado:document.getElementById('e-depredado').checked,
+    largo_total:parseFloat(document.getElementById('e-lt').value)||null,
+    largo_curvo:parseFloat(document.getElementById('e-lc').value)||null,
+    ancho_curvo:parseFloat(document.getElementById('e-ac').value)||null,
+    observaciones:document.getElementById('e-obs').value||null,
+    obs_tortuga:document.getElementById('e-obs-tortuga').value||null,
   };
-  const { error } = await sb.from('monitoreo').update(payload).eq('id', id);
-  if (error) { toast('Error: ' + error.message, 'error'); return; }
-  document.getElementById('modal-overlay').classList.remove('open');
-  toast('Nido actualizado.', 'success');
+  const {error}=await sb.from('monitoreo').update(payload).eq('id',id);
+  if(error){toast('Error: '+error.message,'error');return;}
+  cerrarModal('edit-modal');
+  toast('Nido actualizado.','success');
   await cargarDatos();
 }
 
-async function eliminarNido(id) {
-  if (!confirm('¿Eliminar este nido? Esta acción no se puede deshacer.')) return;
-  const { error } = await sb.from('monitoreo').delete().eq('id', id);
-  if (error) { toast('Error: ' + error.message, 'error'); return; }
-  document.getElementById('modal-overlay').classList.remove('open');
-  toast('Nido eliminado.', 'success');
+function confirmarEliminar(id){
+  document.getElementById('confirm-msg').textContent='¿Eliminar este nido? Esta acción no se puede deshacer.';
+  document.getElementById('confirm-ok').onclick=()=>eliminarNido(id);
+  document.getElementById('confirm-modal').classList.add('open');
+}
+
+function cerrarConfirm(){
+  document.getElementById('confirm-modal').classList.remove('open');
+}
+
+async function eliminarNido(id){
+  cerrarConfirm();
+  const {error}=await sb.from('monitoreo').delete().eq('id',id);
+  if(error){toast('Error: '+error.message,'error');return;}
+  cerrarModal('edit-modal');
+  toast('Nido eliminado.','success');
   await cargarDatos();
 }
 
-function cerrarModalClick(e) {
-  if (e.target === document.getElementById('modal-overlay'))
-    document.getElementById('modal-overlay').classList.remove('open');
+function cerrarModal(id){ document.getElementById(id).classList.remove('open'); }
+function cerrarModalClick(e,id){ if(e.target===document.getElementById(id)) cerrarModal(id); }
+
+// ── FORM MONITOREO
+function onEspecieCambio(){
+  const esp=document.getElementById('m-especie').value;
+  const diasEl=document.getElementById('m-dias');
+  if(!diasEl.value){
+    if(esp==='Caretta caretta') diasEl.value=50;
+    if(esp==='Chelonia mydas')  diasEl.value=55;
+  }
+  calcularEclosion();
 }
+function onFechaCambio(){ calcularEclosion(); }
+function onEclosionManual(){} // fecha editada manualmente, no recalcular
 
-// ══ CÁLCULO ECLOSIÓN ══
-function calcularEclosion() {
-  const especie = document.getElementById('m-especie').value;
-  const fecha   = document.getElementById('m-fecha').value;
-  const diasEl  = document.getElementById('m-dias');
-  const hint    = document.getElementById('eclosion-hint');
-
-  // Poner días por defecto según especie si el campo está vacío
-  if (especie === 'Caretta caretta' && !diasEl.value) diasEl.value = 50;
-  if (especie === 'Chelonia mydas'  && !diasEl.value) diasEl.value = 55;
-
-  const dias = parseInt(diasEl.value);
-  if (fecha && dias > 0) {
-    const d = new Date(fecha);
-    d.setDate(d.getDate() + dias);
-    const iso = d.toISOString().split('T')[0];
-    document.getElementById('m-eclosion').value = iso;
-    hint.textContent = `Fecha estimada: ${iso} (${dias} días desde ${fecha})`;
+function onDepredadoCambio(){
+  const dep=document.getElementById('m-depredado').checked;
+  if(dep){
+    document.getElementById('m-eclosion').value=hoy();
+    document.getElementById('eclosion-hint').textContent='Depredado: eclosión establecida a hoy. Puedes modificar la fecha.';
   }
 }
 
-// ══ GUARDAR MONITOREO ══
-async function guardarMonitoreo() {
-  const payload = {
-    numero_nido:             parseInt(document.getElementById('m-numero').value),
-    playa:                   document.getElementById('m-playa').value,
-    fecha:                   document.getElementById('m-fecha').value,
-    zona:                    parseInt(document.getElementById('m-zona').value)||null,
-    accion:                  parseInt(document.getElementById('m-accion').value)||null,
-    especie:                 document.getElementById('m-especie').value||null,
-    coord_x:                 parseFloat(document.getElementById('m-coord-x').value)||null,
-    coord_y:                 parseFloat(document.getElementById('m-coord-y').value)||null,
-    fecha_eclosion_estimada: document.getElementById('m-eclosion').value||null,
-    es_nido_salvaje:         document.getElementById('m-salvaje').checked,
-    fue_depredado:           document.getElementById('m-depredado').checked,
-    largo_total:             parseFloat(document.getElementById('m-largo-total').value)||null,
-    largo_curvo:             parseFloat(document.getElementById('m-largo-curvo').value)||null,
-    ancho_curvo:             parseFloat(document.getElementById('m-ancho-curvo').value)||null,
-    observaciones:           document.getElementById('m-observaciones').value||null,
+function calcularEclosion(){
+  const fecha=document.getElementById('m-fecha').value;
+  const dias=parseInt(document.getElementById('m-dias').value);
+  const hint=document.getElementById('eclosion-hint');
+  if(fecha && dias>0){
+    const d=new Date(fecha+'T12:00:00');
+    d.setDate(d.getDate()+dias);
+    const iso=d.toISOString().split('T')[0];
+    document.getElementById('m-eclosion').value=iso;
+    hint.textContent=`Eclosión estimada: ${iso} (${dias} días desde ${fecha})`;
+  }
+}
+
+async function guardarMonitoreo(){
+  const payload={
+    numero_nido:parseInt(document.getElementById('m-numero').value),
+    playa:document.getElementById('m-playa').value,
+    fecha:document.getElementById('m-fecha').value,
+    zona:parseInt(document.getElementById('m-zona').value)||null,
+    accion:parseInt(document.getElementById('m-accion').value)||null,
+    especie:document.getElementById('m-especie').value||null,
+    coord_x:parseFloat(document.getElementById('m-coord-x').value)||null,
+    coord_y:parseFloat(document.getElementById('m-coord-y').value)||null,
+    fecha_eclosion_estimada:document.getElementById('m-eclosion').value||null,
+    es_nido_salvaje:document.getElementById('m-salvaje').checked,
+    fue_depredado:document.getElementById('m-depredado').checked,
+    largo_total:parseFloat(document.getElementById('m-largo-total').value)||null,
+    largo_curvo:parseFloat(document.getElementById('m-largo-curvo').value)||null,
+    ancho_curvo:parseFloat(document.getElementById('m-ancho-curvo').value)||null,
+    observaciones:document.getElementById('m-observaciones').value||null,
+    obs_tortuga:document.getElementById('m-obs-tortuga').value||null,
   };
-  if (!payload.numero_nido || !payload.playa || !payload.fecha) {
-    toast('Completa número, playa y fecha.', 'error'); return;
-  }
-  const { error } = await sb.from('monitoreo').insert(payload);
-  if (error) { toast('Error: ' + error.message, 'error'); return; }
-  toast('Nido guardado.', 'success');
+  if(!payload.numero_nido||!payload.playa||!payload.fecha){toast('Completa número, playa y fecha.','error');return;}
+  const {error}=await sb.from('monitoreo').insert(payload);
+  if(error){toast('Error: '+error.message,'error');return;}
+  toast('Nido guardado.','success');
   limpiarFormMonitoreo();
   await cargarDatos();
 }
 
-function limpiarFormMonitoreo() {
+function limpiarFormMonitoreo(){
   ['m-numero','m-fecha','m-playa','m-zona','m-accion','m-especie',
-   'm-coord-x','m-coord-y','m-eclosion','m-dias','m-observaciones',
-   'm-largo-total','m-largo-curvo','m-ancho-curvo'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value='';
+   'm-coord-x','m-coord-y','m-eclosion','m-dias','m-observaciones','m-obs-tortuga',
+   'm-largo-total','m-largo-curvo','m-ancho-curvo'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
   });
-  document.getElementById('m-salvaje').checked  = false;
-  document.getElementById('m-depredado').checked = false;
-  document.getElementById('eclosion-hint').textContent = 'Selecciona especie y fecha para calcular automáticamente (Caretta: 50 días · Chelonia: 55 días)';
+  document.getElementById('m-salvaje').checked=false;
+  document.getElementById('m-depredado').checked=false;
+  document.getElementById('eclosion-hint').textContent='Selecciona especie y fecha · Caretta: 50 días · Chelonia: 55 días';
 }
 
-// ══ GUARDAR LIMPIEZA ══
-async function guardarLimpieza() {
-  const idMonitoreo = document.getElementById('l-nido').value;
-  if (!idMonitoreo) { toast('Selecciona un nido.', 'error'); return; }
-  const payload = {
-    id_monitoreo:           idMonitoreo,
-    fecha_limpieza:         document.getElementById('l-fecha').value,
-    tortugas_vivas:         parseInt(document.getElementById('l-vivas').value)||0,
-    tortugas_muertas:       parseInt(document.getElementById('l-muertas').value)||0,
-    cascarones:             parseInt(document.getElementById('l-cascarones').value)||0,
-    huevos_no_eclosionados: parseInt(document.getElementById('l-no-eclosionados').value)||0,
-    huevos_rosa:            parseInt(document.getElementById('l-rosa').value)||0,
-    huevos_fase:            parseInt(document.getElementById('l-fase').value)||0,
-    observaciones:          document.getElementById('l-observaciones').value||null,
+// ── LIMPIEZA
+async function guardarLimpieza(){
+  const idM=document.getElementById('l-nido').value;
+  if(!idM){toast('Selecciona un nido.','error');return;}
+  const payload={
+    id_monitoreo:idM,
+    fecha_limpieza:document.getElementById('l-fecha').value,
+    tortugas_vivas:parseInt(document.getElementById('l-vivas').value)||0,
+    tortugas_muertas:parseInt(document.getElementById('l-muertas').value)||0,
+    cascarones:parseInt(document.getElementById('l-cascarones').value)||0,
+    huevos_no_eclosionados:parseInt(document.getElementById('l-no-eclosionados').value)||0,
+    huevos_rosa:parseInt(document.getElementById('l-rosa').value)||0,
+    huevos_fase:parseInt(document.getElementById('l-fase').value)||0,
+    observaciones:document.getElementById('l-observaciones').value||null,
   };
-  if (!payload.fecha_limpieza) { toast('Ingresa la fecha de limpieza.', 'error'); return; }
-  const { error } = await sb.from('limpieza').insert(payload);
-  if (error) { toast('Error: ' + error.message, 'error'); return; }
-  toast('Limpieza registrada.', 'success');
+  if(!payload.fecha_limpieza){toast('Ingresa la fecha de limpieza.','error');return;}
+  const {error}=await sb.from('limpieza').insert(payload);
+  if(error){toast('Error: '+error.message,'error');return;}
+  toast('Limpieza registrada.','success');
   limpiarFormLimpieza();
   await cargarDatos();
 }
-
-function limpiarFormLimpieza() {
-  ['l-nido','l-fecha','l-observaciones'].forEach(id => document.getElementById(id).value='');
-  ['l-vivas','l-muertas','l-cascarones','l-no-eclosionados','l-rosa','l-fase']
-    .forEach(id => document.getElementById(id).value=0);
+function limpiarFormLimpieza(){
+  ['l-nido','l-fecha','l-observaciones'].forEach(id=>document.getElementById(id).value='');
+  ['l-vivas','l-muertas','l-cascarones','l-no-eclosionados','l-rosa','l-fase'].forEach(id=>document.getElementById(id).value=0);
 }
 
-// ══ ADMIN: USUARIOS ══
-async function cargarUsuarios() {
-  const lista = document.getElementById('lista-usuarios');
-  const { data, error } = await sb.from('perfiles').select('id, rol');
-  if (error || !data) { lista.innerHTML='<p style="color:var(--red)">Error al cargar usuarios.</p>'; return; }
-
-  if (!data.length) { lista.innerHTML='<p style="color:var(--ink-lt);font-size:.88rem">No hay usuarios registrados.</p>'; return; }
-
-  lista.innerHTML = data.map(u => `
-    <div class="user-row" id="urow-${u.id}">
-      <div class="user-email">${u.id}</div>
-      <select onchange="cambiarRol('${u.id}', this.value)" style="padding:.3rem .6rem;border:1.5px solid var(--sand-dk);border-radius:6px;font-size:.82rem;background:var(--sand)">
+// ── ADMIN
+async function cargarUsuarios(){
+  const lista=document.getElementById('lista-usuarios');
+  const {data,error}=await sb.from('perfiles').select('id,nombre,email,rol');
+  if(error||!data){lista.innerHTML='<p style="color:var(--red)">Error al cargar.</p>';return;}
+  if(!data.length){lista.innerHTML='<p style="color:var(--ink-lt);font-size:.88rem">Sin usuarios registrados.</p>';return;}
+  lista.innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:.5rem .75rem;font-size:.72rem;font-weight:700;color:var(--ink-lt);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.4rem;padding:0 0 .4rem;border-bottom:1.5px solid var(--sand-dk)">
+      <span>Nombre</span><span>Email</span><span>Rol</span><span></span>
+    </div>
+    ${data.map(u=>`
+    <div class="user-row">
+      <div><div class="user-name">${u.nombre||'—'}</div></div>
+      <div class="user-email-sm">${u.email||'—'}</div>
+      <select class="role-select" onchange="cambiarRol('${u.id}',this.value)">
         ${['viewer','editor','admin'].map(r=>`<option value="${r}"${u.rol===r?' selected':''}>${r}</option>`).join('')}
       </select>
-      <button class="btn btn-danger btn-sm" onclick="eliminarUsuario('${u.id}')">Eliminar</button>
-    </div>`).join('');
+      <button class="btn btn-danger btn-sm" onclick="confirmarEliminarUsuario('${u.id}')">Eliminar</button>
+    </div>`).join('')}`;
 }
 
-async function cambiarRol(uid, nuevoRol) {
-  const { error } = await sb.from('perfiles').update({ rol: nuevoRol }).eq('id', uid);
-  if (error) toast('Error al cambiar rol.', 'error');
-  else toast('Rol actualizado.', 'success');
+async function cambiarRol(uid,rol){
+  const {error}=await sb.from('perfiles').update({rol}).eq('id',uid);
+  if(error) toast('Error al cambiar rol.','error');
+  else toast('Rol actualizado.','success');
 }
 
-async function crearUsuario() {
-  const email = document.getElementById('a-email').value.trim();
-  const pass  = document.getElementById('a-pass').value;
-  const rol   = document.getElementById('a-rol').value;
-  if (!email || !pass) { toast('Completa email y contraseña.', 'error'); return; }
-
-  // Crear usuario via Supabase Admin API (service role necesario)
-  // Con anon key, el admin invita al usuario usando signUp
-  const { data, error } = await sb.auth.admin?.createUser
-    ? sb.auth.admin.createUser({ email, password: pass, email_confirm: true })
-    : sb.auth.signUp({ email, password: pass });
-
-  if (error) { toast('Error: ' + error.message, 'error'); return; }
-
-  const uid = data?.user?.id;
-  if (uid) {
-    await sb.from('perfiles').insert({ id: uid, rol });
-  }
-  toast('Usuario creado.', 'success');
-  document.getElementById('a-email').value = '';
-  document.getElementById('a-pass').value  = '';
+async function registrarPerfil(){
+  const uid=document.getElementById('a-uid').value.trim();
+  const nombre=document.getElementById('a-nombre').value.trim();
+  const email=document.getElementById('a-email').value.trim();
+  const rol=document.getElementById('a-rol').value;
+  if(!uid){toast('Ingresa el UUID del usuario.','error');return;}
+  const {error}=await sb.from('perfiles').upsert({id:uid,nombre,email,rol});
+  if(error){toast('Error: '+error.message,'error');return;}
+  toast('Usuario registrado.','success');
+  ['a-uid','a-nombre','a-email'].forEach(id=>document.getElementById(id).value='');
   cargarUsuarios();
 }
 
-async function eliminarUsuario(uid) {
-  if (!confirm('¿Eliminar este usuario?')) return;
-  await sb.from('perfiles').delete().eq('id', uid);
-  toast('Usuario eliminado de perfiles.', 'success');
-  cargarUsuarios();
+function confirmarEliminarUsuario(uid){
+  document.getElementById('confirm-msg').textContent='¿Eliminar este usuario del sistema? Perderá acceso inmediatamente.';
+  document.getElementById('confirm-ok').onclick=async()=>{
+    cerrarConfirm();
+    await sb.from('perfiles').delete().eq('id',uid);
+    toast('Usuario eliminado.','success');
+    cargarUsuarios();
+  };
+  document.getElementById('confirm-modal').classList.add('open');
 }
 
-// ══ EXCEL ══
-async function procesarExcel(event) {
-  const file = event.target.files[0]; if (!file) return;
-  const wb   = XLSX.read(await file.arrayBuffer());
-  const sheetM = wb.Sheets['Monitoreo'];
-  const sheetL = wb.Sheets['Limpieza'];
-  if (!sheetM) { toast('No se encontró la hoja "Monitoreo".', 'error'); return; }
-  const rowsM = XLSX.utils.sheet_to_json(sheetM);
-  const rowsL = sheetL ? XLSX.utils.sheet_to_json(sheetL) : [];
-  document.getElementById('excel-preview').innerHTML = `
-    <p style="margin:.75rem 0;font-size:.86rem;color:var(--ink-lt)">
-      <strong>${rowsM.length}</strong> registros de monitoreo · <strong>${rowsL.length}</strong> de limpieza
-    </p>
+// ── EXCEL
+async function procesarExcel(event){
+  const file=event.target.files[0]; if(!file) return;
+  const wb=XLSX.read(await file.arrayBuffer());
+  const sheetM=wb.Sheets['Monitoreo'], sheetL=wb.Sheets['Limpieza'];
+  if(!sheetM){toast('No se encontró la hoja "Monitoreo".','error');return;}
+  const rowsM=XLSX.utils.sheet_to_json(sheetM);
+  const rowsL=sheetL?XLSX.utils.sheet_to_json(sheetL):[];
+  document.getElementById('excel-preview').innerHTML=`
+    <p style="margin:.75rem 0;font-size:.86rem;color:var(--ink-lt)"><strong>${rowsM.length}</strong> registros de monitoreo · <strong>${rowsL.length}</strong> de limpieza</p>
     <button class="btn btn-primary btn-sm" onclick='subirExcel(${JSON.stringify(rowsM)},${JSON.stringify(rowsL)})'>Confirmar y subir</button>`;
 }
-
-async function subirExcel(rowsM, rowsL) {
-  if (rowsM.length) {
-    const { error } = await sb.from('monitoreo').insert(rowsM.map(r => ({
-      numero_nido: r.numero_nido, playa: r.playa, fecha: r.fecha,
-      zona: r.zona, accion: r.accion, especie: r.especie,
-      coord_x: r.coord_x, coord_y: r.coord_y,
-      fecha_eclosion_estimada: r.fecha_eclosion_estimada,
-      es_nido_salvaje: r.es_nido_salvaje||false, fue_depredado: r.fue_depredado||false,
-      largo_total: r.largo_total, largo_curvo: r.largo_curvo,
-      ancho_curvo: r.ancho_curvo, observaciones: r.observaciones,
+async function subirExcel(rowsM,rowsL){
+  if(rowsM.length){
+    const {error}=await sb.from('monitoreo').insert(rowsM.map(r=>({
+      numero_nido:r.numero_nido,playa:r.playa,fecha:r.fecha,zona:r.zona,accion:r.accion,
+      especie:r.especie,coord_x:r.coord_x,coord_y:r.coord_y,
+      fecha_eclosion_estimada:r.fecha_eclosion_estimada,
+      es_nido_salvaje:r.es_nido_salvaje||false,fue_depredado:r.fue_depredado||false,
+      largo_total:r.largo_total,largo_curvo:r.largo_curvo,ancho_curvo:r.ancho_curvo,
+      observaciones:r.observaciones,obs_tortuga:r.obs_tortuga,
     })));
-    if (error) { toast('Error: ' + error.message, 'error'); return; }
+    if(error){toast('Error: '+error.message,'error');return;}
   }
-  toast(`${rowsM.length} nidos cargados.`, 'success');
+  toast(`${rowsM.length} nidos cargados.`,'success');
   await cargarDatos();
 }
-
-function descargarPlantilla() {
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([
+function descargarPlantilla(){
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
     ['numero_nido','playa','fecha','zona','accion','especie','coord_x','coord_y',
-     'fecha_eclosion_estimada','es_nido_salvaje','fue_depredado','largo_total','largo_curvo','ancho_curvo','observaciones']
-  ]), 'Monitoreo');
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([
+     'fecha_eclosion_estimada','es_nido_salvaje','fue_depredado',
+     'largo_total','largo_curvo','ancho_curvo','observaciones','obs_tortuga']
+  ]),'Monitoreo');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
     ['id_monitoreo','fecha_limpieza','tortugas_vivas','tortugas_muertas',
      'cascarones','huevos_no_eclosionados','huevos_rosa','huevos_fase','observaciones']
-  ]), 'Limpieza');
-  XLSX.writeFile(wb, 'plantilla-punta-sur.xlsx');
+  ]),'Limpieza');
+  XLSX.writeFile(wb,'plantilla-punta-sur.xlsx');
 }
 
-// ══ TABS ══
-function showTab(name, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+// ── TABS
+function showTab(name,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+name).classList.add('active');
   btn.classList.add('active');
-  if (name==='mapa' && map) setTimeout(() => map.invalidateSize(), 50);
+  if(name==='mapa'&&map) setTimeout(()=>map.invalidateSize(),50);
 }
 
-// ══ TOAST ══
-function toast(msg, type='') {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'show ' + type;
-  setTimeout(() => { t.className=''; }, 3200);
+// ── TOAST
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='show '+type;
+  setTimeout(()=>{t.className='';},3200);
 }
 </script>
 </body>
