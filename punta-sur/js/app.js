@@ -611,12 +611,6 @@ function toggleMenu() {
 }
 
 function showTabMobile(name) {
-  toggleMenu();
-  const fakeBtn = document.querySelector(`#nav-desktop button[onclick*="${name}"]`);
-  showTab(name, fakeBtn || document.createElement('button'));
-}
-
-function showTabMobile(name) {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebar-overlay').classList.remove('open');
   const btns = document.querySelectorAll('#nav-desktop button');
