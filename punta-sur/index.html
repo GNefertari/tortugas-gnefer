@@ -40,7 +40,7 @@
     </div>
   </header>
 
-  <nav>
+  <nav id="nav-desktop">
     <button class="active" onclick="showTab('mapa',this)">🗺 Mapa</button>
     <button onclick="showTab('registros',this)">📋 Registros</button>
     <button id="nav-registrar" onclick="showTab('monitoreo',this)">➕ Registrar nido</button>
@@ -48,6 +48,19 @@
     <button id="nav-excel" onclick="showTab('excel',this)">📤 Cargar Excel</button>
     <button id="nav-admin" style="display:none" onclick="showTab('admin',this)">⚙️ Administración</button>
   </nav>
+
+  <div id="nav-mobile">
+    <button id="hamburger" onclick="toggleMenu()">☰</button>
+    <div id="dropdown-menu">
+      <button onclick="showTabMobile('mapa')">🗺 Mapa</button>
+      <button onclick="showTabMobile('registros')">📋 Registros</button>
+      <button id="mob-registrar" onclick="showTabMobile('monitoreo')">➕ Registrar nido</button>
+      <button id="mob-limpieza" onclick="showTabMobile('limpieza')">🧹 Registrar limpieza</button>
+      <button id="mob-excel" onclick="showTabMobile('excel')">📤 Cargar Excel</button>
+      <button id="mob-admin" style="display:none" onclick="showTabMobile('admin')">⚙️ Administración</button>
+      <button onclick="logout()">🚪 Cerrar sesión</button>
+    </div>
+  </div>
 
   <main>
 

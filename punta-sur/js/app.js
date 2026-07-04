@@ -76,6 +76,11 @@ async function iniciarApp() {
   document.getElementById('nav-excel').style.display     = esEditor ? '' : 'none';
   document.getElementById('nav-admin').style.display     = esAdmin  ? '' : 'none';
 
+  document.getElementById('mob-registrar').style.display = esEditor ? '' : 'none';
+  document.getElementById('mob-limpieza').style.display  = esEditor ? '' : 'none';
+  document.getElementById('mob-excel').style.display     = esEditor ? '' : 'none';
+  document.getElementById('mob-admin').style.display     = esAdmin  ? '' : 'none';
+
   initMap();
   await cargarDatos();
   if (esAdmin) cargarUsuarios();
@@ -598,6 +603,16 @@ function showTab(name, btn) {
   document.getElementById('panel-' + name).classList.add('active');
   btn.classList.add('active');
   if (name === 'mapa' && map) setTimeout(() => map.invalidateSize(), 50);
+}
+
+function toggleMenu() {
+  document.getElementById('dropdown-menu').classList.toggle('open');
+}
+
+function showTabMobile(name) {
+  document.getElementById('dropdown-menu').classList.remove('open');
+  const fakeBtn = document.querySelector(`#nav-desktop button[onclick*="${name}"]`);
+  showTab(name, fakeBtn || document.createElement('button'));
 }
 
 // ══════════════════════════════════════════

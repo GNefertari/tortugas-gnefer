@@ -281,3 +281,30 @@ tbody td { padding: .6rem .9rem; }
   table { font-size: .76rem; }
   thead th, tbody td { padding: .5rem .55rem; }
 }
+
+/* ── HAMBURGUESA ── */
+#nav-mobile { display: none; }
+#hamburger {
+  background: none; border: none; color: var(--white);
+  font-size: 1.4rem; cursor: pointer; padding: .3rem .6rem;
+}
+#dropdown-menu {
+  display: none; position: absolute; top: 100%; right: 0; z-index: 500;
+  background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--shadow); min-width: 200px; flex-direction: column;
+}
+#dropdown-menu.open { display: flex; }
+#dropdown-menu button {
+  background: none; border: none; padding: .8rem 1.2rem;
+  text-align: left; font-size: .9rem; font-weight: 600;
+  color: var(--ink); cursor: pointer; font-family: var(--font);
+  border-bottom: 1px solid var(--sand-dk);
+}
+#dropdown-menu button:last-child { border-bottom: none; }
+#dropdown-menu button:hover { background: var(--sand); }
+
+@media (max-width: 640px) {
+  #nav-desktop { display: none; }
+  #nav-mobile  { display: block; position: relative; }
+  header { position: relative; }
+}
