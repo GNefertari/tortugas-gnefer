@@ -606,15 +606,24 @@ function showTab(name, btn) {
 }
 
 function toggleMenu() {
-  document.getElementById('dropdown-menu').classList.toggle('open');
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
 }
 
 function showTabMobile(name) {
-  document.getElementById('dropdown-menu').classList.remove('open');
+  toggleMenu();
   const fakeBtn = document.querySelector(`#nav-desktop button[onclick*="${name}"]`);
   showTab(name, fakeBtn || document.createElement('button'));
 }
 
+function showTabMobile(name) {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+  const btns = document.querySelectorAll('#nav-desktop button');
+  let targetBtn = null;
+  btns.forEach(b => { if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(name)) targetBtn = b; });
+  showTab(name, targetBtn || document.createElement('button'));
+}
 // ══════════════════════════════════════════
 // TOAST
 // ══════════════════════════════════════════

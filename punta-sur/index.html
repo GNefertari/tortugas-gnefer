@@ -40,7 +40,9 @@
     </div>
     <div id="nav-mobile">
       <button id="hamburger" onclick="toggleMenu()">☰</button>
-      <div id="dropdown-menu">
+      <div id="sidebar-overlay" onclick="toggleMenu()"></div>
+      <div id="sidebar">
+        <button class="sidebar-close" onclick="toggleMenu()">✕</button>
         <button onclick="showTabMobile('mapa')">🗺 Mapa</button>
         <button onclick="showTabMobile('registros')">📋 Registros</button>
         <button id="mob-registrar" onclick="showTabMobile('monitoreo')">➕ Registrar nido</button>
