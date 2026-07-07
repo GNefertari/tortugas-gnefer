@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mito o Realidad — TortuRetos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+
+<header>
+  <a href="../" class="back-link">← TortuRetos</a>
+  <span class="game-label">✅ Mito o Realidad</span>
+</header>
+
+<!-- INICIO -->
+<div id="screen-start" class="screen active">
+  <div class="big-icon">🧐</div>
+  <h1>Mito o<br><em>Realidad</em></h1>
+  <p class="hero-sub">10 afirmaciones sobre tortugas marinas.<br>Decide si cada una es un mito o una realidad.</p>
+  <div class="rules-card">
+    <h3>Cómo funciona</h3>
+    <div class="rule"><span>🟢</span><span>Presiona <strong>Realidad</strong> si la afirmación es verdadera</span></div>
+    <div class="rule"><span>🔴</span><span>Presiona <strong>Mito</strong> si es falsa o exagerada</span></div>
+    <div class="rule"><span>⭐</span><span>Cada partida suma XP a tu perfil de TortuRetos</span></div>
+    <div class="rule"><span>📚</span><span>Después de cada respuesta verás la explicación científica</span></div>
+  </div>
+  <button class="btn btn-primary btn-lg" onclick="startGame()">Comenzar</button>
+</div>
+
+<!-- JUEGO -->
+<div id="screen-game" class="screen">
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span class="progress-q" id="progress-q">Pregunta 1 de 10</span>
+      <span class="progress-score" id="progress-score">0 correctas</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fg" id="progress-bar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="question-card" id="question-card">
+    <div class="q-body">
+      <div class="q-category" id="q-category"></div>
+      <div class="q-statement" id="q-statement"></div>
+    </div>
+    <div class="answer-btns" id="answer-btns">
+      <button class="ans-btn ans-mito" onclick="answer('mito')">🔴 Mito</button>
+      <button class="ans-btn ans-real" onclick="answer('realidad')">🟢 Realidad</button>
+    </div>
+  </div>
+
+  <div class="feedback-card" id="feedback-card" style="display:none">
+    <div class="feedback-header" id="feedback-header">
+      <span class="feedback-result" id="feedback-result"></span>
+      <span class="feedback-verdict" id="feedback-verdict"></span>
+    </div>
+    <div class="feedback-body">
+      <p class="feedback-explanation" id="feedback-explanation"></p>
+      <div class="feedback-curious">
+        <span>💡</span>
+        <span id="feedback-curious"></span>
+      </div>
+      <button class="btn btn-primary btn-block" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTADO -->
+<div id="screen-result" class="screen">
+  <div class="result-card">
+    <div class="result-emoji" id="result-emoji"></div>
+    <h2 class="result-title" id="result-title"></h2>
+    <p class="result-msg" id="result-msg"></p>
+    <div class="score-row">
+      <div class="score-item">
+        <span class="score-num" id="result-score"></span>
+        <span class="score-label">correctas</span>
+      </div>
+      <div class="score-divider"></div>
+      <div class="score-item">
+        <span class="score-num">10</span>
+        <span class="score-label">preguntas</span>
+      </div>
+    </div>
+    <div class="xp-earned" id="result-xp"></div>
+    <div class="result-actions">
+      <button class="btn btn-secondary" onclick="startGame()">Jugar de nuevo</button>
+      <a href="../" class="btn btn-primary">Volver al hub</a>
+    </div>
+  </div>
+</div>
+
+<div id="xp-toast"></div>
+
+<script src="js/game.js"></script>
+</body>
+</html>

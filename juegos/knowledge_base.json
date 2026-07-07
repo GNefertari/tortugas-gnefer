@@ -1,0 +1,419 @@
+{
+  "metadata": {
+    "project": "TortuRetos",
+    "version": "0.1.0",
+    "language": "es-MX",
+    "description": "Base de conocimiento educativa para juegos interactivos sobre tortugas marinas, conservación, México y Cozumel."
+  },
+  "levels": [
+    { "level": 1, "name": "Turista Curioso",  "mission": "Bajo la Arena",          "xp_required": 0,   "description": "Descubrir qué son las tortugas marinas." },
+    { "level": 2, "name": "Amante del Mar",   "mission": "Rompiendo el Cascarón",  "xp_required": 100, "description": "Conocer las especies de tortugas marinas y su mundo." },
+    { "level": 3, "name": "Voluntario",       "mission": "El Primer Viaje",        "xp_required": 250, "description": "Aprender cómo ayudar a proteger a las tortugas." },
+    { "level": 4, "name": "Brigadista",       "mission": "Guardianes de la Costa", "xp_required": 500, "description": "Aprender principios básicos de monitoreo y conservación." },
+    { "level": 5, "name": "Guardián Experto", "mission": "El Regreso",             "xp_required": 850, "description": "Aplicar conocimientos avanzados sobre monitoreo, nidos e identificación." }
+  ],
+  "knowledge_items": [
+    {
+      "id": "bio_001", "level": 1, "category": "biologia", "subcategory": "clasificacion",
+      "title": "Las tortugas marinas son reptiles",
+      "fact": "Las tortugas marinas son reptiles adaptados a la vida en el océano.",
+      "explanation": "Aunque viven en el mar, respiran aire mediante pulmones y deben subir a la superficie para respirar.",
+      "curious": "Una tortuga marina puede aguantar la respiración hasta 7 horas cuando está dormida.",
+      "source": "CONANP (2011). Programa de acción para la conservación de la especie: tortuga caguama Caretta caretta.",
+      "tags": ["reptiles", "respiracion", "biologia"],
+      "usable_in": ["mito_realidad", "desafio_tortuguero", "sopa_letras"],
+      "myth_prompt": {
+        "statement": "Las tortugas marinas son peces porque viven en el océano.",
+        "answer": "mito",
+        "feedback": "No son peces. Son reptiles que respiran aire con pulmones, igual que los cocodrilos o las iguanas."
+      },
+      "quiz_prompt": {
+        "question": "¿Qué tipo de animales son las tortugas marinas?",
+        "options": ["Peces", "Mamíferos", "Reptiles", "Anfibios"],
+        "correct": "Reptiles"
+      }
+    },
+    {
+      "id": "bio_002", "level": 1, "category": "biologia", "subcategory": "diversidad",
+      "title": "Siete especies en el mundo",
+      "fact": "En el mundo existen siete especies de tortugas marinas.",
+      "explanation": "Estas especies se distribuyen principalmente en mares tropicales y subtropicales de todo el planeta.",
+      "curious": "La tortuga laúd es la más grande del mundo y puede alcanzar los 900 kg.",
+      "source": "WWF. Sea Turtles. https://www.worldwildlife.org/species/sea-turtle",
+      "tags": ["especies", "diversidad", "oceano"],
+      "usable_in": ["mito_realidad", "desafio_tortuguero"],
+      "myth_prompt": {
+        "statement": "En el mundo existen siete especies de tortugas marinas.",
+        "answer": "realidad",
+        "feedback": "Correcto. Las siete especies son: verde, caguama, carey, laúd, golfina, lora y plana."
+      },
+      "quiz_prompt": {
+        "question": "¿Cuántas especies de tortugas marinas existen en el mundo?",
+        "options": ["Cinco", "Seis", "Siete", "Nueve"],
+        "correct": "Siete"
+      }
+    },
+    {
+      "id": "bio_003", "level": 1, "category": "biologia", "subcategory": "anatomia",
+      "title": "El caparazón tiene terminaciones nerviosas",
+      "fact": "El caparazón de la tortuga es parte de su esqueleto y contiene terminaciones nerviosas.",
+      "explanation": "Las tortugas pueden sentir presión, temperatura y dolor a través de su caparazón. No es solo una cubierta dura.",
+      "curious": "El caparazón está formado por más de 60 huesos fusionados con la columna vertebral y las costillas.",
+      "source": "Wyneken, J. (2001). The Anatomy of Sea Turtles. NOAA Technical Memorandum.",
+      "tags": ["caparazon", "anatomia", "nervios", "esqueleto"],
+      "usable_in": ["mito_realidad", "desafio_tortuguero", "memorama"],
+      "myth_prompt": {
+        "statement": "El caparazón de la tortuga marina no tiene sensibilidad, es solo una capa dura.",
+        "answer": "mito",
+        "feedback": "Falso. El caparazón contiene terminaciones nerviosas. Las tortugas pueden sentir presión y temperatura a través de él."
+      },
+      "quiz_prompt": {
+        "question": "¿Qué estructura forma el caparazón de la tortuga marina?",
+        "options": ["Solo queratina endurecida", "Huesos fusionados con columna y costillas", "Cartílago marino", "Escamas de pez endurecidas"],
+        "correct": "Huesos fusionados con columna y costillas"
+      }
+    },
+    {
+      "id": "bio_004", "level": 1, "category": "biologia", "subcategory": "anatomia",
+      "title": "No pueden esconder la cabeza",
+      "fact": "Las tortugas marinas no pueden retraer la cabeza ni las aletas dentro del caparazón.",
+      "explanation": "A diferencia de las tortugas terrestres, las marinas evolucionaron para nadar, lo que modificó su estructura ósea haciéndola incompatible con ese movimiento.",
+      "curious": "Sus aletas delanteras pueden medir casi un metro en adultos de tortuga verde.",
+      "source": "Wyneken, J. (2001). The Anatomy of Sea Turtles. NOAA Technical Memorandum.",
+      "tags": ["anatomia", "aletas", "caparazon", "mito_comun"],
+      "usable_in": ["mito_realidad", "desafio_tortuguero"],
+      "myth_prompt": {
+        "statement": "Las tortugas marinas pueden esconder la cabeza dentro del caparazón como las terrestres.",
+        "answer": "mito",
+        "feedback": "No pueden. Su estructura ósea evolucionó para nadar, no para retractarse dentro del caparazón."
+      },
+      "quiz_prompt": {
+        "question": "¿Por qué las tortugas marinas no pueden meter la cabeza en el caparazón?",
+        "options": ["Porque el caparazón es muy pequeño", "Porque su estructura ósea evolucionó para nadar", "Porque tienen el cuello muy rígido", "Porque es un mito que las tortugas terrestres lo hagan"],
+        "correct": "Porque su estructura ósea evolucionó para nadar"
+      }
+    },
+    {
+      "id": "bio_005", "level": 1, "category": "biologia", "subcategory": "comportamiento",
+      "title": "Las tortugas no lloran de tristeza",
+      "fact": "Las tortugas marinas excretan una secreción salada por los ojos que puede parecer llanto, pero no es emocional.",
+      "explanation": "Esta secreción proviene de glándulas especiales que eliminan el exceso de sal del organismo, especialmente necesaria en animales que viven en agua salada.",
+      "curious": "Las hembras producen más esta secreción durante la anidación, cuando están fuera del agua y expuestas al sol.",
+      "source": "Lutz, P. & Musick, J. (1997). The Biology of Sea Turtles. CRC Press.",
+      "tags": ["glandulas_sal", "ojos", "mito_comun", "fisiologia"],
+      "usable_in": ["mito_realidad", "desafio_tortuguero"],
+      "myth_prompt": {
+        "statement": "Las tortugas marinas lloran porque sienten tristeza durante la anidación.",
+        "answer": "mito",
+        "feedback": "No es llanto emocional. Son glándulas que eliminan el exceso de sal del cuerpo."
+      },
+      "quiz_prompt": {
+        "question": "¿Para qué sirven las glándulas lagrimales de las tortugas marinas?",
+        "options": ["Expresar emociones", "Eliminar el exceso de sal del cuerpo", "Limpiar la vista bajo el agua", "Regular la temperatura"],
+        "correct": "Eliminar el exceso de sal del cuerpo"
+      }
+    },
+    {
+      "id": "bio_006", "level": 1, "category": "biologia", "subcategory": "supervivencia",
+      "title": "Solo 1 de cada 1,000 llega a adulta",
+      "fact": "Se estima que solo 1 de cada 1,000 crías de tortuga marina llega a la edad adulta.",
+      "explanation": "Las crías enfrentan depredadores desde el momento en que emergen del nido: aves, cangrejos, peces y contaminación reducen drásticamente su supervivencia.",
+      "curious": "Una hembra puede poner entre 3 y 7 nidos por temporada, con hasta 150 huevos cada uno, precisamente porque la mortalidad es tan alta.",
+      "source": "WWF. Sea Turtles. https://www.worldwildlife.org/species/sea-turtle",
+      "tags": ["supervivencia", "mortalidad", "crias", "depredadores"],
+      "usable_in": ["mito_realidad", "desafio_tortuguero"],
+      "myth_prompt": {
+        "statement": "La mayoría de las crías de tortuga marina llega a convertirse en adulta.",
+        "answer": "mito",
+        "feedback": "Solo 1 de cada 1,000 crías llega a adulta. La mortalidad es altísima en los primeros días de vida."
+      },
+      "quiz_prompt": {
+        "question": "¿Cuántas crías de tortuga marina de cada 1,000 llegan a la edad adulta aproximadamente?",
+        "options": ["500", "100", "10", "1"],
+        "correct": "1"
+      }
+    },
+    {
+      "id": "mex_001", "level": 1, "category": "mexico", "subcategory": "diversidad",
+      "title": "México alberga seis especies",
+      "fact": "En México se encuentran seis de las siete especies de tortugas marinas del mundo.",
+      "explanation": "Esto convierte a México en uno de los países más importantes para la conservación global de tortugas marinas.",
+      "curious": "Dos de las siete especies del mundo desovan exclusivamente en costas mexicanas.",
+      "source": "SNIB-CONABIO. Las tortugas marinas y sus playas de anidación en México. https://www.snib.mx/iptconabio/resource?r=SNIB-P066",
+      "tags": ["mexico", "conservacion", "especies", "diversidad"],
+      "usable_in": ["mito_realidad", "desafio_tortuguero"],
+      "myth_prompt": {
+        "statement": "En México se encuentran seis de las siete especies de tortugas marinas del mundo.",
+        "answer": "realidad",
+        "feedback": "Correcto. México es uno de los países más importantes para su conservación a nivel global."
+      },
+      "quiz_prompt": {
+        "question": "¿Cuántas especies de tortugas marinas se encuentran en México?",
+        "options": ["Tres", "Cuatro", "Seis", "Siete"],
+        "correct": "Seis"
+      }
+    },
+    {
+      "id": "bio_007", "level": 2, "category": "biologia", "subcategory": "reproduccion",
+      "title": "Filopatría natal",
+      "fact": "Las tortugas marinas hembras regresan a zonas cercanas a la playa donde nacieron para anidar.",
+      "explanation": "Este comportamiento se llama filopatría natal. Se cree que usan el campo magnético terrestre para orientarse y encontrar su playa de origen.",
+      "curious": "Una hembra puede recorrer miles de kilómetros en el océano y aun así regresar a la misma playa décadas después.",
+      "source": "Lohmann, K.J. et al. (2008). Geomagnetic imprinting: A unifying hypothesis of long-distance natal homing in salmon and sea turtles. PNAS.",
+      "tags": ["filopatria", "migracion", "anidacion", "campo_magnetico"],
+      "usable_in": ["mito_realidad", "desafio_tortuguero", "ciclo_vida"],
+      "myth_prompt": {
+        "statement": "Las tortugas marinas hembras regresan a la playa donde nacieron para anidar.",
+        "answer": "realidad",
+        "feedback": "Correcto. Este comportamiento se llama filopatría natal y es guiado por el campo magnético terrestre."
+      },
+      "quiz_prompt": {
+        "question": "¿Cómo se llama el comportamiento por el que las tortugas regresan a su playa natal para anidar?",
+        "options": ["Migración circular", "Filopatría natal", "Orientación magnética", "Retorno instintivo"],
+        "correct": "Filopatría natal"
+      }
+    },
+    {
+      "id": "bio_008", "level": 2, "category": "biologia", "subcategory": "incubacion",
+      "title": "Temperatura y sexo de las crías",
+      "fact": "La temperatura del nido durante la incubación influye en el sexo de las crías de tortuga marina.",
+      "explanation": "Temperaturas más altas favorecen la producción de hembras, mientras que temperaturas más bajas producen más machos. Esto se conoce como determinación sexual dependiente de temperatura.",
+      "curious": "El cambio climático podría afectar la proporción de sexos en poblaciones futuras de tortugas marinas.",
+      "source": "Ackerman, R.A. (1997). The nest environment and the embryonic development of sea turtles. In: Lutz & Musick (eds.) The Biology of Sea Turtles. CRC Press.",
+      "tags": ["temperatura", "incubacion", "sexo", "cambio_climatico"],
+      "usable_in": ["mito_realidad", "desafio_tortuguero"],
+      "myth_prompt": {
+        "statement": "El sexo de las crías de tortuga marina puede depender de la temperatura del nido.",
+        "answer": "realidad",
+        "feedback": "Correcto. A mayor temperatura, más hembras. A menor temperatura, más machos. El cambio climático representa una amenaza real para este equilibrio."
+      },
+      "quiz_prompt": {
+        "question": "¿Qué determina el sexo de las crías en los nidos de tortuga marina?",
+        "options": ["Los genes del padre", "La profundidad del nido", "La temperatura de incubación", "La especie de la madre"],
+        "correct": "La temperatura de incubación"
+      }
+    },
+    {
+      "id": "bio_009", "level": 2, "category": "biologia", "subcategory": "ciclo_vida",
+      "title": "Frenesí de natación",
+      "fact": "Al llegar al mar, las crías de tortuga entran en un estado de frenesí de natación que puede durar varios días.",
+      "explanation": "Durante este periodo nadan sin parar alejándose de la costa para llegar a corrientes oceánicas donde hay más refugio y alimento.",
+      "curious": "Durante el frenesí, las crías pueden recorrer más de 60 km sin descanso.",
+      "source": "Wyneken, J. & Salmon, M. (1992). Frenzy and postfrenzy swimming activity in loggerhead, green and leatherback hatchling sea turtles. Copeia.",
+      "tags": ["crias", "frenesi", "natacion", "ciclo_vida"],
+      "usable_in": ["mito_realidad", "desafio_tortuguero", "ciclo_vida"],
+      "myth_prompt": {
+        "statement": "Las crías de tortuga entran en un estado de frenesí de natación al llegar al mar.",
+        "answer": "realidad",
+        "feedback": "Correcto. Pueden nadar sin parar varios días para alejarse de depredadores costeros."
+      },
+      "quiz_prompt": {
+        "question": "¿Qué ocurre cuando las crías de tortuga llegan al mar por primera vez?",
+        "options": ["Se detienen a descansar cerca de la orilla", "Entran en un frenesí de natación continuo", "Regresan a la playa al anochecer", "Buscan a su madre en el océano"],
+        "correct": "Entran en un frenesí de natación continuo"
+      }
+    },
+    {
+      "id": "bio_010", "level": 2, "category": "biologia", "subcategory": "orientacion",
+      "title": "Las crías se orientan por la luz",
+      "fact": "Las crías de tortuga marina se orientan hacia el horizonte más luminoso para llegar al mar.",
+      "explanation": "Naturalmente el mar refleja más luz que la vegetación costera. La luz artificial puede confundirlas y desviarlas del océano.",
+      "curious": "En playas con mucha iluminación artificial, se han encontrado crías caminando hacia carreteras o urbanizaciones.",
+      "source": "Salmon, M. (2003). Artificial night lighting and sea turtles. Biologist, 50(4):163-168.",
+      "tags": ["luz", "crias", "orientacion", "luz_artificial", "amenazas"],
+      "usable_in": ["mito_realidad", "desafio_tortuguero", "que_harias_si"],
+      "myth_prompt": {
+        "statement": "Las crías de tortuga se guían solo por el olor del mar para encontrar el océano.",
+        "answer": "mito",
+        "feedback": "Se orientan principalmente por la luz. El horizonte del mar es naturalmente más luminoso que la playa. La luz artificial las desorienta."
+      },
+      "quiz_prompt": {
+        "question": "¿Cómo se orientan las crías de tortuga marina para llegar al mar al nacer?",
+        "options": ["Por el olor del agua salada", "Por la temperatura de la arena", "Hacia el horizonte más luminoso", "Siguiendo a otras crías"],
+        "correct": "Hacia el horizonte más luminoso"
+      }
+    },
+    {
+      "id": "coz_001", "level": 2, "category": "cozumel", "subcategory": "especies",
+      "title": "Especies que anidan en Cozumel",
+      "fact": "En Cozumel anidan principalmente la tortuga verde (Chelonia mydas) y la tortuga caguama (Caretta caretta).",
+      "explanation": "Ambas especies utilizan las playas de la costa este de la isla durante la temporada de anidación.",
+      "curious": "En 2017 se registraron más de 10,000 nidos entre los tres campamentos de Cozumel.",
+      "source": "Quiroga, B. et al. (2019). Capítulo 5. Evolución de cuatro años de monitoreo de la anidación de tortugas marinas en la costa noreste de la isla Cozumel. En: Cuevas-Flores et al. (Eds.). UNACAR.",
+      "tags": ["cozumel", "chelonia_mydas", "caretta_caretta", "anidacion"],
+      "usable_in": ["adivina_especie", "desafio_tortuguero"],
+      "quiz_prompt": {
+        "question": "¿Qué especies de tortugas marinas anidan principalmente en Cozumel?",
+        "options": ["Tortuga verde y tortuga caguama", "Tortuga laúd y tortuga plana", "Tortuga golfina y tortuga lora", "Tortuga carey y tortuga plana"],
+        "correct": "Tortuga verde y tortuga caguama"
+      }
+    },
+    {
+      "id": "coz_002", "level": 2, "category": "cozumel", "subcategory": "historia",
+      "title": "Primer comité de protección en México",
+      "fact": "En 1988 se instauró en Cozumel el primer Comité Municipal para la Protección de las Tortugas Marinas de México.",
+      "explanation": "Desde ese año, la conservación se ha realizado de manera coordinada entre el gobierno, academia, empresas y ciudadanos.",
+      "curious": "Cozumel es uno de los primeros lugares en México donde se monitorearon tortugas marinas de forma sistemática.",
+      "source": "Quiroga, B. et al. (2019). Capítulo 5. UNACAR. / Cahuich, A. et al. (2006). Teoría y Praxis, 2:127-136.",
+      "tags": ["cozumel", "historia", "comite", "1988", "conservacion"],
+      "usable_in": ["mito_realidad", "desafio_tortuguero"],
+      "myth_prompt": {
+        "statement": "Cozumel fue uno de los primeros lugares en México en establecer monitoreo sistemático de tortugas marinas.",
+        "answer": "realidad",
+        "feedback": "Correcto. En 1988 se creó el primer Comité Municipal para la Protección de las Tortugas Marinas de México en Cozumel."
+      },
+      "quiz_prompt": {
+        "question": "¿En qué año se creó el primer Comité Municipal para la Protección de las Tortugas Marinas en Cozumel?",
+        "options": ["1975", "1988", "2000", "2003"],
+        "correct": "1988"
+      }
+    },
+    {
+      "id": "cons_001", "level": 3, "category": "conservacion", "subcategory": "amenazas",
+      "title": "Luz artificial y desorientación",
+      "fact": "La luz artificial puede desorientar a las tortugas marinas adultas y a sus crías.",
+      "explanation": "Las crías se orientan hacia el horizonte más luminoso. En playas iluminadas artificialmente, pueden caminar hacia la tierra en lugar del mar.",
+      "curious": "Durante el monitoreo nocturno, los brigadistas usan linternas de luz roja, que afecta menos la visión de las tortugas.",
+      "source": "Salmon, M. (2003). Artificial night lighting and sea turtles. Biologist, 50(4):163-168.",
+      "tags": ["luz_artificial", "neonatos", "orientacion", "amenazas", "luz_roja"],
+      "usable_in": ["mito_realidad", "que_harias_si", "desafio_tortuguero"],
+      "scenario_prompt": {
+        "scenario": "Ves crías de tortuga caminando hacia una zona iluminada lejos del mar. ¿Qué deberías hacer?",
+        "options": ["Tomarlas y llevártelas a casa", "Usar flash para verlas mejor", "Avisar a personal autorizado del campamento", "Dejarlas sin hacer nada"],
+        "correct": "Avisar a personal autorizado del campamento",
+        "feedback": "La manipulación de crías debe hacerse solo bajo protocolos autorizados. Lo correcto es avisar al personal del campamento."
+      },
+      "myth_prompt": {
+        "statement": "Durante el monitoreo nocturno de tortugas se puede usar cualquier tipo de linterna.",
+        "answer": "mito",
+        "feedback": "Se deben usar linternas de luz roja para no alterar el comportamiento de las tortugas. La luz blanca puede desorientarlas."
+      }
+    },
+    {
+      "id": "cons_002", "level": 3, "category": "conservacion", "subcategory": "buenas_practicas",
+      "title": "No usar flash ni luz blanca",
+      "fact": "Durante el monitoreo de tortugas marinas no debe usarse flash ni luz blanca directa.",
+      "explanation": "La luz intensa puede alterar el comportamiento de las hembras anidantes e interrumpir la puesta de huevos.",
+      "curious": "Las tortugas tienen fotorreceptores más sensibles a la luz azul y verde que a la roja, por eso la luz roja es menos intrusiva.",
+      "source": "Witherington, B.E. (1997). The problem of photopollution for sea turtles. In: Clemmons & Buchholz (Eds.). Behavioral approaches to conservation in the wild.",
+      "tags": ["flash", "luz_roja", "monitoreo", "buenas_practicas", "fotografia"],
+      "usable_in": ["mito_realidad", "que_harias_si"],
+      "scenario_prompt": {
+        "scenario": "Encuentras una tortuga desovando durante la noche. ¿Qué acción es correcta?",
+        "options": ["Acercarte con linterna blanca", "Tomar fotos con flash", "Mantener distancia y no usar luces directas", "Tocar el caparazón para verificar la especie"],
+        "correct": "Mantener distancia y no usar luces directas",
+        "feedback": "Durante el desove se debe mantener distancia y evitar luces directas. La observación solo se hace siguiendo protocolos del campamento."
+      }
+    },
+    {
+      "id": "cons_003", "level": 3, "category": "conservacion", "subcategory": "legislacion",
+      "title": "Tortugas protegidas por ley en México",
+      "fact": "Todas las especies de tortugas marinas están protegidas en México por la NOM-059-SEMARNAT.",
+      "explanation": "Esta norma oficial clasifica a las tortugas marinas como especies en peligro de extinción o amenazadas, prohibiendo su captura, comercio y perturbación.",
+      "curious": "México fue uno de los primeros países en establecer programas formales de conservación de tortugas marinas en los años 60.",
+      "source": "SEMARNAT. NOM-059-SEMARNAT-2010. Protección ambiental — Especies nativas de México de flora y fauna silvestres.",
+      "tags": ["nom_059", "legislacion", "proteccion", "mexico", "peligro_extincion"],
+      "usable_in": ["mito_realidad", "desafio_tortuguero"],
+      "myth_prompt": {
+        "statement": "En México es legal capturar tortugas marinas si se hace con fines de investigación personal.",
+        "answer": "mito",
+        "feedback": "Falso. Todas las tortugas marinas están protegidas por la NOM-059-SEMARNAT. Cualquier interacción requiere permisos oficiales."
+      },
+      "quiz_prompt": {
+        "question": "¿Qué norma oficial protege a las tortugas marinas en México?",
+        "options": ["NOM-022-SEMARNAT", "NOM-059-SEMARNAT", "NOM-001-ECOL", "Ley General de Pesca"],
+        "correct": "NOM-059-SEMARNAT"
+      }
+    },
+    {
+      "id": "coz_003", "level": 3, "category": "cozumel", "subcategory": "campamentos",
+      "title": "Tres campamentos activos en Cozumel",
+      "fact": "Cozumel cuenta con tres campamentos tortugueros activos: Punta Sur, San Martín e Ixpalbarco.",
+      "explanation": "Punta Sur está a cargo de la FPMC, San Martín del H. Ayuntamiento y la CONANP opera Ixpalbarco en la zona noreste.",
+      "curious": "En conjunto, los tres campamentos monitorean más de 30 km de costa este de la isla.",
+      "source": "Quiroga, B. et al. (2019). Capítulo 5. UNACAR. / cozumel.gob.mx",
+      "tags": ["cozumel", "punta_sur", "san_martin", "ixpalbarco", "campamentos", "fpmc", "conanp"],
+      "usable_in": ["desafio_tortuguero", "sopa_letras"],
+      "quiz_prompt": {
+        "question": "¿Cuáles son los tres campamentos tortugueros de Cozumel?",
+        "options": ["Punta Sur, San Martín e Ixpalbarco", "Holbox, Akumal e Isla Mujeres", "Celestún, Progreso y Sisal", "Cancún, Bacalar y Tulum"],
+        "correct": "Punta Sur, San Martín e Ixpalbarco"
+      }
+    },
+    {
+      "id": "coz_004", "level": 3, "category": "cozumel", "subcategory": "historia",
+      "title": "Campamento San Martín desde 2003",
+      "fact": "El Campamento Tortuguero San Martín se constituyó en 2003 con autorización de la DGVS.",
+      "explanation": "Monitorea aproximadamente 16.7 km de playa en la costa centro-sur de la isla.",
+      "curious": "San Martín registra el mayor número de nidos por temporada de los tres campamentos.",
+      "source": "Quiroga, B. et al. (2019). Capítulo 5. UNACAR.",
+      "tags": ["san_martin", "cozumel", "2003", "historia"],
+      "usable_in": ["desafio_tortuguero"],
+      "quiz_prompt": {
+        "question": "¿En qué año se constituyó formalmente el Campamento Tortuguero San Martín en Cozumel?",
+        "options": ["1988", "2000", "2003", "2016"],
+        "correct": "2003"
+      }
+    },
+    {
+      "id": "coz_005", "level": 3, "category": "cozumel", "subcategory": "historia",
+      "title": "Campamento Punta Sur desde 2000",
+      "fact": "El Campamento Tortuguero Punta Sur fue creado en el año 2000 por la Fundación de Parques y Museos de Cozumel.",
+      "explanation": "Monitorea aproximadamente 5.6 km de la costa sur de la isla, dentro del Parque Nacional Arrecifes de Cozumel.",
+      "curious": "Sus playas incluyen Celarain, Caracol, Cuzam, 5 de Junio y Caguama.",
+      "source": "Quiroga, B. et al. (2019). Capítulo 5. UNACAR. / FPMC (2017). Programa de protección a la tortuga marina.",
+      "tags": ["punta_sur", "fpmc", "cozumel", "2000", "historia"],
+      "usable_in": ["desafio_tortuguero"],
+      "quiz_prompt": {
+        "question": "¿En qué año se creó el Campamento Tortuguero Punta Sur?",
+        "options": ["1988", "1995", "2000", "2005"],
+        "correct": "2000"
+      }
+    },
+    {
+      "id": "coz_006", "level": 4, "category": "cozumel", "subcategory": "historia",
+      "title": "Campamento Ixpalbarco desde 2016",
+      "fact": "El Campamento Ixpalbarco fue creado en 2016 por la CONANP para monitorear la zona noreste de Cozumel.",
+      "explanation": "Cubre 17.5 km de costa rocosa y arenosa, una zona de difícil acceso que durante años careció de monitoreo sistemático.",
+      "curious": "El nombre Ixpalbarco hace referencia a la zona geográfica de la costa noreste de Cozumel.",
+      "source": "Quiroga, B. et al. (2019). Capítulo 5. UNACAR.",
+      "tags": ["ixpalbarco", "conanp", "cozumel", "2016", "noreste"],
+      "usable_in": ["desafio_tortuguero"],
+      "quiz_prompt": {
+        "question": "¿Cuántos kilómetros de costa monitorea el Campamento Ixpalbarco?",
+        "options": ["5.6 km", "9 km", "16.7 km", "17.5 km"],
+        "correct": "17.5 km"
+      }
+    },
+    {
+      "id": "nido_001", "level": 4, "category": "nidos", "subcategory": "morfologia",
+      "title": "Covering pit",
+      "fact": "El covering pit es la perturbación visible en la superficie de arena que queda tras cubrir el nido.",
+      "explanation": "En imágenes aéreas, el covering pit puede ser la única señal visible de que existe un nido. Su identificación es clave en el monitoreo con dron.",
+      "curious": "El covering pit puede confundirse con huellas, sombras o marcas causadas por lluvia o vegetación.",
+      "source": "Quiroga, B. et al. (2019). Capítulo 5. UNACAR.",
+      "tags": ["covering_pit", "nido", "morfologia", "dron", "monitoreo_aereo"],
+      "usable_in": ["desafio_tortuguero", "encuentra_el_nido"],
+      "quiz_prompt": {
+        "question": "¿Qué es el covering pit en un nido de tortuga marina?",
+        "options": ["La cámara donde están los huevos", "La perturbación en la arena visible desde arriba", "El rastro de entrada de la tortuga", "El agujero de ventilación del nido"],
+        "correct": "La perturbación en la arena visible desde arriba"
+      }
+    },
+    {
+      "id": "nido_002", "level": 5, "category": "nidos", "subcategory": "deteccion",
+      "title": "Falsos positivos en detección aérea",
+      "fact": "Una de las mayores dificultades al detectar nidos desde imágenes aéreas es distinguir el covering pit de otras perturbaciones.",
+      "explanation": "Huellas, depresiones, vegetación, sombras o marcas superficiales pueden parecerse visualmente a un nido. Esto genera falsos positivos en modelos de detección automática.",
+      "curious": "Los modelos de visión por computadora entrenados para detectar nidos deben validarse siempre por expertos en campo.",
+      "source": "Quiroga, B. et al. (2019). Capítulo 5. UNACAR.",
+      "tags": ["deteccion", "dron", "vision_computadora", "falsos_positivos", "ia"],
+      "usable_in": ["encuentra_el_nido", "desafio_tortuguero"],
+      "quiz_prompt": {
+        "question": "¿Por qué es difícil detectar un nido de tortuga desde una imagen aérea?",
+        "options": ["Porque los nidos siempre están bajo el agua", "Porque el covering pit puede confundirse con otras marcas de arena", "Porque las imágenes aéreas no muestran arena", "Porque las tortugas cubren el nido con vegetación"],
+        "correct": "Porque el covering pit puede confundirse con otras marcas de arena"
+      }
+    }
+  ]
+}

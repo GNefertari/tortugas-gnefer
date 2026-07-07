@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TortuRetos — Centro de Aprendizaje</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --deep:    #0D2B4E;
+      --mid:     #1A6B8A;
+      --turq:    #00B4D8;
+      --turq-lt: #48CAE4;
+      --sand:    #F5F0E8;
+      --sand-dk: #E8DDD0;
+      --ink:     #0D2B4E;
+      --ink-lt:  #3D6070;
+      --white:   #FFFFFF;
+      --shadow:  0 4px 20px rgba(13,43,78,.12);
+      --display: 'Playfair Display', Georgia, serif;
+      --body:    'Inter', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--body);
+      background: linear-gradient(180deg,
+        #0D2B4E 0%, #1A6B8A 25%, #0D7FA0 55%,
+        #0A5C78 80%, #0D2B4E 100%);
+      min-height: 100vh; color: var(--ink);
+    }
+
+    /* HEADER */
+    header {
+      padding: 1.25rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .back-link {
+      color: rgba(255,255,255,.8); text-decoration: none;
+      font-size: .85rem; font-weight: 600;
+      display: flex; align-items: center; gap: .4rem;
+      transition: color .2s;
+    }
+    .back-link:hover { color: var(--white); }
+    .header-title { color: rgba(255,255,255,.6); font-size: .8rem; }
+
+    /* HERO */
+    .hero { text-align: center; padding: 2rem 2rem 1.5rem; color: var(--white); }
+    .hero h1 {
+      font-family: var(--display); font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700; margin-bottom: .5rem;
+    }
+    .hero h1 em { font-style: italic; font-weight: 400; color: var(--turq-lt); }
+    .hero p { font-size: .95rem; opacity: .8; max-width: 480px; margin: 0 auto; line-height: 1.6; }
+
+    /* TRAVESÍA */
+    .journey-wrap {
+      max-width: 800px; margin: 2rem auto; padding: 0 1.5rem;
+    }
+    .journey-label {
+      text-align: center; color: rgba(255,255,255,.7);
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .12em; margin-bottom: 1.25rem;
+    }
+    .journey {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; position: relative;
+    }
+    .journey-step {
+      display: flex; flex-direction: column; align-items: center;
+      gap: .4rem; flex: 1; position: relative; cursor: default;
+    }
+    .journey-node {
+      width: 56px; height: 56px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; border: 3px solid transparent;
+      transition: all .3s; position: relative; z-index: 2;
+    }
+    .journey-step.done .journey-node {
+      background: var(--turq); border-color: var(--white);
+      box-shadow: 0 0 0 4px rgba(0,180,216,.3);
+    }
+    .journey-step.active .journey-node {
+      background: var(--white); border-color: var(--turq);
+      box-shadow: 0 0 0 6px rgba(255,255,255,.2);
+      animation: pulse 2s infinite;
+    }
+    .journey-step.locked .journey-node {
+      background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.2);
+      filter: grayscale(.8); opacity: .5;
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 6px rgba(255,255,255,.2); }
+      50%      { box-shadow: 0 0 0 10px rgba(255,255,255,.05); }
+    }
+    .journey-line {
+      flex: 1; height: 3px; background: rgba(255,255,255,.15);
+      position: relative; margin-top: -1.8rem;
+    }
+    .journey-line.done { background: var(--turq); }
+    .journey-name {
+      font-size: .62rem; font-weight: 600; color: rgba(255,255,255,.7);
+      text-align: center; max-width: 72px; line-height: 1.3;
+    }
+    .journey-step.active .journey-name { color: var(--white); font-weight: 700; }
+    .journey-mission {
+      font-size: .55rem; color: rgba(255,255,255,.45);
+      text-align: center; max-width: 72px;
+    }
+
+    /* XP CARD */
+    .xp-card {
+      max-width: 700px; margin: 1.5rem auto;
+      background: rgba(255,255,255,.1); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,.2); border-radius: 16px;
+      padding: 1.25rem 1.75rem; color: var(--white);
+    }
+    .xp-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; }
+    .xp-main { display: flex; align-items: center; gap: .75rem; }
+    .xp-icon { font-size: 2rem; }
+    .xp-info .xp-num { font-family: var(--display); font-size: 1.6rem; font-weight: 700; }
+    .xp-info small { font-size: .72rem; opacity: .65; display: block; }
+    .motivation-msg {
+      font-size: .82rem; opacity: .85; font-style: italic;
+      max-width: 280px; text-align: right; line-height: 1.4;
+    }
+    .badges-mini { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: .85rem; }
+    .badge-pill {
+      background: rgba(255,255,255,.12); border-radius: 50px;
+      padding: .2rem .65rem; font-size: .72rem;
+      display: flex; align-items: center; gap: .3rem;
+      transition: all .2s;
+    }
+    .badge-pill.locked { opacity: .25; filter: grayscale(1); }
+    .badge-pill.unlocked { background: rgba(0,180,216,.25); }
+
+    /* MISIÓN ACTUAL */
+    .mission-card {
+      max-width: 700px; margin: 1.25rem auto;
+      background: rgba(255,255,255,.92); border-radius: 16px;
+      padding: 1.25rem 1.75rem; box-shadow: var(--shadow);
+    }
+    .mission-eyebrow {
+      font-size: .68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .12em; color: var(--mid); margin-bottom: .3rem;
+    }
+    .mission-title {
+      font-family: var(--display); font-size: 1.35rem; font-weight: 700;
+      color: var(--deep); margin-bottom: .3rem;
+    }
+    .mission-desc { font-size: .86rem; color: var(--ink-lt); line-height: 1.5; }
+    .mission-progress {
+      margin-top: 1rem;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .mp-bar-wrap {
+      flex: 1; background: var(--sand-dk); border-radius: 50px; height: 7px; overflow: hidden;
+    }
+    .mp-bar-fill {
+      height: 100%; border-radius: 50px;
+      background: linear-gradient(90deg, var(--turq-lt), var(--turq));
+      transition: width .6s ease;
+    }
+    .mp-label { font-size: .72rem; color: var(--ink-lt); white-space: nowrap; }
+
+    /* JUEGOS */
+    .games-section {
+      max-width: 760px; margin: 1.5rem auto; padding: 0 1.5rem 3rem;
+    }
+    .games-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .games-header h2 {
+      font-family: var(--display); font-size: 1.2rem;
+      font-weight: 700; color: var(--white);
+    }
+    .games-grid { display: flex; flex-direction: column; gap: .85rem; }
+
+    /* Separador de nivel bloqueado */
+    .level-separator {
+      display: flex; align-items: center; gap: .75rem; margin: 1rem 0 .5rem;
+    }
+    .level-separator hr { flex: 1; border: none; border-top: 1px dashed rgba(255,255,255,.2); }
+    .level-separator span {
+      font-size: .7rem; font-weight: 600; color: rgba(255,255,255,.45);
+      text-transform: uppercase; letter-spacing: .08em; white-space: nowrap;
+    }
+
+    /* TARJETA JUEGO */
+    .game-card {
+      background: rgba(255,255,255,.9); backdrop-filter: blur(8px);
+      border-radius: 14px; overflow: hidden; box-shadow: var(--shadow);
+      display: flex; align-items: center; gap: 0;
+      text-decoration: none; color: var(--ink);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .game-card:not(.locked-card):hover {
+      transform: translateX(4px);
+      box-shadow: 0 6px 24px rgba(13,43,78,.16);
+    }
+    .game-card.locked-card { opacity: .55; filter: saturate(.3); cursor: not-allowed; }
+    .game-card.exam-card {
+      background: linear-gradient(135deg, rgba(13,43,78,.95), rgba(26,107,138,.9));
+      color: var(--white);
+    }
+    .game-card.exam-card .game-title { color: var(--white); }
+    .game-card.exam-card .game-desc  { color: rgba(255,255,255,.7); }
+    .game-card.flagship-card {
+      background: linear-gradient(135deg, rgba(0,100,80,.95), rgba(0,180,216,.8));
+      color: var(--white);
+    }
+    .game-card.flagship-card .game-title { color: var(--white); }
+    .game-card.flagship-card .game-desc  { color: rgba(255,255,255,.7); }
+
+    .game-icon-wrap {
+      width: 68px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; padding: 1rem .5rem;
+      background: rgba(0,0,0,.04);
+      align-self: stretch;
+    }
+    .exam-card .game-icon-wrap, .flagship-card .game-icon-wrap { background: rgba(0,0,0,.15); }
+    .game-info { flex: 1; padding: .9rem 1rem; }
+    .game-title { font-weight: 700; font-size: .95rem; color: var(--deep); margin-bottom: .2rem; }
+    .game-desc  { font-size: .78rem; color: var(--ink-lt); line-height: 1.4; }
+    .game-meta  { display: flex; align-items: center; gap: .5rem; margin-top: .4rem; }
+    .game-xp-tag {
+      font-size: .68rem; font-weight: 700; padding: .15rem .5rem;
+      border-radius: 50px; background: rgba(0,180,216,.15); color: var(--mid);
+    }
+    .exam-card .game-xp-tag { background: rgba(255,255,255,.15); color: rgba(255,255,255,.8); }
+    .flagship-card .game-xp-tag { background: rgba(255,255,255,.15); color: rgba(255,255,255,.8); }
+    .game-done-tag {
+      font-size: .68rem; font-weight: 700; padding: .15rem .5rem;
+      border-radius: 50px; background: #d4f1e4; color: #1a5c38;
+    }
+    .game-action {
+      padding: 1rem .85rem; display: flex; align-items: center;
+    }
+    .play-btn {
+      background: var(--mid); color: var(--white);
+      border: none; border-radius: 50px; padding: .45rem 1.1rem;
+      font-size: .78rem; font-weight: 700; cursor: pointer;
+      transition: background .2s; text-decoration: none;
+      white-space: nowrap;
+    }
+    .play-btn:hover { background: var(--deep); }
+    .lock-btn {
+      background: var(--sand-dk); color: var(--ink-lt);
+      border: none; border-radius: 50px; padding: .45rem .85rem;
+      font-size: .78rem; font-weight: 600; cursor: not-allowed;
+      white-space: nowrap;
+    }
+    .exam-card .play-btn { background: rgba(255,255,255,.2); }
+    .exam-card .play-btn:hover { background: rgba(255,255,255,.35); }
+    .flagship-card .play-btn { background: rgba(255,255,255,.2); }
+    .flagship-card .play-btn:hover { background: rgba(255,255,255,.35); }
+
+    /* TOAST XP */
+    #xp-toast {
+      position: fixed; bottom: 2rem; right: 1.5rem;
+      background: var(--deep); color: var(--white);
+      padding: .75rem 1.25rem; border-radius: 12px;
+      font-size: .9rem; font-weight: 700;
+      box-shadow: 0 4px 20px rgba(0,0,0,.3);
+      transform: translateY(100px); opacity: 0;
+      transition: all .4s cubic-bezier(.34,1.56,.64,1);
+      z-index: 9999; pointer-events: none;
+    }
+    #xp-toast.show { transform: translateY(0); opacity: 1; }
+
+    /* RESET */
+    .reset-wrap { text-align: center; padding-bottom: 3rem; }
+    .reset-btn {
+      background: transparent; border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.45); border-radius: 50px;
+      padding: .4rem 1rem; font-size: .72rem; cursor: pointer;
+      transition: all .2s;
+    }
+    .reset-btn:hover { border-color: rgba(255,255,255,.5); color: rgba(255,255,255,.7); }
+
+    @media (max-width: 600px) {
+      .journey-name, .journey-mission { display: none; }
+      .journey-node { width: 44px; height: 44px; font-size: 1.1rem; }
+      .motivation-msg { display: none; }
+      .games-section { padding: 0 1rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="../" class="back-link">← Inicio</a>
+  <span class="header-title">🐢 TortuRetos</span>
+</header>
+
+<div class="hero">
+  <h1>🐢 TortuRetos<br><em>Tu camino hacia el océano</em></h1>
+  <p>Aprende, juega y conviértete en un verdadero Guardián de las Tortugas Marinas.</p>
+</div>
+
+<!-- TRAVESÍA -->
+<div class="journey-wrap">
+  <div class="journey-label">Tu travesía</div>
+  <div class="journey" id="journey"></div>
+</div>
+
+<!-- XP CARD -->
+<div class="xp-card" id="xp-card">
+  <div class="xp-row">
+    <div class="xp-main">
+      <div class="xp-icon" id="xp-icon">🥚</div>
+      <div class="xp-info">
+        <div class="xp-num" id="xp-num">0 XP</div>
+        <small id="xp-sublabel">Estás comenzando tu aventura</small>
+      </div>
+    </div>
+    <div class="motivation-msg" id="motivation-msg"></div>
+  </div>
+  <div class="badges-mini" id="badges-mini"></div>
+</div>
+
+<!-- MISIÓN ACTUAL -->
+<div class="mission-card" id="mission-card">
+  <div class="mission-eyebrow" id="mission-eyebrow"></div>
+  <div class="mission-title" id="mission-title"></div>
+  <div class="mission-desc" id="mission-desc"></div>
+  <div class="mission-progress">
+    <div class="mp-bar-wrap">
+      <div class="mp-bar-fill" id="mp-bar" style="width:0%"></div>
+    </div>
+    <span class="mp-label" id="mp-label"></span>
+  </div>
+</div>
+
+<!-- JUEGOS -->
+<div class="games-section">
+  <div class="games-header">
+    <h2>Actividades</h2>
+  </div>
+  <div class="games-grid" id="games-grid"></div>
+</div>
+
+<div class="reset-wrap">
+  <button class="reset-btn" onclick="resetProgress()">Reiniciar progreso</button>
+</div>
+
+<div id="xp-toast">+0 XP ⭐</div>
+
+<script>
+// ═══ DATOS ═══════════════════════════════════════════════
+const MISSIONS = [
+  {
+    level: 1, icon: '🥚', name: 'Turista Curioso',
+    mission: 'Misión 1: Bajo la Arena',
+    desc: 'La tortuga permanece protegida bajo la arena. Tú también estás comenzando a descubrir su mundo.',
+    minXp: 0, maxXp: 100,
+    motivation: 'Todo gran Guardián empezó aquí.',
+  },
+  {
+    level: 2, icon: '🐣', name: 'Amante del Mar',
+    mission: 'Misión 2: Rompiendo el Cascarón',
+    desc: 'La tortuga rompe el cascarón y empieza a descubrir el mundo. Ya conoces las especies.',
+    minXp: 100, maxXp: 250,
+    motivation: 'Ya conoces las especies. Ahora aprenderás cómo protegerlas.',
+  },
+  {
+    level: 3, icon: '🐢', name: 'Voluntario',
+    mission: 'Misión 3: El Primer Viaje',
+    desc: 'La tortuga emerge de la arena y comienza su viaje. Tú aprendes cómo ayudarla.',
+    minXp: 250, maxXp: 500,
+    motivation: 'Has aprendido lo suficiente para convertirte en Brigadista.',
+  },
+  {
+    level: 4, icon: '🌊', name: 'Brigadista',
+    mission: 'Misión 4: Guardianes de la Costa',
+    desc: 'La tortuga alcanza el océano. Tú ya puedes apoyar en un campamento de monitoreo.',
+    minXp: 500, maxXp: 900,
+    motivation: 'Solo los más dedicados llegan hasta aquí.',
+  },
+  {
+    level: 5, icon: '🧭', name: 'Guardián Experto',
+    mission: 'Misión 5: El Regreso',
+    desc: 'La tortuga adulta regresa a la playa donde nació. Tú eres ahora un verdadero Guardián.',
+    minXp: 900, maxXp: 9999,
+    motivation: 'Solo los Guardianes más experimentados pueden buscar nidos desde el aire.',
+  },
+];
+
+const BADGES = [
+  { id: 'b1', icon: '🥚', label: 'Primer Paso',        minLevel: 1 },
+  { id: 'b2', icon: '🐣', label: 'Explorador',         minLevel: 2 },
+  { id: 'b3', icon: '🦺', label: 'Guardián Nocturno',  minLevel: 3 },
+  { id: 'b4', icon: '🔦', label: 'Brigadista',         minLevel: 4 },
+  { id: 'b5', icon: '🏆', label: 'Maestro Tortuguero', minLevel: 5 },
+];
+
+const GAMES = [
+  // Nivel 1
+  { id: 'mito',       icon: '✅', title: 'Mito o Realidad',           desc: '¿Verdad o mito? Pon a prueba lo que crees saber.',                   xp: 15,  minLevel: 1, url: 'verdadero-falso/', type: 'normal' },
+  { id: 'memorama',   icon: '🧩', title: 'Memorama Tortuguero',        desc: 'Encuentra las parejas: especie, nombre y huella.',                   xp: 10,  minLevel: 1, url: 'memorama/',        type: 'normal' },
+  { id: 'rompecabezas', icon: '🖼', title: 'Rompecabezas',             desc: 'Arma fotografías reales de tortugas marinas.',                       xp: 10,  minLevel: 1, url: 'rompecabezas/',    type: 'normal' },
+  // Nivel 2
+  { id: 'especie',    icon: '🐢', title: 'Adivina la especie',         desc: 'Observa la fotografía e identifica la especie.',                     xp: 20,  minLevel: 2, url: 'especie/',         type: 'normal' },
+  { id: 'huella',     icon: '👣', title: '¿De quién es esta huella?',  desc: 'Identifica la especie a partir del rastro en la playa.',             xp: 20,  minLevel: 2, url: 'huella/',          type: 'normal' },
+  { id: 'sopa',       icon: '🔠', title: 'Sopa de letras',             desc: 'Encuentra palabras clave del mundo tortuguero.',                     xp: 10,  minLevel: 2, url: 'sopa/',            type: 'normal' },
+  // Nivel 3
+  { id: 'ciclo',      icon: '🔄', title: 'Ordena el ciclo de vida',    desc: 'Arrastra las etapas del ciclo de vida en el orden correcto.',        xp: 25,  minLevel: 3, url: 'ciclo/',           type: 'normal' },
+  { id: 'protocolo',  icon: '🚨', title: '¿Qué harías si...?',        desc: 'Situaciones reales de campo. ¿Conoces el protocolo correcto?',       xp: 30,  minLevel: 3, url: 'protocolo/',       type: 'normal' },
+  // Nivel 4 — Examen
+  { id: 'quiz',       icon: '📋', title: 'Desafío Tortuguero',         desc: 'Evaluación final. Demuestra que aprendiste lo suficiente para ser Brigadista.',  xp: 100, minLevel: 4, url: 'quiz/', type: 'exam' },
+  // Nivel 5 — Insignia
+  { id: 'nido',       icon: '🔍', title: 'Encuentra el Nido',          desc: 'Fotografías aéreas reales. Localiza nidos como lo haría un experto con dron.',   xp: 50,  minLevel: 5, url: 'nido/', type: 'flagship' },
+];
+
+// ═══ ESTADO ═══════════════════════════════════════════════
+function getState() {
+  return JSON.parse(localStorage.getItem('torturretos_v2') || '{"xp":0,"best":{}}');
+}
+function saveState(s) { localStorage.setItem('torturretos_v2', JSON.stringify(s)); }
+
+function getCurrentLevel(xp) {
+  for (let i = MISSIONS.length - 1; i >= 0; i--) {
+    if (xp >= MISSIONS[i].minXp) return i;
+  }
+  return 0;
+}
+
+// ═══ RENDER ════════════════════════════════════════════════
+function render() {
+  const state = getState();
+  const xp    = state.xp;
+  const lvIdx = getCurrentLevel(xp);
+  const lv    = MISSIONS[lvIdx];
+  const next  = MISSIONS[lvIdx + 1];
+
+  // Travesía
+  const journey = document.getElementById('journey');
+  journey.innerHTML = '';
+  MISSIONS.forEach((m, i) => {
+    if (i > 0) {
+      const line = document.createElement('div');
+      line.className = 'journey-line' + (i <= lvIdx ? ' done' : '');
+      journey.appendChild(line);
+    }
+    const step = document.createElement('div');
+    const cls = i < lvIdx ? 'done' : i === lvIdx ? 'active' : 'locked';
+    step.className = `journey-step ${cls}`;
+    step.innerHTML = `
+      <div class="journey-node">${m.icon}</div>
+      <div class="journey-name">${m.name}</div>
+      <div class="journey-mission">${m.mission.split(':')[1]?.trim() || ''}</div>`;
+    journey.appendChild(step);
+  });
+
+  // XP card
+  document.getElementById('xp-icon').textContent    = lv.icon;
+  document.getElementById('xp-num').textContent     = xp + ' XP';
+  document.getElementById('xp-sublabel').textContent = lv.mission;
+  document.getElementById('motivation-msg').textContent = lv.motivation;
+
+  // Insignias
+  const badgesMini = document.getElementById('badges-mini');
+  badgesMini.innerHTML = BADGES.map(b => {
+    const unlocked = (lvIdx + 1) >= b.minLevel;
+    return `<div class="badge-pill ${unlocked ? 'unlocked' : 'locked'}" title="${b.label}">
+      ${b.icon} <span>${b.label}</span>
+    </div>`;
+  }).join('');
+
+  // Misión actual
+  const pct = next
+    ? Math.round(((xp - lv.minXp) / (lv.maxXp - lv.minXp)) * 100)
+    : 100;
+  const gamesInLevel = GAMES.filter(g => g.minLevel === lvIdx + 1);
+  const gamesCompleted = gamesInLevel.filter(g => state.best[g.id] !== undefined).length;
+
+  document.getElementById('mission-eyebrow').textContent = lv.mission;
+  document.getElementById('mission-title').textContent   = lv.name;
+  document.getElementById('mission-desc').textContent    = lv.desc;
+  document.getElementById('mp-bar').style.width          = pct + '%';
+  document.getElementById('mp-label').textContent        = next
+    ? `${xp - lv.minXp} / ${lv.maxXp - lv.minXp} XP`
+    : '¡Nivel máximo!';
+
+  // Juegos
+  const grid = document.getElementById('games-grid');
+  let html = '';
+  let lastLevel = 0;
+
+  GAMES.forEach(g => {
+    const userLevel = lvIdx + 1;
+    const locked    = userLevel < g.minLevel;
+    const done      = state.best[g.id] !== undefined;
+
+    // Separador de nivel
+    if (locked && g.minLevel !== lastLevel) {
+      html += `<div class="level-separator">
+        <hr/><span>🔒 Se desbloquea en ${MISSIONS[g.minLevel - 1].mission}</span><hr/>
+      </div>`;
+      lastLevel = g.minLevel;
+    }
+
+    const cardClass = `game-card${locked ? ' locked-card' : ''} ${g.type === 'exam' ? 'exam-card' : g.type === 'flagship' ? 'flagship-card' : ''}`;
+    const btnHtml   = locked
+      ? `<button class="lock-btn" disabled>🔒</button>`
+      : `<a href="${g.url}" class="play-btn">${done ? 'Repetir' : 'Jugar'}</a>`;
+
+    html += `<div class="${cardClass}">
+      <div class="game-icon-wrap">${g.icon}</div>
+      <div class="game-info">
+        <div class="game-title">${g.title}</div>
+        <div class="game-desc">${g.desc}</div>
+        <div class="game-meta">
+          <span class="game-xp-tag">+${g.xp} XP</span>
+          ${done ? `<span class="game-done-tag">✓ Completado</span>` : ''}
+        </div>
+      </div>
+      <div class="game-action">${btnHtml}</div>
+    </div>`;
+  });
+
+  grid.innerHTML = html;
+}
+
+function resetProgress() {
+  if (confirm('¿Reiniciar todo el progreso? Esta acción no se puede deshacer.')) {
+    localStorage.removeItem('torturretos_v2');
+    render();
+  }
+}
+
+// Toast XP (para demostración desde juegos)
+function showXpToast(amount) {
+  const t = document.getElementById('xp-toast');
+  t.textContent = '+' + amount + ' XP ⭐';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Leer XP ganado desde juego hijo
+const params = new URLSearchParams(window.location.search);
+if (params.get('xp')) {
+  const gained = parseInt(params.get('xp'));
+  const gameId = params.get('game') || '';
+  const state  = getState();
+  state.xp += gained;
+  if (gameId) state.best[gameId] = (state.best[gameId] || 0) + gained;
+  saveState(state);
+  setTimeout(() => showXpToast(gained), 500);
+  history.replaceState({}, '', window.location.pathname);
+}
+
+render();
+</script>
+</body>
+</html>

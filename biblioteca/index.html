@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Biblioteca — Tortugas Marinas Cozumel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="../" class="nav-back">← Inicio</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="eyebrow">Referencias</p>
+    <h1>Biblioteca</h1>
+    <p class="hero-sub">Fuentes científicas, documentos oficiales y publicaciones utilizadas en este sitio. Cada referencia indica en qué secciones fue consultada.</p>
+  </div>
+</section>
+
+<main>
+  <!-- FILTROS -->
+  <section class="filters-section">
+    <div class="section-inner">
+      <div class="filters-row">
+        <button class="filter-btn active" onclick="filtrar('todas')">Todas</button>
+        <button class="filter-btn" onclick="filtrar('historia')">Historia</button>
+        <button class="filter-btn" onclick="filtrar('tortugas-marinas')">Tortugas marinas</button>
+        <button class="filter-btn" onclick="filtrar('especies')">Especies</button>
+        <button class="filter-btn" onclick="filtrar('mexico')">México</button>
+        <button class="filter-btn" onclick="filtrar('cozumel')">Cozumel</button>
+        <button class="filter-btn" onclick="filtrar('campamentos')">Campamentos</button>
+        <button class="filter-btn" onclick="filtrar('conservacion')">Conservación</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- REFERENCIAS -->
+  <section class="refs-section">
+    <div class="section-inner">
+      <div id="refs-grid" class="refs-grid"></div>
+      <p id="no-results" style="display:none;text-align:center;color:rgba(255,255,255,.5);padding:3rem 0;font-size:1rem">Sin referencias para esta categoría aún.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">Monitoreo Tortuguero Cozumel</div>
+    <div class="footer-links">
+      <a href="../historia/">Historia</a>
+      <a href="../tortugas-marinas/">Tortugas marinas</a>
+      <a href="../campamentos/">Campamentos</a>
+      <a href="../juegos/">TortuRetos</a>
+    </div>
+    <p class="footer-credit">Proyecto desarrollado en colaboración con la UAM-Azcapotzalco · Cozumel, Q. Roo</p>
+  </div>
+</footer>
+
+<script>
+const TIPO_LABEL = {
+  libro: 'Libro', capitulo_libro: 'Capítulo de libro',
+  articulo_cientifico: 'Artículo científico',
+  reporte_tecnico: 'Reporte técnico', reporte_oficial: 'Reporte oficial',
+  guia_divulgativa: 'Guía divulgativa',
+  organismo_internacional: 'Organismo internacional',
+  organismo_oficial: 'Organismo oficial',
+  convenio_internacional: 'Convenio internacional',
+  normatividad: 'Normatividad'
+};
+
+const CAT_LABEL = {
+  historia: 'Historia', 'tortugas-marinas': 'Tortugas marinas',
+  especies: 'Especies', mexico: 'México', cozumel: 'Cozumel',
+  campamentos: 'Campamentos', conservacion: 'Conservación'
+};
+
+let todasRefs = [];
+let filtroActivo = 'todas';
+
+async function cargarBiblioteca() {
+  const res  = await fetch('biblioteca.json');
+  const data = await res.json();
+  todasRefs  = data.referencias;
+  renderRefs(todasRefs);
+}
+
+function filtrar(cat) {
+  filtroActivo = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.toLowerCase() === cat ||
+      (cat === 'todas' && b.textContent === 'Todas'));
+  });
+  const filtered = cat === 'todas'
+    ? todasRefs
+    : todasRefs.filter(r => r.categorias.includes(cat));
+  renderRefs(filtered);
+}
+
+function renderRefs(refs) {
+  const grid = document.getElementById('refs-grid');
+  const none = document.getElementById('no-results');
+
+  if (!refs.length) { grid.innerHTML = ''; none.style.display = 'block'; return; }
+  none.style.display = 'none';
+
+  grid.innerHTML = refs.map(r => {
+    const autores = (r.autores || []).join('; ');
+    const tipo    = TIPO_LABEL[r.tipo] || r.tipo;
+    const cats    = (r.categorias || []).map(c =>
+      `<span class="cat-tag">${CAT_LABEL[c] || c}</span>`).join('');
+    const enlace  = r.enlace
+      ? `<a href="${r.enlace}" target="_blank" rel="noopener" class="ref-link">Ver fuente →</a>`
+      : '';
+    const libro   = r.libro
+      ? `<p class="ref-book">En: <em>${r.libro}</em>${r.editores ? ' — Ed. ' + r.editores.join(', ') : ''}. ${r.editorial || ''}</p>`
+      : '';
+
+    return `<div class="ref-card">
+      <div class="ref-top">
+        <span class="tipo-tag">${tipo}</span>
+        ${r.anio ? `<span class="anio-tag">${r.anio}</span>` : ''}
+      </div>
+      <h3 class="ref-titulo">${r.titulo}</h3>
+      ${autores ? `<p class="ref-autores">${autores}</p>` : ''}
+      ${r.institucion ? `<p class="ref-inst">${r.institucion}</p>` : ''}
+      ${libro}
+      <p class="ref-desc">${r.descripcion}</p>
+      <div class="ref-bottom">
+        <div class="cats-row">${cats}</div>
+        ${enlace}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+cargarBiblioteca();
+</script>
+</body>
+</html>
