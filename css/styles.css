@@ -117,7 +117,7 @@
   .camps-grid { grid-template-columns: 1fr; }
   .explora-grid { grid-template-columns: repeat(2, 1fr); }
   .stat { padding: 1rem 1.5rem; }
-  .stat-divider { width: 50px; height: 1px; }
+  .stat-divider { display: none; }
   .about-section { padding: 4rem 1.5rem; }
   .campamentos-section { padding: 3rem 1.5rem 4rem; }
 }
