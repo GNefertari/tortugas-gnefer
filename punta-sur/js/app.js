@@ -571,6 +571,19 @@ function normalizarBool(v) {
   return s === 'si' || s === 'sí' || s === 'true' || s === '1';
 }
 
+// Convierte "", undefined, null o texto no numérico a null; si hay valor válido, lo regresa como número.
+function toNum(v) {
+  if (v === undefined || v === null || v === '') return null;
+  const n = Number(v);
+  return isNaN(n) ? null : n;
+}
+
+// Convierte "" o undefined a null; deja el resto (texto) tal cual.
+function toTexto(v) {
+  if (v === undefined || v === null || String(v).trim() === '') return null;
+  return String(v).trim();
+}
+
 // Interpreta los 4 formatos aceptados en la columna fecha_eclosion_estimada.
 // Devuelve una fecha ISO (string) o null. Si devuelve null, el trigger de
 // Supabase la calcula automáticamente según la especie (comportamiento "si").
@@ -599,15 +612,15 @@ function resolverFechaEclosion(valor, fechaPuesta, especie) {
 async function subirExcel(rowsM, rowsL) {
   if (rowsM.length) {
     const { error } = await sb.from('monitoreo').insert(rowsM.map(r => ({
-      numero_nido: r.numero_nido, playa: r.playa, fecha: r.fecha,
-      zona: r.zona, accion: r.accion, especie: r.especie,
-      coord_x: r.coord_x, coord_y: r.coord_y,
+      numero_nido: toNum(r.numero_nido), playa: toTexto(r.playa), fecha: toTexto(r.fecha),
+      zona: toNum(r.zona), accion: toNum(r.accion), especie: toTexto(r.especie),
+      coord_x: toNum(r.coord_x), coord_y: toNum(r.coord_y),
       fecha_eclosion_estimada: resolverFechaEclosion(r.fecha_eclosion_estimada, r.fecha, r.especie),
       es_nido_salvaje: normalizarBool(r.es_nido_salvaje),
       fue_depredado:   normalizarBool(r.fue_depredado),
-      largo_total: r.largo_total, largo_curvo: r.largo_curvo,
-      ancho_curvo: r.ancho_curvo, observaciones: r.observaciones,
-      obs_tortuga: r.obs_tortuga,
+      largo_total: toNum(r.largo_total), largo_curvo: toNum(r.largo_curvo),
+      ancho_curvo: toNum(r.ancho_curvo), observaciones: toTexto(r.observaciones),
+      obs_tortuga: toTexto(r.obs_tortuga),
     })));
     if (error) { toast('Error: ' + error.message, 'error'); return; }
   }
@@ -637,15 +650,15 @@ async function descargarPlantilla() {
     { numero_nido: 43, playa: 'Caracol', fecha: '2026-07-02', zona: 1, accion: 4,
       especie: 'Chelonia mydas', coord_x: 501703, coord_y: 2242088,
       fecha_eclosion_estimada: '2026-08-26', es_nido_salvaje: 'no', fue_depredado: 'no',
-      largo_total: '', largo_curvo: '', ancho_curvo: '', observaciones: '', obs_tortuga: '' },
+      largo_total: null, largo_curvo: null, ancho_curvo: null, observaciones: null, obs_tortuga: null },
     { numero_nido: 44, playa: 'Cuzam', fecha: '2026-07-03', zona: 3, accion: 2,
       especie: 'Caretta caretta', coord_x: 500980, coord_y: 2241455,
       fecha_eclosion_estimada: 33, es_nido_salvaje: 'si', fue_depredado: 'no',
-      largo_total: '', largo_curvo: '', ancho_curvo: '', observaciones: '', obs_tortuga: '' },
+      largo_total: null, largo_curvo: null, ancho_curvo: null, observaciones: null, obs_tortuga: null },
     { numero_nido: 45, playa: '5 de Junio', fecha: '2026-07-04', zona: 1, accion: 1,
       especie: 'Chelonia mydas', coord_x: 502011, coord_y: 2242390,
       fecha_eclosion_estimada: '', es_nido_salvaje: 'no', fue_depredado: 'si',
-      largo_total: '', largo_curvo: '', ancho_curvo: '', observaciones: '', obs_tortuga: '' },
+      largo_total: null, largo_curvo: null, ancho_curvo: null, observaciones: null, obs_tortuga: null },
   ]);
 
   // Encabezado con estilo
