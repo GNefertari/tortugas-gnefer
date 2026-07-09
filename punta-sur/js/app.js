@@ -546,19 +546,37 @@ function confirmarEliminarUsuario(uid) {
 // ══════════════════════════════════════════
 // EXCEL
 // ══════════════════════════════════════════
+let excelRowsM = [];
+let excelRowsL = [];
+
 async function procesarExcel(event) {
   const file = event.target.files[0]; if (!file) return;
   const wb     = XLSX.read(await file.arrayBuffer());
   const sheetM = wb.Sheets['Monitoreo'];
   const sheetL = wb.Sheets['Limpieza'];
   if (!sheetM) { toast('No se encontró la hoja "Monitoreo".', 'error'); return; }
-  const rowsM = XLSX.utils.sheet_to_json(sheetM);
-  const rowsL = sheetL ? XLSX.utils.sheet_to_json(sheetL) : [];
+  excelRowsM = XLSX.utils.sheet_to_json(sheetM);
+  excelRowsL = sheetL ? XLSX.utils.sheet_to_json(sheetL) : [];
   document.getElementById('excel-preview').innerHTML = `
     <p style="margin:.75rem 0;font-size:.86rem;color:var(--ink-lt)">
-      <strong>${rowsM.length}</strong> registros de monitoreo · <strong>${rowsL.length}</strong> de limpieza
+      📄 <strong>${file.name}</strong> — <strong>${excelRowsM.length}</strong> registros de monitoreo · <strong>${excelRowsL.length}</strong> de limpieza
     </p>
-    <button class="btn btn-primary btn-sm" onclick='subirExcel(${JSON.stringify(rowsM)},${JSON.stringify(rowsL)})'>Confirmar y subir</button>`;
+    <button class="btn btn-primary btn-sm" id="btn-confirmar-excel" onclick="confirmarSubidaExcel()">Confirmar y subir</button>`;
+}
+
+async function confirmarSubidaExcel() {
+  const btn = document.getElementById('btn-confirmar-excel');
+  btn.disabled = true;
+  btn.textContent = 'Subiendo…';
+  const ok = await subirExcel(excelRowsM, excelRowsL);
+  if (ok) {
+    document.getElementById('excel-preview').innerHTML = '';
+    document.getElementById('file-input').value = '';
+    excelRowsM = []; excelRowsL = [];
+  } else {
+    btn.disabled = false;
+    btn.textContent = 'Confirmar y subir';
+  }
 }
 
 // Días de incubación por especie (usado solo para el offset numérico "33" y
@@ -622,10 +640,11 @@ async function subirExcel(rowsM, rowsL) {
       ancho_curvo: toNum(r.ancho_curvo), observaciones: toTexto(r.observaciones),
       obs_tortuga: toTexto(r.obs_tortuga),
     })));
-    if (error) { toast('Error: ' + error.message, 'error'); return; }
+    if (error) { toast('Error: ' + error.message, 'error'); return false; }
   }
   toast(`${rowsM.length} nidos cargados.`, 'success');
   await cargarDatos();
+  return true;
 }
 
 // ── Plantilla con listas desplegables (requiere ExcelJS) ──
