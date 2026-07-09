@@ -561,50 +561,15 @@ async function procesarExcel(event) {
     <button class="btn btn-primary btn-sm" onclick='subirExcel(${JSON.stringify(rowsM)},${JSON.stringify(rowsL)})'>Confirmar y subir</button>`;
 }
 
-// Días de incubación por especie (usado solo para el offset numérico "33" y
-// como referencia; el cálculo por "si"/vacío lo hace el trigger en Supabase).
-const DIAS_ECLOSION = { 'Caretta caretta': 50, 'Chelonia mydas': 55 };
-
-function normalizarBool(v) {
-  if (v === true || v === false) return v;
-  const s = String(v ?? '').trim().toLowerCase();
-  return s === 'si' || s === 'sí' || s === 'true' || s === '1';
-}
-
-// Interpreta los 4 formatos aceptados en la columna fecha_eclosion_estimada.
-// Devuelve una fecha ISO (string) o null. Si devuelve null, el trigger de
-// Supabase la calcula automáticamente según la especie (comportamiento "si").
-function resolverFechaEclosion(valor, fechaPuesta, especie) {
-  const raw = valor === undefined || valor === null ? '' : String(valor).trim();
-
-  if (raw === '') return null;                         // vacío → lo calcula la BD
-  if (raw.toLowerCase() === 'si' || raw.toLowerCase() === 'sí') return null; // "si" → lo calcula la BD
-
-  // ¿Es un número entero (días a sumar)?
-  if (/^\d+$/.test(raw)) {
-    if (!fechaPuesta) return null;
-    const d = new Date(fechaPuesta + 'T12:00:00');
-    d.setDate(d.getDate() + parseInt(raw, 10));
-    return d.toISOString().split('T')[0];
-  }
-
-  // ¿Es una fecha ISO válida (2026-08-26) o un objeto Date (Excel a veces lo entrega así)?
-  if (raw instanceof Date) return raw.toISOString().split('T')[0];
-  if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.slice(0, 10);
-
-  // Formato no reconocido → se deja que la BD calcule por especie.
-  return null;
-}
-
 async function subirExcel(rowsM, rowsL) {
   if (rowsM.length) {
     const { error } = await sb.from('monitoreo').insert(rowsM.map(r => ({
       numero_nido: r.numero_nido, playa: r.playa, fecha: r.fecha,
       zona: r.zona, accion: r.accion, especie: r.especie,
       coord_x: r.coord_x, coord_y: r.coord_y,
-      fecha_eclosion_estimada: resolverFechaEclosion(r.fecha_eclosion_estimada, r.fecha, r.especie),
-      es_nido_salvaje: normalizarBool(r.es_nido_salvaje),
-      fue_depredado:   normalizarBool(r.fue_depredado),
+      fecha_eclosion_estimada: r.fecha_eclosion_estimada,
+      es_nido_salvaje: r.es_nido_salvaje || false,
+      fue_depredado:   r.fue_depredado   || false,
       largo_total: r.largo_total, largo_curvo: r.largo_curvo,
       ancho_curvo: r.ancho_curvo, observaciones: r.observaciones,
       obs_tortuga: r.obs_tortuga,
@@ -615,92 +580,18 @@ async function subirExcel(rowsM, rowsL) {
   await cargarDatos();
 }
 
-// ── Plantilla con listas desplegables (requiere ExcelJS) ──
-async function descargarPlantilla() {
-  const wb = new ExcelJS.Workbook();
-
-  // ── Hoja Monitoreo ──
-  const hojaM = wb.addWorksheet('Monitoreo');
-  const colsM = [
+function descargarPlantilla() {
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([[
     'numero_nido','playa','fecha','zona','accion','especie','coord_x','coord_y',
     'fecha_eclosion_estimada','es_nido_salvaje','fue_depredado',
     'largo_total','largo_curvo','ancho_curvo','observaciones','obs_tortuga'
-  ];
-  hojaM.columns = colsM.map(c => ({ header: c, key: c, width: 20 }));
-
-  hojaM.addRows([
-    { numero_nido: 42, playa: 'Celarain', fecha: '2026-07-01', zona: 2, accion: 3,
-      especie: 'Caretta caretta', coord_x: 501354, coord_y: 2241701,
-      fecha_eclosion_estimada: 'si', es_nido_salvaje: 'no', fue_depredado: 'no',
-      largo_total: 95.5, largo_curvo: 92.3, ancho_curvo: 88.1,
-      observaciones: 'Nido en buen estado', obs_tortuga: 'Sin marcas visibles' },
-    { numero_nido: 43, playa: 'Caracol', fecha: '2026-07-02', zona: 1, accion: 4,
-      especie: 'Chelonia mydas', coord_x: 501703, coord_y: 2242088,
-      fecha_eclosion_estimada: '2026-08-26', es_nido_salvaje: 'no', fue_depredado: 'no',
-      largo_total: '', largo_curvo: '', ancho_curvo: '', observaciones: '', obs_tortuga: '' },
-    { numero_nido: 44, playa: 'Cuzam', fecha: '2026-07-03', zona: 3, accion: 2,
-      especie: 'Caretta caretta', coord_x: 500980, coord_y: 2241455,
-      fecha_eclosion_estimada: 33, es_nido_salvaje: 'si', fue_depredado: 'no',
-      largo_total: '', largo_curvo: '', ancho_curvo: '', observaciones: '', obs_tortuga: '' },
-    { numero_nido: 45, playa: '5 de Junio', fecha: '2026-07-04', zona: 1, accion: 1,
-      especie: 'Chelonia mydas', coord_x: 502011, coord_y: 2242390,
-      fecha_eclosion_estimada: '', es_nido_salvaje: 'no', fue_depredado: 'si',
-      largo_total: '', largo_curvo: '', ancho_curvo: '', observaciones: '', obs_tortuga: '' },
-  ]);
-
-  // Encabezado con estilo
-  hojaM.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
-  hojaM.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4A86AD' } };
-
-  // Comentario de ayuda en el encabezado de fecha_eclosion_estimada
-  const colEclosion = colsM.indexOf('fecha_eclosion_estimada') + 1;
-  hojaM.getCell(1, colEclosion).note = {
-    texts: [{ text:
-      'Acepta 4 formatos:\n' +
-      '• "si" → se calcula según la especie\n' +
-      '• Fecha exacta, ej. 2026-08-26\n' +
-      '• Número de días, ej. 33 (desde la fecha de puesta)\n' +
-      '• Vacío → se calcula igual que "si"'
-    }]
-  };
-
-  // Listas desplegables (validación de datos), filas 2 a 200
-  const dropdown = (colKey, lista) => {
-    const col = colsM.indexOf(colKey) + 1;
-    for (let row = 2; row <= 200; row++) {
-      hojaM.getCell(row, col).dataValidation = {
-        type: 'list', allowBlank: true,
-        formulae: [`"${lista.join(',')}"`],
-        showErrorMessage: true,
-        errorTitle: 'Valor no válido',
-        error: `Selecciona una opción de la lista: ${lista.join(', ')}`
-      };
-    }
-  };
-  dropdown('playa',   ['Celarain','Caracol','Cuzam','5 de Junio','Caguama']);
-  dropdown('especie', ['Caretta caretta','Chelonia mydas']);
-  dropdown('zona',    ['1','2','3']);
-  dropdown('accion',  ['1','2','3','4','5','6','7','8']);
-  dropdown('es_nido_salvaje', ['si','no']);
-  dropdown('fue_depredado',   ['si','no']);
-
-  // ── Hoja Limpieza ──
-  const hojaL = wb.addWorksheet('Limpieza');
-  const colsL = [
+  ]]), 'Monitoreo');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([[
     'id_monitoreo','fecha_limpieza','tortugas_vivas','tortugas_muertas',
     'cascarones','huevos_no_eclosionados','huevos_rosa','huevos_fase','observaciones'
-  ];
-  hojaL.columns = colsL.map(c => ({ header: c, key: c, width: 20 }));
-  hojaL.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
-  hojaL.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4A86AD' } };
-
-  const buffer = await wb.xlsx.writeBuffer();
-  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'plantilla-punta-sur.xlsx';
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
+  ]]), 'Limpieza');
+  XLSX.writeFile(wb, 'plantilla-punta-sur.xlsx');
 }
 
 // ══════════════════════════════════════════

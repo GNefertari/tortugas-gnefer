@@ -9,7 +9,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
@@ -270,10 +269,7 @@
     <div id="panel-excel" class="tab-panel">
       <div class="form-card">
         <h2>Carga masiva desde Excel</h2>
-        <p style="font-size:.86rem;color:var(--ink-lt);margin-bottom:.5rem">Dos hojas: <strong>Monitoreo</strong> y <strong>Limpieza</strong>. <a href="#" onclick="descargarPlantilla()" style="color:var(--sky-dk)">Descargar plantilla</a></p>
-        <p style="font-size:.78rem;color:var(--ink-lt);margin-bottom:1.2rem;background:var(--sand);padding:.6rem .8rem;border-radius:7px">
-          <strong>Columna "fecha_eclosion_estimada":</strong> escribe <strong>si</strong> (calcula según especie), una <strong>fecha</strong> (2026-08-26), un <strong>número de días</strong> (33), o déjala <strong>vacía</strong> (= si). Los campos con lista desplegable ya vienen listos para elegir.
-        </p>
+        <p style="font-size:.86rem;color:var(--ink-lt);margin-bottom:1.2rem">Dos hojas: <strong>Monitoreo</strong> y <strong>Limpieza</strong>. <a href="#" onclick="descargarPlantilla()" style="color:var(--sky-dk)">Descargar plantilla</a></p>
         <div class="upload-zone" onclick="document.getElementById('file-input').click()">
           <div class="icon">📂</div>
           <p>Haz clic para seleccionar un archivo .xlsx o .xls</p>
