@@ -134,12 +134,13 @@ main { flex: 1; overflow: hidden; position: relative; min-height: 0; }
 .date-range-row input { flex: 1; }
 
 .map-legend {
-  position: absolute; bottom: 1.5rem; left: 1rem; z-index: 1000;
+  position: absolute; bottom: 1rem; right: 1rem; z-index: 1000;
   background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
-  padding: .7rem .9rem; font-size: .79rem;
+  padding: .6rem .9rem; font-size: .79rem;
+  display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; max-width: calc(100vw - 2rem);
 }
-.map-legend h4 { font-size: .7rem; color: var(--ink-lt); margin-bottom: .35rem; text-transform: uppercase; letter-spacing: .04em; }
-.legend-item { display: flex; align-items: center; gap: .45rem; margin-bottom: .2rem; }
+.map-legend h4 { font-size: .7rem; color: var(--ink-lt); text-transform: uppercase; letter-spacing: .04em; flex-shrink: 0; }
+.legend-item { display: flex; align-items: center; gap: .35rem; white-space: nowrap; }
 .legend-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
 .leaflet-pane { z-index: 400 !important; }
 .leaflet-top, .leaflet-bottom { z-index: 401 !important; }

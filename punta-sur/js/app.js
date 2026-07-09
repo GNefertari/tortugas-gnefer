@@ -17,6 +17,8 @@ function hoy() { return new Date().toISOString().split('T')[0]; }
 // ══ ESTADO GLOBAL ══
 let map, allNidos = [], markers = [], limpiezaIds = new Set();
 let sortCol = 'numero_nido', sortAsc = true;
+let sortColL = 'fecha_limpieza', sortAscL = false;
+let allLimpiezas = [];
 let currentRol = 'viewer';
 
 // ══════════════════════════════════════════
@@ -117,7 +119,8 @@ function renderMarkers(nidos, limSet) {
       }).addTo(map);
       c.bindPopup(`<strong>Nido #${n.numero_nido}</strong> <span style="font-size:.75rem;color:#4A86AD">${temporadaDe(n.fecha)}</span><br>
         <em>${n.especie || '—'}</em><br>Playa: ${n.playa || '—'}<br>
-        Fecha: ${n.fecha || '—'}<br>Eclosión est.: ${n.fecha_eclosion_estimada || '—'}`);
+        Fecha: ${n.fecha || '—'}<br>Eclosión est.: ${n.fecha_eclosion_estimada || '—'}<br>
+        <a href="#" onclick="abrirDetalleNido('${n.id}');return false;" style="font-size:.8rem;font-weight:600">Ver detalle completo →</a>`);
       markers.push(c);
     } catch(e) {}
   });
@@ -170,18 +173,20 @@ function toggleFiltros() {
 // ══════════════════════════════════════════
 async function cargarDatos() {
   const { data: nidos }     = await sb.from('monitoreo').select('*').order('numero_nido');
-  const { data: limpiezas } = await sb.from('limpieza').select('id_monitoreo');
-  allNidos    = nidos || [];
-  limpiezaIds = new Set((limpiezas || []).map(l => l.id_monitoreo));
+  const { data: limpiezas } = await sb.from('limpieza').select('*').order('fecha_limpieza', { ascending: false });
+  allNidos     = nidos || [];
+  allLimpiezas = limpiezas || [];
+  limpiezaIds  = new Set(allLimpiezas.map(l => l.id_monitoreo));
   renderMarkers(allNidos, limpiezaIds);
   poblarTemporadas();
   filtrarTabla();
+  filtrarTablaLimpiezas();
   poblarSelectorNido(allNidos);
 }
 
 function poblarTemporadas() {
   const years = [...new Set(allNidos.map(n => temporadaDe(n.fecha)).filter(t => t !== '—'))].sort((a,b) => b - a);
-  ['f-temporada','rt-temporada'].forEach(id => {
+  ['f-temporada','rt-temporada','rl-temporada'].forEach(id => {
     const sel = document.getElementById(id);
     const val = sel.value;
     sel.innerHTML = '<option value="">Todas</option>';
@@ -265,9 +270,7 @@ function renderTabla(nidos) {
   tbody.innerHTML = nidos.map(n => {
     const { label, badge } = estadoNido(n);
     const temp    = temporadaDe(n.fecha);
-    const numCell = esEditor
-      ? `<span class="nido-link" onclick="abrirEdicion('${n.id}')">${n.numero_nido}</span>`
-      : n.numero_nido;
+    const numCell = `<span class="nido-link" onclick="abrirDetalleNido('${n.id}')">${n.numero_nido}</span>`;
     return `<tr>
       <td>${numCell}</td>
       <td>${n.fecha || '—'}</td>
@@ -282,6 +285,164 @@ function renderTabla(nidos) {
       <td><span class="badge ${badge}">${label}</span></td>
     </tr>`;
   }).join('');
+}
+
+// ══════════════════════════════════════════
+// TABLA LIMPIEZAS
+// ══════════════════════════════════════════
+function limpiezaConNido(l) {
+  const n = allNidos.find(x => x.id === l.id_monitoreo) || {};
+  return { ...l, numero_nido: n.numero_nido, playa: n.playa, especie: n.especie, _temporada: temporadaDe(n.fecha) };
+}
+
+function filtrarTablaLimpiezas() {
+  const esp = document.getElementById('rl-especie').value;
+  const pla = document.getElementById('rl-playa').value;
+  const tmp = document.getElementById('rl-temporada').value;
+  const des = document.getElementById('rl-desde').value;
+  const has = document.getElementById('rl-hasta').value;
+
+  let filtered = allLimpiezas.map(limpiezaConNido).filter(l => {
+    if (esp && l.especie !== esp) return false;
+    if (pla && l.playa   !== pla) return false;
+    if (des && l.fecha_limpieza < des) return false;
+    if (has && l.fecha_limpieza > has) return false;
+    if (tmp && l._temporada !== tmp) return false;
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    let va = a[sortColL] ?? '', vb = b[sortColL] ?? '';
+    if (typeof va === 'number') return sortAscL ? va - vb : vb - va;
+    return sortAscL ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+  });
+
+  renderTablaLimpiezas(filtered);
+}
+
+function sortTablaLimpiezas(col) {
+  sortColL === col ? sortAscL = !sortAscL : (sortColL = col, sortAscL = true);
+  filtrarTablaLimpiezas();
+}
+
+function limpiarFiltrosLimpiezas() {
+  ['rl-especie','rl-playa','rl-temporada','rl-desde','rl-hasta']
+    .forEach(id => document.getElementById(id).value = '');
+  filtrarTablaLimpiezas();
+}
+
+function renderTablaLimpiezas(limpiezas) {
+  const tbody    = document.getElementById('tabla-limpiezas-body');
+  const esEditor = currentRol === 'editor' || currentRol === 'admin';
+  if (!limpiezas.length) {
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:var(--ink-lt);padding:2rem">Sin registros.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = limpiezas.map(l => {
+    const numCell = l.id_monitoreo
+      ? `<span class="nido-link" onclick="abrirDetalleNido('${l.id_monitoreo}')">${l.numero_nido ?? '—'}</span>`
+      : (l.numero_nido ?? '—');
+    return `<tr>
+      <td>${numCell}</td>
+      <td>${l.playa || '—'}</td>
+      <td><em>${l.especie || '—'}</em></td>
+      <td>${l.fecha_limpieza || '—'}</td>
+      <td>${l.tortugas_vivas ?? 0}</td>
+      <td>${l.tortugas_muertas ?? 0}</td>
+      <td>${l.cascarones ?? 0}</td>
+      <td>${l.huevos_no_eclosionados ?? 0}</td>
+      <td>${l.huevos_rosa ?? 0}</td>
+      <td>${l.huevos_fase ?? 0}</td>
+      <td>${l.observaciones || '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// MODAL DETALLE NIDO
+// ══════════════════════════════════════════
+function abrirDetalleNido(id) {
+  const n = allNidos.find(x => x.id === id); if (!n) return;
+  const { label, badge } = estadoNido(n);
+  const temp = temporadaDe(n.fecha);
+  const esEditor = currentRol === 'editor' || currentRol === 'admin';
+  const limpiezasNido = allLimpiezas.filter(l => l.id_monitoreo === id)
+    .sort((a, b) => String(b.fecha_limpieza).localeCompare(String(a.fecha_limpieza)));
+
+  const fila = (label, val) => `<div><span style="font-size:.72rem;color:var(--ink-lt);text-transform:uppercase;letter-spacing:.04em">${label}</span><br>${val ?? '—'}</div>`;
+
+  let limpiezasHtml = '<p style="color:var(--ink-lt);font-size:.88rem">Este nido aún no tiene limpiezas registradas.</p>';
+  if (limpiezasNido.length) {
+    const totales = limpiezasNido.reduce((acc, l) => {
+      acc.vivas += l.tortugas_vivas || 0; acc.muertas += l.tortugas_muertas || 0;
+      acc.cascarones += l.cascarones || 0; acc.noEclo += l.huevos_no_eclosionados || 0;
+      acc.rosa += l.huevos_rosa || 0; acc.fase += l.huevos_fase || 0;
+      return acc;
+    }, { vivas:0, muertas:0, cascarones:0, noEclo:0, rosa:0, fase:0 });
+    const totalHuevos = totales.cascarones + totales.noEclo + totales.rosa + totales.fase;
+
+    // TODO: % de eclosión — desactivado hasta confirmar la fórmula exacta con
+    // Fundación de Parques y Museos / CONANP. Fórmula provisional que se usó antes:
+    // const pctEclosion = totalHuevos ? ((totales.cascarones / totalHuevos) * 100).toFixed(1) : null;
+
+    limpiezasHtml = `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem;background:var(--sand);padding:.8rem;border-radius:7px">
+        ${fila('Tortugas vivas', totales.vivas)}
+        ${fila('Tortugas muertas', totales.muertas)}
+        ${fila('Cascarones', totales.cascarones)}
+        ${fila('No eclosionados', totales.noEclo)}
+        ${fila('Huevos rosa', totales.rosa)}
+        ${fila('Huevos fase', totales.fase)}
+        <!-- ${fila('% Eclosión (aprox.)', 'pctEclosion !== null ? pctEclosion + \'%\' : \'—\'')} -->
+      </div>
+      <div class="table-wrap" style="box-shadow:none;border:1px solid var(--sand-dk)">
+        <table style="font-size:.78rem">
+          <thead><tr><th>Fecha</th><th>Vivas</th><th>Muertas</th><th>Cascar.</th><th>No ecl.</th><th>Rosa</th><th>Fase</th><th>Obs.</th>${esEditor ? '<th>Acciones</th>' : ''}</tr></thead>
+          <tbody>${limpiezasNido.map(l => `<tr>
+            <td>${l.fecha_limpieza || '—'}</td><td>${l.tortugas_vivas ?? 0}</td><td>${l.tortugas_muertas ?? 0}</td>
+            <td>${l.cascarones ?? 0}</td><td>${l.huevos_no_eclosionados ?? 0}</td><td>${l.huevos_rosa ?? 0}</td>
+            <td>${l.huevos_fase ?? 0}</td><td>${l.observaciones || '—'}</td>
+            ${esEditor ? `<td style="white-space:nowrap">
+              <button class="btn btn-secondary btn-sm" style="padding:.15rem .5rem" onclick="cerrarModal('detalle-modal');abrirEdicionLimpieza('${l.id}')">✏️</button>
+              <button class="btn btn-danger btn-sm" style="padding:.15rem .5rem" onclick="confirmarEliminar('${l.id}','limpieza')">🗑</button>
+            </td>` : ''}
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>`;
+  }
+
+  document.getElementById('detalle-titulo').innerHTML = `Nido #${n.numero_nido} <span class="badge ${badge}" style="margin-left:.5rem">${label}</span> <span style="font-size:.8rem;color:var(--ink-lt);font-weight:400">— Temporada ${temp}</span>`;
+  document.getElementById('detalle-contenido').innerHTML = `
+    <p class="section-label" style="margin-bottom:.6rem">Datos del nido</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1.1rem">
+      ${fila('Playa', n.playa)}
+      ${fila('Especie', n.especie)}
+      ${fila('Fecha de registro', n.fecha)}
+      ${fila('Zona', n.zona)}
+      ${fila('Acción', n.accion)}
+      ${fila('Eclosión estimada', n.fecha_eclosion_estimada)}
+      ${fila('Coord. X (UTM)', n.coord_x)}
+      ${fila('Coord. Y (UTM)', n.coord_y)}
+      ${fila('Nido salvaje', n.es_nido_salvaje ? 'Sí' : 'No')}
+      ${fila('Depredado', n.fue_depredado ? 'Sí' : 'No')}
+    </div>
+    ${n.observaciones ? `<p class="section-label">Observaciones del nido</p><p style="font-size:.9rem;margin-bottom:1.1rem">${n.observaciones}</p>` : ''}
+    ${(n.largo_total || n.largo_curvo || n.ancho_curvo || n.obs_tortuga) ? `
+      <p class="section-label" style="margin-bottom:.6rem">Datos de la tortuga anidadora</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1.1rem">
+        ${fila('Largo total (cm)', n.largo_total)}
+        ${fila('Largo curvo (cm)', n.largo_curvo)}
+        ${fila('Ancho curvo (cm)', n.ancho_curvo)}
+      </div>
+      ${n.obs_tortuga ? `<p style="font-size:.9rem;margin-bottom:1.1rem">${n.obs_tortuga}</p>` : ''}` : ''}
+    <p class="section-label" style="margin-bottom:.6rem">Limpiezas registradas</p>
+    ${limpiezasHtml}
+  `;
+  document.getElementById('detalle-actions').innerHTML = esEditor
+    ? `<button class="btn btn-primary btn-sm" onclick="cerrarModal('detalle-modal');abrirEdicion('${n.id}')">Editar nido</button>
+       <button class="btn btn-secondary btn-sm" onclick="cerrarModal('detalle-modal')">Cerrar</button>`
+    : `<button class="btn btn-secondary btn-sm" onclick="cerrarModal('detalle-modal')">Cerrar</button>`;
+  document.getElementById('detalle-modal').classList.add('open');
 }
 
 // ══════════════════════════════════════════
@@ -365,10 +526,69 @@ async function guardarEdicion(id) {
   await cargarDatos();
 }
 
-function confirmarEliminar(id) {
-  document.getElementById('confirm-msg').textContent = '¿Eliminar este nido? Esta acción no se puede deshacer.';
-  document.getElementById('confirm-ok').onclick = () => eliminarNido(id);
+function confirmarEliminar(id, tipo = 'nido') {
+  const mensajes = {
+    nido:     '¿Eliminar este nido? Esta acción no se puede deshacer.',
+    limpieza: '¿Eliminar este registro de limpieza? Esta acción no se puede deshacer.',
+  };
+  document.getElementById('confirm-msg').textContent = mensajes[tipo];
+  document.getElementById('confirm-ok').onclick = () => tipo === 'limpieza' ? eliminarLimpieza(id) : eliminarNido(id);
   document.getElementById('confirm-modal').classList.add('open');
+}
+
+async function eliminarLimpieza(id) {
+  cerrarConfirm();
+  const { error } = await sb.from('limpieza').delete().eq('id', id);
+  if (error) { toast('Error: ' + error.message, 'error'); return; }
+  cerrarModal('edit-modal');
+  cerrarModal('detalle-modal');
+  toast('Limpieza eliminada.', 'success');
+  await cargarDatos();
+}
+
+function abrirEdicionLimpieza(id) {
+  const l = allLimpiezas.find(x => x.id === id); if (!l) return;
+  const n = allNidos.find(x => x.id === l.id_monitoreo);
+  const refNido = n ? `Nido #${n.numero_nido} — Temporada ${temporadaDe(n.fecha)}` : 'Nido no encontrado';
+
+  document.getElementById('edit-titulo').textContent = `Editar limpieza — ${refNido}`;
+  document.getElementById('edit-contenido').innerHTML = `
+    <div class="form-grid">
+      <div class="form-group"><label>Fecha de limpieza</label><input type="date" id="el-fecha" value="${l.fecha_limpieza || ''}" /></div>
+      <div class="form-group"><label>Tortugas vivas</label><input type="number" id="el-vivas" min="0" value="${l.tortugas_vivas ?? 0}" /></div>
+      <div class="form-group"><label>Tortugas muertas</label><input type="number" id="el-muertas" min="0" value="${l.tortugas_muertas ?? 0}" /></div>
+      <div class="form-group"><label>Cascarones</label><input type="number" id="el-cascarones" min="0" value="${l.cascarones ?? 0}" /></div>
+      <div class="form-group"><label>Huevos no eclosionados</label><input type="number" id="el-no-eclosionados" min="0" value="${l.huevos_no_eclosionados ?? 0}" /></div>
+      <div class="form-group"><label>Huevos rosa</label><input type="number" id="el-rosa" min="0" value="${l.huevos_rosa ?? 0}" /></div>
+      <div class="form-group"><label>Huevos fase</label><input type="number" id="el-fase" min="0" value="${l.huevos_fase ?? 0}" /></div>
+      <div class="form-group full"><label>Observaciones</label><textarea id="el-observaciones">${l.observaciones || ''}</textarea></div>
+    </div>`;
+
+  document.getElementById('edit-actions').innerHTML = `
+    <button class="btn btn-primary"   onclick="guardarEdicionLimpieza('${l.id}')">Guardar cambios</button>
+    <button class="btn btn-danger"    onclick="confirmarEliminar('${l.id}','limpieza')">Eliminar limpieza</button>
+    <button class="btn btn-secondary" onclick="cerrarModal('edit-modal')">Cancelar</button>`;
+
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+async function guardarEdicionLimpieza(id) {
+  const payload = {
+    fecha_limpieza:         document.getElementById('el-fecha').value,
+    tortugas_vivas:         parseInt(document.getElementById('el-vivas').value)          || 0,
+    tortugas_muertas:       parseInt(document.getElementById('el-muertas').value)        || 0,
+    cascarones:             parseInt(document.getElementById('el-cascarones').value)     || 0,
+    huevos_no_eclosionados: parseInt(document.getElementById('el-no-eclosionados').value)|| 0,
+    huevos_rosa:            parseInt(document.getElementById('el-rosa').value)           || 0,
+    huevos_fase:            parseInt(document.getElementById('el-fase').value)           || 0,
+    observaciones:          document.getElementById('el-observaciones').value            || null,
+  };
+  if (!payload.fecha_limpieza) { toast('Ingresa la fecha de limpieza.', 'error'); return; }
+  const { error } = await sb.from('limpieza').update(payload).eq('id', id);
+  if (error) { toast('Error: ' + error.message, 'error'); return; }
+  cerrarModal('edit-modal');
+  toast('Limpieza actualizada.', 'success');
+  await cargarDatos();
 }
 
 async function eliminarNido(id) {
@@ -551,7 +771,7 @@ let excelRowsL = [];
 
 async function procesarExcel(event) {
   const file = event.target.files[0]; if (!file) return;
-  const wb     = XLSX.read(await file.arrayBuffer());
+  const wb     = XLSX.read(await file.arrayBuffer(), { cellDates: true });
   const sheetM = wb.Sheets['Monitoreo'];
   const sheetL = wb.Sheets['Limpieza'];
   if (!sheetM) { toast('No se encontró la hoja "Monitoreo".', 'error'); return; }
@@ -568,9 +788,10 @@ async function confirmarSubidaExcel() {
   const btn = document.getElementById('btn-confirmar-excel');
   btn.disabled = true;
   btn.textContent = 'Subiendo…';
-  const ok = await subirExcel(excelRowsM, excelRowsL);
-  if (ok) {
-    document.getElementById('excel-preview').innerHTML = '';
+  const resultado = await subirExcel(excelRowsM, excelRowsL);
+  if (resultado) {
+    document.getElementById('excel-preview').innerHTML = `
+      <p style="margin:.75rem 0;font-size:.86rem;white-space:pre-line;color:${resultado.ok ? 'var(--green)' : 'var(--red)'}">${resultado.mensaje}</p>`;
     document.getElementById('file-input').value = '';
     excelRowsM = []; excelRowsL = [];
   } else {
@@ -606,31 +827,55 @@ function toTexto(v) {
 // Devuelve una fecha ISO (string) o null. Si devuelve null, el trigger de
 // Supabase la calcula automáticamente según la especie (comportamiento "si").
 function resolverFechaEclosion(valor, fechaPuesta, especie) {
-  const raw = valor === undefined || valor === null ? '' : String(valor).trim();
+  if (valor === undefined || valor === null || valor === '') return null; // vacío → lo calcula la BD
+  if (valor instanceof Date) return toFechaISO(valor);
 
-  if (raw === '') return null;                         // vacío → lo calcula la BD
+  const raw = String(valor).trim();
+  if (raw === '') return null;
   if (raw.toLowerCase() === 'si' || raw.toLowerCase() === 'sí') return null; // "si" → lo calcula la BD
 
   // ¿Es un número entero (días a sumar)?
   if (/^\d+$/.test(raw)) {
-    if (!fechaPuesta) return null;
-    const d = new Date(fechaPuesta + 'T12:00:00');
+    const base = toFechaISO(fechaPuesta);
+    if (!base) return null;
+    const d = new Date(base + 'T12:00:00');
     d.setDate(d.getDate() + parseInt(raw, 10));
-    return d.toISOString().split('T')[0];
+    return toFechaISO(d);
   }
 
-  // ¿Es una fecha ISO válida (2026-08-26) o un objeto Date (Excel a veces lo entrega así)?
-  if (raw instanceof Date) return raw.toISOString().split('T')[0];
-  if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.slice(0, 10);
+  // ¿Es una fecha reconocible (ISO u otra que toFechaISO logre interpretar)?
+  const iso = toFechaISO(raw);
+  if (iso) return iso;
 
   // Formato no reconocido → se deja que la BD calcule por especie.
   return null;
 }
 
+// Convierte cualquier valor de fecha proveniente de Excel (texto ISO, objeto Date
+// —cuando Excel autoformatea la celda—, o número de serie ya resuelto por SheetJS)
+// a "YYYY-MM-DD". Devuelve null si no se puede interpretar.
+function toFechaISO(v) {
+  if (v === undefined || v === null || v === '') return null;
+  if (v instanceof Date) {
+    const y = v.getFullYear(), m = String(v.getMonth() + 1).padStart(2, '0'), d = String(v.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+  const s = String(v).trim();
+  if (s === '') return null;
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? `${m[1]}-${m[2]}-${m[3]}` : null;
+}
+
+// Extrae el año (temporada) de un valor de fecha, usando toFechaISO como base.
+function añoDe(valor) {
+  const iso = toFechaISO(valor);
+  return iso ? iso.slice(0, 4) : null;
+}
+
 async function subirExcel(rowsM, rowsL) {
   if (rowsM.length) {
     const { error } = await sb.from('monitoreo').insert(rowsM.map(r => ({
-      numero_nido: toNum(r.numero_nido), playa: toTexto(r.playa), fecha: toTexto(r.fecha),
+      numero_nido: toNum(r.numero_nido), playa: toTexto(r.playa), fecha: toFechaISO(r.fecha),
       zona: toNum(r.zona), accion: toNum(r.accion), especie: toTexto(r.especie),
       coord_x: toNum(r.coord_x), coord_y: toNum(r.coord_y),
       fecha_eclosion_estimada: resolverFechaEclosion(r.fecha_eclosion_estimada, r.fecha, r.especie),
@@ -640,11 +885,57 @@ async function subirExcel(rowsM, rowsL) {
       ancho_curvo: toNum(r.ancho_curvo), observaciones: toTexto(r.observaciones),
       obs_tortuga: toTexto(r.obs_tortuga),
     })));
-    if (error) { toast('Error: ' + error.message, 'error'); return false; }
+    if (error) { toast('Error en Monitoreo: ' + error.message, 'error'); return false; }
   }
-  toast(`${rowsM.length} nidos cargados.`, 'success');
+
+  let limpiezasOk = 0;
+  const fallidas = [];
+
+  if (rowsL.length) {
+    // Refrescamos allNidos para poder resolver numero_nido + temporada,
+    // incluyendo los nidos recién insertados arriba en esta misma carga.
+    const { data: nidosFrescos } = await sb.from('monitoreo').select('*').order('numero_nido');
+    allNidos = nidosFrescos || [];
+
+    const payloadL = [];
+    rowsL.forEach((r, i) => {
+      const numNido = toNum(r.numero_nido);
+      const anio    = añoDe(r.fecha_limpieza);
+      const nido = allNidos.find(n => n.numero_nido === numNido && temporadaDe(n.fecha) === anio);
+      if (!nido) {
+        fallidas.push(`Fila ${i + 2}: no se encontró el nido #${r.numero_nido ?? '?'} en la temporada ${anio ?? '?'}`);
+        return;
+      }
+      payloadL.push({
+        id_monitoreo: nido.id,
+        fecha_limpieza: toFechaISO(r.fecha_limpieza),
+        tortugas_vivas: toNum(r.tortugas_vivas) ?? 0,
+        tortugas_muertas: toNum(r.tortugas_muertas) ?? 0,
+        cascarones: toNum(r.cascarones) ?? 0,
+        huevos_no_eclosionados: toNum(r.huevos_no_eclosionados) ?? 0,
+        huevos_rosa: toNum(r.huevos_rosa) ?? 0,
+        huevos_fase: toNum(r.huevos_fase) ?? 0,
+        observaciones: toTexto(r.observaciones),
+      });
+    });
+
+    if (payloadL.length) {
+      const { error } = await sb.from('limpieza').insert(payloadL);
+      if (error) { toast('Error en Limpieza: ' + error.message, 'error'); return false; }
+      limpiezasOk = payloadL.length;
+    }
+  }
+
+  const partes = [];
+  if (rowsM.length)  partes.push(`${rowsM.length} nidos`);
+  if (limpiezasOk)   partes.push(`${limpiezasOk} limpiezas`);
+  let mensaje = partes.length ? `${partes.join(' y ')} cargados.` : 'No se cargó ningún registro.';
+  if (fallidas.length) {
+    mensaje += `\n\n${fallidas.length} limpieza(s) no se registraron:\n` + fallidas.join('\n');
+  }
+
   await cargarDatos();
-  return true;
+  return { ok: fallidas.length === 0, mensaje };
 }
 
 // ── Plantilla con listas desplegables (requiere ExcelJS) ──
@@ -719,12 +1010,29 @@ async function descargarPlantilla() {
   // ── Hoja Limpieza ──
   const hojaL = wb.addWorksheet('Limpieza');
   const colsL = [
-    'id_monitoreo','fecha_limpieza','tortugas_vivas','tortugas_muertas',
+    'numero_nido','fecha_limpieza','tortugas_vivas','tortugas_muertas',
     'cascarones','huevos_no_eclosionados','huevos_rosa','huevos_fase','observaciones'
   ];
   hojaL.columns = colsL.map(c => ({ header: c, key: c, width: 20 }));
+  hojaL.addRows([
+    { numero_nido: 42, fecha_limpieza: '2026-08-20', tortugas_vivas: 78, tortugas_muertas: 2,
+      cascarones: 80, huevos_no_eclosionados: 5, huevos_rosa: 3, huevos_fase: 2,
+      observaciones: 'Emergencia natural, sin incidentes' },
+    { numero_nido: 43, fecha_limpieza: '2026-08-26', tortugas_vivas: 60, tortugas_muertas: 0,
+      cascarones: 60, huevos_no_eclosionados: 8, huevos_rosa: 0, huevos_fase: 1,
+      observaciones: '' },
+  ]);
   hojaL.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
   hojaL.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4A86AD' } };
+  hojaL.getCell(1, colsL.indexOf('numero_nido') + 1).note = {
+    texts: [{ text:
+      'Debe coincidir con un "numero_nido" ya registrado en la hoja Monitoreo\n' +
+      '(de esta misma carga o de una carga previa).\n' +
+      'La temporada se toma del año de "fecha_limpieza", así que si el mismo\n' +
+      'número de nido existe en más de una temporada, el sistema usa la limpieza\n' +
+      'del año que coincida con esa fecha.'
+    }]
+  };
 
   const buffer = await wb.xlsx.writeBuffer();
   const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Campamento Tortuguero Punta Sur</title>
+  <title>Campamento Punta Sur</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -31,7 +31,7 @@
 <!-- ══ APP ══ -->
 <div id="app">
   <header>
-    <h1>🐢 Punta Sur — Sistema de Monitoreo</h1>
+    <h1>Sistema de Monitoreo | Punta Sur</h1>
     <div class="hdr-right">
       <div class="user-info">
         <div id="user-nombre"></div>
@@ -44,10 +44,11 @@
       <div id="sidebar-overlay" onclick="toggleMenu()"></div>
       <div id="sidebar">
         <button class="sidebar-close" onclick="toggleMenu()">✕</button>
-        <button onclick="showTabMobile('mapa')">🗺 Mapa</button>
-        <button onclick="showTabMobile('registros')">📋 Registros</button>
+        <button onclick="showTabMobile('mapa')">🗺️ Mapa</button>
+        <button onclick="showTabMobile('registros')">📋 Nidos</button>
+        <button onclick="showTabMobile('limpiezas')">🧹 Limpiezas</button>
         <button id="mob-registrar" onclick="showTabMobile('monitoreo')">➕ Registrar nido</button>
-        <button id="mob-limpieza" onclick="showTabMobile('limpieza')">🧹 Registrar limpieza</button>
+        <button id="mob-limpieza" onclick="showTabMobile('limpieza')">➕ Registrar limpieza</button>
         <button id="mob-excel" onclick="showTabMobile('excel')">📤 Cargar Excel</button>
         <button id="mob-admin" style="display:none" onclick="showTabMobile('admin')">⚙️ Administración</button>
         <button onclick="logout()">🚪 Cerrar sesión</button>
@@ -56,10 +57,11 @@
   </header>
 
   <nav id="nav-desktop">
-    <button class="active" onclick="showTab('mapa',this)">🗺 Mapa</button>
-    <button onclick="showTab('registros',this)">📋 Registros</button>
+    <button class="active" onclick="showTab('mapa',this)">🗺️ Mapa</button>
+    <button onclick="showTab('registros',this)">📋 Nidos</button>
+    <button onclick="showTab('limpiezas',this)">🧹 Limpiezas</button>
     <button id="nav-registrar" onclick="showTab('monitoreo',this)">➕ Registrar nido</button>
-    <button id="nav-limpieza" onclick="showTab('limpieza',this)">🧹 Registrar limpieza</button>
+    <button id="nav-limpieza" onclick="showTab('limpieza',this)">➕ Registrar limpieza</button>
     <button id="nav-excel" onclick="showTab('excel',this)">📤 Cargar Excel</button>
     <button id="nav-admin" style="display:none" onclick="showTab('admin',this)">⚙️ Administración</button>
   </nav>
@@ -183,7 +185,47 @@
       </div>
     </div>
 
-    <!-- REGISTRAR NIDO -->
+    <!-- LIMPIEZAS -->
+    <div id="panel-limpiezas" class="tab-panel">
+      <div class="registros-toolbar">
+        <div class="filter-group"><label>Especie</label>
+          <select id="rl-especie" onchange="filtrarTablaLimpiezas()">
+            <option value="">Todas</option><option>Caretta caretta</option><option>Chelonia mydas</option>
+          </select>
+        </div>
+        <div class="filter-group"><label>Playa</label>
+          <select id="rl-playa" onchange="filtrarTablaLimpiezas()">
+            <option value="">Todas</option>
+            <option>Celarain</option><option>Caracol</option><option>Cuzam</option>
+            <option>5 de Junio</option><option>Caguama</option>
+          </select>
+        </div>
+        <div class="filter-group"><label>Temporada</label>
+          <select id="rl-temporada" onchange="filtrarTablaLimpiezas()"><option value="">Todas</option></select>
+        </div>
+        <div class="filter-group"><label>Desde</label><input type="date" id="rl-desde" onchange="filtrarTablaLimpiezas()" /></div>
+        <div class="filter-group"><label>Hasta</label><input type="date" id="rl-hasta" onchange="filtrarTablaLimpiezas()" /></div>
+        <button class="btn btn-secondary btn-sm" onclick="limpiarFiltrosLimpiezas()">Limpiar</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th onclick="sortTablaLimpiezas('numero_nido')"># Nido <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('playa')">Playa <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('especie')">Especie <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('fecha_limpieza')">Fecha limpieza <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('tortugas_vivas')">Vivas <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('tortugas_muertas')">Muertas <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('cascarones')">Cascarones <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('huevos_no_eclosionados')">No eclos. <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('huevos_rosa')">Rosa <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('huevos_fase')">Fase <span class="sort-icon">↕</span></th>
+            <th>Observaciones</th>
+          </tr></thead>
+          <tbody id="tabla-limpiezas-body"><tr><td colspan="11" style="text-align:center;color:var(--ink-lt);padding:2rem">Cargando...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
     <div id="panel-monitoreo" class="tab-panel">
       <div class="form-card">
         <h2>Registrar nido — Monitoreo</h2>
@@ -274,6 +316,9 @@
         <p style="font-size:.78rem;color:var(--ink-lt);margin-bottom:1.2rem;background:var(--sand);padding:.6rem .8rem;border-radius:7px">
           <strong>Columna "fecha_eclosion_estimada":</strong> escribe <strong>si</strong> (calcula según especie), una <strong>fecha</strong> (2026-08-26), un <strong>número de días</strong> (33), o déjala <strong>vacía</strong> (= si). Los campos con lista desplegable ya vienen listos para elegir.
         </p>
+        <p style="font-size:.78rem;color:var(--ink-lt);margin-bottom:1.2rem;background:var(--sand);padding:.6rem .8rem;border-radius:7px">
+          <strong>Hoja "Limpieza":</strong> identifica el nido con <strong>numero_nido</strong> (la temporada se toma automáticamente del año de <strong>fecha_limpieza</strong>). Si ese número existe en más de una temporada, asegúrate de que la fecha de limpieza corresponda al año correcto.
+        </p>
         <div class="upload-zone" onclick="document.getElementById('file-input').click()">
           <div class="icon">📂</div>
           <p>Haz clic para seleccionar un archivo .xlsx o .xls</p>
@@ -311,6 +356,15 @@
     </div>
 
   </main>
+</div>
+
+<!-- MODAL DETALLE NIDO -->
+<div id="detalle-modal" class="modal-overlay" onclick="cerrarModalClick(event,'detalle-modal')">
+  <div class="modal-box" style="max-width:640px">
+    <h3 id="detalle-titulo"></h3>
+    <div id="detalle-contenido"></div>
+    <div class="modal-actions" id="detalle-actions"></div>
+  </div>
 </div>
 
 <!-- MODAL EDICIÓN -->
