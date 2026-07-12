@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Campamento Punta Sur</title>
+  <title>Campamento Tortuguero Punta Sur</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -50,6 +50,7 @@
         <button id="mob-registrar" onclick="showTabMobile('monitoreo')">➕ Registrar nido</button>
         <button id="mob-limpieza" onclick="showTabMobile('limpieza')">➕ Registrar limpieza</button>
         <button id="mob-excel" onclick="showTabMobile('excel')">📤 Cargar Excel</button>
+        <button onclick="showTabMobile('descargar')">⬇️ Descargar registros</button>
         <button id="mob-admin" style="display:none" onclick="showTabMobile('admin')">⚙️ Administración</button>
         <button onclick="logout()">🚪 Cerrar sesión</button>
       </div>
@@ -63,6 +64,7 @@
     <button id="nav-registrar" onclick="showTab('monitoreo',this)">➕ Registrar nido</button>
     <button id="nav-limpieza" onclick="showTab('limpieza',this)">➕ Registrar limpieza</button>
     <button id="nav-excel" onclick="showTab('excel',this)">📤 Cargar Excel</button>
+    <button onclick="showTab('descargar',this)">⬇️ Descargar registros</button>
     <button id="nav-admin" style="display:none" onclick="showTab('admin',this)">⚙️ Administración</button>
   </nav>
 
@@ -325,6 +327,63 @@
           <input type="file" id="file-input" accept=".xlsx,.xls" style="display:none" onchange="procesarExcel(event)" />
         </div>
         <div id="excel-preview"></div>
+      </div>
+    </div>
+
+    <!-- DESCARGAR REGISTROS -->
+    <div id="panel-descargar" class="tab-panel">
+      <div class="registros-toolbar">
+        <div class="filter-group"><label>Temporada</label>
+          <select id="dl-temporada" onchange="filtrarDescarga()">
+            <option value="" selected disabled>Seleccionar</option>
+            <option value="todos">Todos los años</option>
+          </select>
+        </div>
+        <div class="filter-group"><label>Mes</label>
+          <select id="dl-mes" onchange="filtrarDescarga()">
+            <option value="" selected disabled>Seleccionar</option>
+            <option value="todos">Todos los meses</option>
+          </select>
+        </div>
+        <div class="filter-group"><label>Especie</label>
+          <select id="dl-especie" onchange="filtrarDescarga()">
+            <option value="" selected disabled>Seleccionar</option>
+            <option value="todos">Todas</option>
+            <option>Caretta caretta</option><option>Chelonia mydas</option>
+          </select>
+        </div>
+        <div class="filter-group"><label>Playa</label>
+          <select id="dl-playa" onchange="filtrarDescarga()">
+            <option value="" selected disabled>Seleccionar</option>
+            <option value="todos">Todas</option>
+            <option>Celarain</option><option>Caracol</option><option>Cuzam</option>
+            <option>5 de Junio</option><option>Caguama</option>
+          </select>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="limpiarFiltrosDescarga()">Limpiar</button>
+        <button class="btn btn-primary btn-sm btn-download-toggle inactivo" id="btn-descargar-registros" disabled onclick="generarExcelDescarga()">⬇️ Descargar Excel</button>
+      </div>
+
+      <p class="section-label" style="margin-bottom:.5rem">Nidos (Monitoreo)</p>
+      <div class="table-wrap" style="margin-bottom:1.5rem">
+        <table>
+          <thead><tr>
+            <th>#</th><th>Fecha</th><th>Temp.</th><th>Playa</th><th>Especie</th><th>Zona</th>
+            <th>Acción</th><th>Eclosión est.</th><th>Salvaje</th><th>Depredado</th><th>Estado</th>
+          </tr></thead>
+          <tbody id="tabla-descarga-nidos-body"><tr><td colspan="11" style="text-align:center;color:var(--ink-lt);padding:2rem">Selecciona al menos un filtro para ver registros.</td></tr></tbody>
+        </table>
+      </div>
+
+      <p class="section-label" style="margin-bottom:.5rem">Limpiezas</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th># Nido</th><th>Playa</th><th>Especie</th><th>Fecha limpieza</th><th>Vivas</th><th>Muertas</th>
+            <th>Cascarones</th><th>No ecl.</th><th>Rosa</th><th>Fase</th><th>Obs.</th>
+          </tr></thead>
+          <tbody id="tabla-descarga-limpiezas-body"><tr><td colspan="11" style="text-align:center;color:var(--ink-lt);padding:2rem">Selecciona al menos un filtro para ver registros.</td></tr></tbody>
+        </table>
       </div>
     </div>
 

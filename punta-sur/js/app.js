@@ -179,8 +179,10 @@ async function cargarDatos() {
   limpiezaIds  = new Set(allLimpiezas.map(l => l.id_monitoreo));
   renderMarkers(allNidos, limpiezaIds);
   poblarTemporadas();
+  poblarFiltrosDescarga();
   filtrarTabla();
   filtrarTablaLimpiezas();
+  filtrarDescarga();
   poblarSelectorNido(allNidos);
 }
 
@@ -397,15 +399,11 @@ function abrirDetalleNido(id) {
       </div>
       <div class="table-wrap" style="box-shadow:none;border:1px solid var(--sand-dk)">
         <table style="font-size:.78rem">
-          <thead><tr><th>Fecha</th><th>Vivas</th><th>Muertas</th><th>Cascar.</th><th>No ecl.</th><th>Rosa</th><th>Fase</th><th>Obs.</th>${esEditor ? '<th>Acciones</th>' : ''}</tr></thead>
+          <thead><tr><th>Fecha</th><th>Vivas</th><th>Muertas</th><th>Cascar.</th><th>No ecl.</th><th>Rosa</th><th>Fase</th><th>Obs.</th></tr></thead>
           <tbody>${limpiezasNido.map(l => `<tr>
             <td>${l.fecha_limpieza || '—'}</td><td>${l.tortugas_vivas ?? 0}</td><td>${l.tortugas_muertas ?? 0}</td>
             <td>${l.cascarones ?? 0}</td><td>${l.huevos_no_eclosionados ?? 0}</td><td>${l.huevos_rosa ?? 0}</td>
             <td>${l.huevos_fase ?? 0}</td><td>${l.observaciones || '—'}</td>
-            ${esEditor ? `<td style="white-space:nowrap">
-              <button class="btn btn-secondary btn-sm" style="padding:.15rem .5rem" onclick="cerrarModal('detalle-modal');abrirEdicionLimpieza('${l.id}')">✏️</button>
-              <button class="btn btn-danger btn-sm" style="padding:.15rem .5rem" onclick="confirmarEliminar('${l.id}','limpieza')">🗑</button>
-            </td>` : ''}
           </tr>`).join('')}</tbody>
         </table>
       </div>`;
@@ -438,11 +436,181 @@ function abrirDetalleNido(id) {
     <p class="section-label" style="margin-bottom:.6rem">Limpiezas registradas</p>
     ${limpiezasHtml}
   `;
+  const accionLimpieza = limpiezasNido.length === 1
+    ? `<button class="btn btn-primary btn-sm" onclick="cerrarModal('detalle-modal');abrirEdicionLimpieza('${limpiezasNido[0].id}')">Editar limpieza</button>`
+    : limpiezasNido.length > 1
+      ? `<div class="dropdown-wrap">
+           <button class="btn btn-primary btn-sm" onclick="toggleDropdown('limpieza-dropdown')">Editar limpieza ▾</button>
+           <div class="dropdown-menu" id="limpieza-dropdown">
+             ${limpiezasNido.map(l => `<button onclick="cerrarModal('detalle-modal');abrirEdicionLimpieza('${l.id}')">${l.fecha_limpieza || 'Sin fecha'}</button>`).join('')}
+           </div>
+         </div>`
+      : '';
+
   document.getElementById('detalle-actions').innerHTML = esEditor
     ? `<button class="btn btn-primary btn-sm" onclick="cerrarModal('detalle-modal');abrirEdicion('${n.id}')">Editar nido</button>
+       ${accionLimpieza}
        <button class="btn btn-secondary btn-sm" onclick="cerrarModal('detalle-modal')">Cerrar</button>`
     : `<button class="btn btn-secondary btn-sm" onclick="cerrarModal('detalle-modal')">Cerrar</button>`;
   document.getElementById('detalle-modal').classList.add('open');
+}
+
+// ══════════════════════════════════════════
+// DESCARGAR REGISTROS
+// ══════════════════════════════════════════
+const MESES_NOMBRE = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+function poblarFiltrosDescarga() {
+  const selTemp = document.getElementById('dl-temporada');
+  const anios = [...new Set(allNidos.map(n => temporadaDe(n.fecha)).filter(a => a !== '—'))].sort((a, b) => b - a);
+  selTemp.innerHTML = `<option value="" selected disabled>Seleccionar</option><option value="todos">Todos los años</option>` + anios.map(a => `<option>${a}</option>`).join('');
+
+  const selMes = document.getElementById('dl-mes');
+  const meses = [...new Set(allNidos.map(n => (n.fecha || '').slice(5, 7)).filter(m => m))].sort();
+  selMes.innerHTML = `<option value="" selected disabled>Seleccionar</option><option value="todos">Todos los meses</option>` + meses.map(m => `<option value="${m}">${MESES_NOMBRE[parseInt(m,10)-1]}</option>`).join('');
+}
+
+function obtenerRegistrosFiltrados() {
+  const temp = document.getElementById('dl-temporada').value;
+  const mes  = document.getElementById('dl-mes').value;
+  const esp  = document.getElementById('dl-especie').value;
+  const pla  = document.getElementById('dl-playa').value;
+
+  const nidos = allNidos.filter(n => {
+    if (temp && temp !== 'todos' && temporadaDe(n.fecha) !== temp) return false;
+    if (mes  && mes  !== 'todos' && (n.fecha || '').slice(5, 7) !== mes) return false;
+    if (esp  && esp  !== 'todos' && n.especie !== esp) return false;
+    if (pla  && pla  !== 'todos' && n.playa   !== pla) return false;
+    return true;
+  });
+  const ids = new Set(nidos.map(n => n.id));
+  const limpiezas = allLimpiezas.filter(l => ids.has(l.id_monitoreo));
+
+  const hayFiltro = !!(temp || mes || esp || pla); // cualquier valor no vacío cuenta, incluido "todos"
+  return { nidos, limpiezas, hayFiltro };
+}
+
+function filtrarDescarga() {
+  const { nidos, limpiezas, hayFiltro } = obtenerRegistrosFiltrados();
+  renderTablaDescargaNidos(nidos);
+  renderTablaDescargaLimpiezas(limpiezas);
+
+  const btn = document.getElementById('btn-descargar-registros');
+  btn.disabled = !hayFiltro;
+  btn.classList.toggle('activo', hayFiltro);
+  btn.classList.toggle('inactivo', !hayFiltro);
+}
+
+function limpiarFiltrosDescarga() {
+  ['dl-temporada', 'dl-mes', 'dl-especie', 'dl-playa'].forEach(id => document.getElementById(id).selectedIndex = 0);
+  filtrarDescarga();
+}
+
+function renderTablaDescargaNidos(nidos) {
+  const tbody = document.getElementById('tabla-descarga-nidos-body');
+  if (!nidos.length) {
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:var(--ink-lt);padding:2rem">Sin registros para estos filtros.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = nidos.map(n => {
+    const { label, badge } = estadoNido(n);
+    const temp = temporadaDe(n.fecha);
+    return `<tr>
+      <td><span class="nido-link" onclick="abrirDetalleNido('${n.id}')">${n.numero_nido}</span></td>
+      <td>${n.fecha || '—'}</td>
+      <td>${temp}</td>
+      <td>${n.playa || '—'}</td>
+      <td><em>${n.especie || '—'}</em></td>
+      <td>${n.zona || '—'}</td>
+      <td>${n.accion || '—'}</td>
+      <td>${n.fecha_eclosion_estimada || '—'}</td>
+      <td>${n.es_nido_salvaje ? '✓' : '—'}</td>
+      <td>${n.fue_depredado   ? '✓' : '—'}</td>
+      <td><span class="badge ${badge}">${label}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderTablaDescargaLimpiezas(limpiezas) {
+  const tbody   = document.getElementById('tabla-descarga-limpiezas-body');
+  const conNido = limpiezas.map(limpiezaConNido);
+  if (!conNido.length) {
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:var(--ink-lt);padding:2rem">Sin registros para estos filtros.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = conNido.map(l => `<tr>
+    <td><span class="nido-link" onclick="abrirDetalleNido('${l.id_monitoreo}')">${l.numero_nido ?? '—'}</span></td>
+    <td>${l.playa || '—'}</td>
+    <td><em>${l.especie || '—'}</em></td>
+    <td>${l.fecha_limpieza || '—'}</td>
+    <td>${l.tortugas_vivas ?? 0}</td>
+    <td>${l.tortugas_muertas ?? 0}</td>
+    <td>${l.cascarones ?? 0}</td>
+    <td>${l.huevos_no_eclosionados ?? 0}</td>
+    <td>${l.huevos_rosa ?? 0}</td>
+    <td>${l.huevos_fase ?? 0}</td>
+    <td>${l.observaciones || '—'}</td>
+  </tr>`).join('');
+}
+
+async function generarExcelDescarga() {
+  const { nidos, limpiezas, hayFiltro } = obtenerRegistrosFiltrados();
+  if (!hayFiltro) return; // seguridad extra, aunque el botón ya está desactivado
+
+  const wb = new ExcelJS.Workbook();
+
+  const hojaM = wb.addWorksheet('Monitoreo');
+  hojaM.columns = [
+    { header: 'numero_nido', key: 'numero_nido', width: 14 },
+    { header: 'playa', key: 'playa', width: 16 },
+    { header: 'fecha', key: 'fecha', width: 14 },
+    { header: 'temporada', key: 'temporada', width: 12 },
+    { header: 'zona', key: 'zona', width: 8 },
+    { header: 'accion', key: 'accion', width: 8 },
+    { header: 'especie', key: 'especie', width: 18 },
+    { header: 'coord_x', key: 'coord_x', width: 12 },
+    { header: 'coord_y', key: 'coord_y', width: 12 },
+    { header: 'fecha_eclosion_estimada', key: 'fecha_eclosion_estimada', width: 20 },
+    { header: 'es_nido_salvaje', key: 'es_nido_salvaje', width: 14 },
+    { header: 'fue_depredado', key: 'fue_depredado', width: 14 },
+    { header: 'largo_total', key: 'largo_total', width: 12 },
+    { header: 'largo_curvo', key: 'largo_curvo', width: 12 },
+    { header: 'ancho_curvo', key: 'ancho_curvo', width: 12 },
+    { header: 'observaciones', key: 'observaciones', width: 28 },
+    { header: 'obs_tortuga', key: 'obs_tortuga', width: 28 },
+  ];
+  hojaM.addRows(nidos.map(n => ({
+    ...n, temporada: temporadaDe(n.fecha),
+    es_nido_salvaje: n.es_nido_salvaje ? 'si' : 'no',
+    fue_depredado:   n.fue_depredado   ? 'si' : 'no',
+  })));
+  hojaM.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  hojaM.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4A86AD' } };
+
+  const hojaL = wb.addWorksheet('Limpieza');
+  hojaL.columns = [
+    { header: 'numero_nido', key: 'numero_nido', width: 14 },
+    { header: 'temporada', key: 'temporada', width: 12 },
+    { header: 'fecha_limpieza', key: 'fecha_limpieza', width: 16 },
+    { header: 'tortugas_vivas', key: 'tortugas_vivas', width: 14 },
+    { header: 'tortugas_muertas', key: 'tortugas_muertas', width: 16 },
+    { header: 'cascarones', key: 'cascarones', width: 12 },
+    { header: 'huevos_no_eclosionados', key: 'huevos_no_eclosionados', width: 20 },
+    { header: 'huevos_rosa', key: 'huevos_rosa', width: 12 },
+    { header: 'huevos_fase', key: 'huevos_fase', width: 12 },
+    { header: 'observaciones', key: 'observaciones', width: 28 },
+  ];
+  hojaL.addRows(limpiezas.map(limpiezaConNido).map(l => ({ ...l, temporada: l._temporada })));
+  hojaL.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  hojaL.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4A86AD' } };
+
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `registros-punta-sur-${hoy()}.xlsx`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
 }
 
 // ══════════════════════════════════════════
@@ -603,6 +771,16 @@ async function eliminarNido(id) {
 function cerrarModal(id)              { document.getElementById(id).classList.remove('open'); }
 function cerrarConfirm()              { document.getElementById('confirm-modal').classList.remove('open'); }
 function cerrarModalClick(e, id)      { if (e.target === document.getElementById(id)) cerrarModal(id); }
+
+function toggleDropdown(id) {
+  document.querySelectorAll('.dropdown-menu.open').forEach(el => { if (el.id !== id) el.classList.remove('open'); });
+  document.getElementById(id).classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.dropdown-wrap')) {
+    document.querySelectorAll('.dropdown-menu.open').forEach(el => el.classList.remove('open'));
+  }
+});
 
 // ══════════════════════════════════════════
 // FORMULARIO MONITOREO
