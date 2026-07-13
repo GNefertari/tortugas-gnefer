@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campamento San Martín</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="icon">🐢</div>
+    <h1>Campamento Tortuguero<br>San Martín</h1>
+    <p class="sub">Acceso restringido a personal autorizado</p>
+    <div class="field"><label>Correo electrónico</label><input type="email" id="login-email" placeholder="correo@ejemplo.com" /></div>
+    <div class="field"><label>Contraseña</label><input type="password" id="login-password" placeholder="••••••••" /></div>
+    <button class="btn btn-primary btn-full" onclick="login()">Iniciar sesión</button>
+    <span class="login-link" onclick="mostrarRecuperar()">¿Olvidaste tu contraseña?</span>
+    <div id="login-msg"></div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+  <header>
+    <h1>Sistema de Monitoreo | San Martín</h1>
+    <div class="hdr-right">
+      <div class="user-info">
+        <div id="user-nombre"></div>
+        <div id="user-rol-label"></div>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="cerrar-sesion-desktop" onclick="logout()">Cerrar sesión</button>
+    </div>
+    <div id="nav-mobile">
+      <button id="hamburger" onclick="toggleMenu()">☰</button>
+      <div id="sidebar-overlay" onclick="toggleMenu()"></div>
+      <div id="sidebar">
+        <button class="sidebar-close" onclick="toggleMenu()">✕</button>
+        <button onclick="showTabMobile('mapa')">🗺️ Mapa</button>
+        <button onclick="showTabMobile('registros')">📋 Nidos</button>
+        <button onclick="showTabMobile('limpiezas')">🧹 Limpiezas</button>
+        <button id="mob-registrar" onclick="showTabMobile('monitoreo')">➕ Registrar nido</button>
+        <button id="mob-limpieza" onclick="showTabMobile('limpieza')">➕ Registrar limpieza</button>
+        <button id="mob-excel" onclick="showTabMobile('excel')">📤 Cargar Excel</button>
+        <button onclick="showTabMobile('descargar')">⬇️ Descargar registros</button>
+        <button id="mob-admin" style="display:none" onclick="showTabMobile('admin')">⚙️ Administración</button>
+        <button onclick="logout()">🚪 Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <nav id="nav-desktop">
+    <button class="active" onclick="showTab('mapa',this)">🗺️ Mapa</button>
+    <button onclick="showTab('registros',this)">📋 Nidos</button>
+    <button onclick="showTab('limpiezas',this)">🧹 Limpiezas</button>
+    <button id="nav-registrar" onclick="showTab('monitoreo',this)">➕ Registrar nido</button>
+    <button id="nav-limpieza" onclick="showTab('limpieza',this)">➕ Registrar limpieza</button>
+    <button id="nav-excel" onclick="showTab('excel',this)">📤 Cargar Excel</button>
+    <button onclick="showTab('descargar',this)">⬇️ Descargar registros</button>
+    <button id="nav-admin" style="display:none" onclick="showTab('admin',this)">⚙️ Administración</button>
+  </nav>
+
+
+
+  <main>
+
+    <!-- MAPA -->
+    <div id="panel-mapa" class="tab-panel active">
+      <div id="map-container">
+
+        <div id="map-filters">
+          <div class="filters-header" onclick="toggleFiltros()">
+            <h4>🔍 Filtros</h4>
+            <span id="filtros-arrow">▲</span>
+          </div>
+          <div id="filtros-body">
+            <div class="filter-group">
+              <label># de nido</label>
+              <input type="number" id="f-nido" min="1" placeholder="Ej. 42" oninput="applyFilters()" />
+            </div>
+            <div class="filter-group">
+              <label>Especie</label>
+              <select id="f-especie" onchange="applyFilters()">
+                <option value="">Todas las especies</option>
+                <option>Caretta caretta</option><option>Chelonia mydas</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Playa</label>
+              <select id="f-playa" onchange="applyFilters()">
+                <option value="">Todas las playas</option>
+                <option>Mezcalitos</option><option>Punta Morena</option><option>Chumul</option>
+                <option>Coconuts</option><option>Chen Río</option><option>San Martín</option>
+                <option>Playa Basurero</option><option>Punta Chiqueros</option><option>Buenavista</option>
+                <option>Box</option><option>Rastas</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Estado del nido</label>
+              <select id="f-estado" onchange="applyFilters()">
+                <option value="">Todos los estados</option>
+                <option value="incubando">En incubación</option>
+                <option value="eclosionado">Eclosionado</option>
+                <option value="depredado">Depredado</option>
+                <option value="salvaje">Nido salvaje</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Temporada</label>
+              <select id="f-temporada" onchange="applyFilters()"><option value="">Todas</option></select>
+            </div>
+            <div class="filter-group">
+              <label>Fecha de registro</label>
+              <div class="date-range">
+                <div class="date-range-row"><span>Desde</span><input type="date" id="f-desde" onchange="applyFilters()" /></div>
+                <div class="date-range-row"><span>Hasta</span><input type="date" id="f-hasta" onchange="applyFilters()" /></div>
+              </div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="limpiarFiltrosMapa()">Limpiar filtros</button>
+          </div>
+        </div>
+
+        <div id="map"></div>
+
+        <div class="map-legend">
+          <h4>Estado</h4>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>En incubación</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Eclosionado</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Depredado</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--gray)"></div>Nido salvaje</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTROS -->
+    <div id="panel-registros" class="tab-panel">
+      <div class="registros-toolbar">
+        <div class="filter-group"><label>Especie</label>
+          <select id="rt-especie" onchange="filtrarTabla()">
+            <option value="">Todas</option><option>Caretta caretta</option><option>Chelonia mydas</option>
+          </select>
+        </div>
+        <div class="filter-group"><label>Playa</label>
+          <select id="rt-playa" onchange="filtrarTabla()">
+            <option value="">Todas</option>
+            <option>Mezcalitos</option><option>Punta Morena</option><option>Chumul</option>
+            <option>Coconuts</option><option>Chen Río</option><option>San Martín</option>
+            <option>Playa Basurero</option><option>Punta Chiqueros</option><option>Buenavista</option>
+            <option>Box</option><option>Rastas</option>
+          </select>
+        </div>
+        <div class="filter-group"><label>Estado</label>
+          <select id="rt-estado" onchange="filtrarTabla()">
+            <option value="">Todos</option>
+            <option value="incubando">En incubación</option>
+            <option value="eclosionado">Eclosionado</option>
+            <option value="depredado">Depredado</option>
+            <option value="salvaje">Nido salvaje</option>
+          </select>
+        </div>
+        <div class="filter-group"><label>Temporada</label>
+          <select id="rt-temporada" onchange="filtrarTabla()"><option value="">Todas</option></select>
+        </div>
+        <div class="filter-group"><label>Desde</label><input type="date" id="rt-desde" onchange="filtrarTabla()" /></div>
+        <div class="filter-group"><label>Hasta</label><input type="date" id="rt-hasta" onchange="filtrarTabla()" /></div>
+        <button class="btn btn-secondary btn-sm" onclick="limpiarFiltrosTabla()">Limpiar</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th onclick="sortTabla('numero_nido')"># Nido<span class="sort-icon">↕</span></th>
+            <th onclick="sortTabla('fecha')">Fecha <span class="sort-icon">↕</span></th>
+            <th>Temp.</th>
+            <th onclick="sortTabla('playa')">Playa <span class="sort-icon">↕</span></th>
+            <th onclick="sortTabla('especie')">Especie <span class="sort-icon">↕</span></th>
+            <th onclick="sortTabla('zona')">Zona <span class="sort-icon">↕</span></th>
+            <th onclick="sortTabla('accion')">Acción <span class="sort-icon">↕</span></th>
+            <th onclick="sortTabla('fecha_eclosion_estimada')">Eclosión est. <span class="sort-icon">↕</span></th>
+            <th onclick="sortTabla('brigada')">Brigada <span class="sort-icon">↕</span></th>
+            <th>Salvaje</th><th>Depredado</th><th>Estado</th>
+          </tr></thead>
+          <tbody id="tabla-body"><tr><td colspan="12" style="text-align:center;color:var(--ink-lt);padding:2rem">Cargando...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- LIMPIEZAS -->
+    <div id="panel-limpiezas" class="tab-panel">
+      <div class="registros-toolbar">
+        <div class="filter-group"><label>Especie</label>
+          <select id="rl-especie" onchange="filtrarTablaLimpiezas()">
+            <option value="">Todas</option><option>Caretta caretta</option><option>Chelonia mydas</option>
+          </select>
+        </div>
+        <div class="filter-group"><label>Playa</label>
+          <select id="rl-playa" onchange="filtrarTablaLimpiezas()">
+            <option value="">Todas</option>
+            <option>Mezcalitos</option><option>Punta Morena</option><option>Chumul</option>
+            <option>Coconuts</option><option>Chen Río</option><option>San Martín</option>
+            <option>Playa Basurero</option><option>Punta Chiqueros</option><option>Buenavista</option>
+            <option>Box</option><option>Rastas</option>
+          </select>
+        </div>
+        <div class="filter-group"><label>Temporada</label>
+          <select id="rl-temporada" onchange="filtrarTablaLimpiezas()"><option value="">Todas</option></select>
+        </div>
+        <div class="filter-group"><label>Desde</label><input type="date" id="rl-desde" onchange="filtrarTablaLimpiezas()" /></div>
+        <div class="filter-group"><label>Hasta</label><input type="date" id="rl-hasta" onchange="filtrarTablaLimpiezas()" /></div>
+        <button class="btn btn-secondary btn-sm" onclick="limpiarFiltrosLimpiezas()">Limpiar</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th onclick="sortTablaLimpiezas('numero_nido')"># Nido <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('playa')">Playa <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('especie')">Especie <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('fecha_limpieza')">Fecha limpieza <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('tortugas_vivas')">Vivas <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('tortugas_muertas')">Muertas <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('cascarones')">Cascarones <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('huevos_no_eclosionados')">No eclos. <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('huevos_rosa')">Rosa <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('huevos_fase1')">Fase 1 <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('huevos_fase2')">Fase 2 <span class="sort-icon">↕</span></th>
+            <th onclick="sortTablaLimpiezas('huevos_fase3')">Fase 3 <span class="sort-icon">↕</span></th>
+            <th>Observaciones</th>
+          </tr></thead>
+          <tbody id="tabla-limpiezas-body"><tr><td colspan="13" style="text-align:center;color:var(--ink-lt);padding:2rem">Cargando...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div id="panel-monitoreo" class="tab-panel">
+      <div class="form-card">
+        <h2>Registrar nido — Monitoreo</h2>
+        <div class="form-grid">
+          <div class="form-group"><label>Número de nido</label><input type="number" id="m-numero" min="1" placeholder="Ej. 42" /></div>
+          <div class="form-group"><label>Fecha de registro</label><input type="date" id="m-fecha" onchange="onFechaCambio()" /></div>
+          <div class="form-group"><label>Playa</label>
+            <select id="m-playa">
+              <option value="">— Seleccionar —</option>
+              <option>Mezcalitos</option><option>Punta Morena</option><option>Chumul</option>
+              <option>Coconuts</option><option>Chen Río</option><option>San Martín</option>
+              <option>Playa Basurero</option><option>Punta Chiqueros</option><option>Buenavista</option>
+              <option>Box</option><option>Rastas</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Especie</label>
+            <select id="m-especie" onchange="onEspecieCambio()">
+              <option value="">— Seleccionar —</option>
+              <option>Caretta caretta</option><option>Chelonia mydas</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Zona</label>
+            <select id="m-zona"><option value="">—</option><option>1</option><option>2</option><option>3</option></select>
+          </div>
+          <div class="form-group"><label>Acción</label>
+            <select id="m-accion"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select>
+          </div>
+          <div class="form-group"><label>Coordenada X (UTM)</label><input type="number" id="m-coord-x" placeholder="Ej. 501703" /></div>
+          <div class="form-group"><label>Coordenada Y (UTM)</label><input type="number" id="m-coord-y" placeholder="Ej. 2242088" /></div>
+          <div class="form-group"><label>Brigada</label><input type="text" id="m-brigada" placeholder="Ej. Brigada 3" /></div>
+          <hr class="section-divider" />
+          <div class="form-group full">
+            <label>Fecha estimada de eclosión</label>
+            <div class="eclosion-row">
+              <input type="number" id="m-dias" min="1" max="120" placeholder="días" oninput="calcularEclosion()" />
+              <button class="btn btn-secondary btn-sm" type="button" onclick="calcularEclosion()">Calcular</button>
+              <input type="date" id="m-eclosion" />
+            </div>
+            <span class="eclosion-hint" id="eclosion-hint">Selecciona especie y fecha · Caretta: 50 días · Chelonia: 55 días</span>
+          </div>
+          <hr class="section-divider" />
+          <p class="section-label">Condición del nido</p>
+          <div class="form-group full" style="flex-direction:row;gap:2rem;align-items:center;flex-wrap:wrap;">
+            <div class="check-row"><input type="checkbox" id="m-salvaje" /><label for="m-salvaje">Nido salvaje</label></div>
+            <div class="check-row"><input type="checkbox" id="m-depredado" onchange="onDepredadoCambio()" /><label for="m-depredado">Depredado</label></div>
+          </div>
+          <hr class="section-divider" />
+          <div class="form-group full"><label>Observaciones del nido</label><textarea id="m-observaciones" placeholder="Notas sobre el nido..."></textarea></div>
+          <hr class="section-divider" />
+          <p class="section-label">Datos de la tortuga anidadora (opcional)</p>
+          <div class="form-group"><label>Largo total (cm)</label><input type="number" step="0.1" id="m-largo-total" placeholder="—" /></div>
+          <div class="form-group"><label>Largo curvo (cm)</label><input type="number" step="0.1" id="m-largo-curvo" placeholder="—" /></div>
+          <div class="form-group"><label>Ancho curvo (cm)</label><input type="number" step="0.1" id="m-ancho-curvo" placeholder="—" /></div>
+          <hr class="section-divider" />
+          <div class="form-group full"><label>Observaciones de la tortuga</label><textarea id="m-obs-tortuga" placeholder="Anomalías, chip, marcas..."></textarea></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="guardarMonitoreo()">Guardar nido</button>
+          <button class="btn btn-secondary" onclick="limpiarFormMonitoreo()">Limpiar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTRAR LIMPIEZA -->
+    <div id="panel-limpieza" class="tab-panel">
+      <div class="form-card">
+        <h2>Registrar limpieza de nido</h2>
+        <div class="form-grid">
+          <div class="form-group"><label>Nido</label><select id="l-nido"><option value="">— Seleccionar nido —</option></select></div>
+          <div class="form-group"><label>Fecha de limpieza</label><input type="date" id="l-fecha" /></div>
+          <div class="form-group"><label>Tortugas vivas</label><input type="number" id="l-vivas" min="0" value="0" /></div>
+          <div class="form-group"><label>Tortugas muertas</label><input type="number" id="l-muertas" min="0" value="0" /></div>
+          <div class="form-group"><label>Cascarones</label><input type="number" id="l-cascarones" min="0" value="0" /></div>
+          <div class="form-group"><label>Huevos no eclosionados</label><input type="number" id="l-no-eclosionados" min="0" value="0" /></div>
+          <div class="form-group"><label>Huevos rosa</label><input type="number" id="l-rosa" min="0" value="0" /></div>
+          <div class="form-group"><label>Huevos fase 1</label><input type="number" id="l-fase1" min="0" value="0" /></div>
+          <div class="form-group"><label>Huevos fase 2</label><input type="number" id="l-fase2" min="0" value="0" /></div>
+          <div class="form-group"><label>Huevos fase 3</label><input type="number" id="l-fase3" min="0" value="0" /></div>
+          <div class="form-group full"><label>Observaciones</label><textarea id="l-observaciones" placeholder="Notas adicionales..."></textarea></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="guardarLimpieza()">Guardar limpieza</button>
+          <button class="btn btn-secondary" onclick="limpiarFormLimpieza()">Limpiar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXCEL -->
+    <div id="panel-excel" class="tab-panel">
+      <div class="form-card">
+        <h2>Carga masiva desde Excel</h2>
+        <p style="font-size:.86rem;color:var(--ink-lt);margin-bottom:.5rem">Dos hojas: <strong>Monitoreo</strong> y <strong>Limpieza</strong>. <a href="#" onclick="descargarPlantilla()" style="color:var(--sky-dk)">Descargar plantilla</a></p>
+        <p style="font-size:.78rem;color:var(--ink-lt);margin-bottom:1.2rem;background:var(--sand);padding:.6rem .8rem;border-radius:7px">
+          <strong>Columna "fecha_eclosion_estimada":</strong> escribe <strong>si</strong> (calcula según especie), una <strong>fecha</strong> (2026-08-26), un <strong>número de días</strong> (33), o déjala <strong>vacía</strong> (= si). Los campos con lista desplegable ya vienen listos para elegir.
+        </p>
+        <p style="font-size:.78rem;color:var(--ink-lt);margin-bottom:1.2rem;background:var(--sand);padding:.6rem .8rem;border-radius:7px">
+          <strong>Hoja "Limpieza":</strong> identifica el nido con <strong>numero_nido</strong> (la temporada se toma automáticamente del año de <strong>fecha_limpieza</strong>). Si ese número existe en más de una temporada, asegúrate de que la fecha de limpieza corresponda al año correcto.
+        </p>
+        <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+          <div class="icon">📂</div>
+          <p>Haz clic para seleccionar un archivo .xlsx o .xls</p>
+          <input type="file" id="file-input" accept=".xlsx,.xls" style="display:none" onchange="procesarExcel(event)" />
+        </div>
+        <div id="excel-preview"></div>
+      </div>
+    </div>
+
+    <!-- DESCARGAR REGISTROS -->
+    <div id="panel-descargar" class="tab-panel">
+      <div class="registros-toolbar">
+        <div class="filter-group"><label>Temporada</label>
+          <select id="dl-temporada" onchange="filtrarDescarga()">
+            <option value="" selected disabled>Seleccionar</option>
+            <option value="todos">Todos los años</option>
+          </select>
+        </div>
+        <div class="filter-group"><label>Mes</label>
+          <select id="dl-mes" onchange="filtrarDescarga()">
+            <option value="" selected disabled>Seleccionar</option>
+            <option value="todos">Todos los meses</option>
+          </select>
+        </div>
+        <div class="filter-group"><label>Especie</label>
+          <select id="dl-especie" onchange="filtrarDescarga()">
+            <option value="" selected disabled>Seleccionar</option>
+            <option value="todos">Todas</option>
+            <option>Caretta caretta</option><option>Chelonia mydas</option>
+          </select>
+        </div>
+        <div class="filter-group"><label>Playa</label>
+          <select id="dl-playa" onchange="filtrarDescarga()">
+            <option value="" selected disabled>Seleccionar</option>
+            <option value="todos">Todas</option>
+            <option>Mezcalitos</option><option>Punta Morena</option><option>Chumul</option>
+            <option>Coconuts</option><option>Chen Río</option><option>San Martín</option>
+            <option>Playa Basurero</option><option>Punta Chiqueros</option><option>Buenavista</option>
+            <option>Box</option><option>Rastas</option>
+          </select>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="limpiarFiltrosDescarga()">Limpiar</button>
+        <button class="btn btn-primary btn-sm btn-download-toggle inactivo" id="btn-descargar-registros" disabled onclick="generarExcelDescarga()">⬇️ Descargar Excel</button>
+      </div>
+
+      <p class="section-label" style="margin-bottom:.5rem">Nidos (Monitoreo)</p>
+      <div class="table-wrap" style="margin-bottom:1.5rem">
+        <table>
+          <thead><tr>
+            <th># Nido</th><th>Fecha</th><th>Temp.</th><th>Playa</th><th>Especie</th><th>Zona</th>
+            <th>Acción</th><th>Eclosión est.</th><th>Brigada</th><th>Salvaje</th><th>Depredado</th><th>Estado</th>
+          </tr></thead>
+          <tbody id="tabla-descarga-nidos-body"><tr><td colspan="12" style="text-align:center;color:var(--ink-lt);padding:2rem">Selecciona al menos un filtro para ver registros.</td></tr></tbody>
+        </table>
+      </div>
+
+      <p class="section-label" style="margin-bottom:.5rem">Limpiezas</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th># Nido</th><th>Playa</th><th>Especie</th><th>Fecha limpieza</th><th>Vivas</th><th>Muertas</th>
+            <th>Cascarones</th><th>No ecl.</th><th>Rosa</th><th>Fase 1</th><th>Fase 2</th><th>Fase 3</th><th>Obs.</th>
+          </tr></thead>
+          <tbody id="tabla-descarga-limpiezas-body"><tr><td colspan="13" style="text-align:center;color:var(--ink-lt);padding:2rem">Selecciona al menos un filtro para ver registros.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ADMIN -->
+    <div id="panel-admin" class="tab-panel">
+      <div class="admin-wrap">
+        <div class="admin-section">
+          <h3>Usuarios registrados</h3>
+          <p style="font-size:.82rem;color:var(--ink-lt);margin-bottom:1rem">Crea el usuario en <strong>Supabase → Authentication → Users</strong> y agrégalo aquí con su UUID.</p>
+          <div id="lista-usuarios"><p style="color:var(--ink-lt);font-size:.88rem">Cargando...</p></div>
+          <div class="admin-new-user">
+            <p class="admin-subtitle">Registrar usuario existente</p>
+            <div class="form-grid" style="max-width:560px">
+              <div class="form-group"><label>UUID (de Supabase)</label><input type="text" id="a-uid" placeholder="xxxxxxxx-xxxx-..." /></div>
+              <div class="form-group"><label>Nombre</label><input type="text" id="a-nombre" placeholder="Nombre del experto" /></div>
+              <div class="form-group"><label>Email (visible)</label><input type="email" id="a-email" placeholder="correo@ejemplo.com" /></div>
+              <div class="form-group"><label>Rol</label>
+                <select id="a-rol">
+                  <option value="viewer">viewer — solo visualización</option>
+                  <option value="editor">editor — registro y modificación</option>
+                  <option value="admin">admin — acceso total</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-primary" style="margin-top:.75rem" onclick="registrarPerfil()">Agregar usuario</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL DETALLE NIDO -->
+<div id="detalle-modal" class="modal-overlay" onclick="cerrarModalClick(event,'detalle-modal')">
+  <div class="modal-box" style="max-width:640px">
+    <h3 id="detalle-titulo"></h3>
+    <div id="detalle-contenido"></div>
+    <div class="modal-actions" id="detalle-actions"></div>
+  </div>
+</div>
+
+<!-- MODAL EDICIÓN -->
+<div id="edit-modal" class="modal-overlay" onclick="cerrarModalClick(event,'edit-modal')">
+  <div class="modal-box" style="max-width:680px">
+    <h3 id="edit-titulo"></h3>
+    <div id="edit-contenido"></div>
+    <div class="modal-actions" id="edit-actions"></div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMACIÓN -->
+<div id="confirm-modal" class="modal-overlay">
+  <div class="modal-box confirm-box">
+    <h3>⚠️ Confirmar acción</h3>
+    <p id="confirm-msg"></p>
+    <div class="modal-actions" style="justify-content:center;border-top:none;margin-top:0;padding-top:0">
+      <button class="btn btn-danger" id="confirm-ok">Eliminar</button>
+      <button class="btn btn-secondary" onclick="cerrarConfirm()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
