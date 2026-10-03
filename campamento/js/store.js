@@ -127,6 +127,7 @@ export function createStore(api) {
     masks: () => live('mask'),
     photosOf: (nestUuid) => live('photo').filter((p) => p.nest_uuid === nestUuid),
     aerial: (uuid) => rows.aerial.get(uuid),
+    flight: (uuid) => rows.flight.get(uuid),
     aerials: () => live('aerial'),
     seasons: () => [...new Set(live('nest').map((n) => n.season).filter((s) => s != null))].sort((a, b) => b - a),
     beachesInUse: () => [...new Set(live('nest').map((n) => n.beach).filter(Boolean))].sort(),

@@ -11,7 +11,7 @@ import * as Coords from './coords.js';
 import { coordFormat } from './prefs.js';
 import { addDays, busy, byNumber, confirmBox, field, h, modal, nowUtc, select, showDate, toast, todayIso } from './ui.js';
 
-const NEST_COLS = ['number', 'detected_date', 'species', 'status_override', 'beach', 'zone', 'action', 'real_lat', 'real_lon',
+export const NEST_COLS = ['number', 'detected_date', 'species', 'status_override', 'beach', 'zone', 'action', 'real_lat', 'real_lon',
   'real_source', 'real_acc', 'photo_lat', 'photo_lon', 'hatch_date', 'hatch_manual', 'turtle_lt', 'turtle_lc', 'turtle_ac',
   'turtle_notes', 'camp', 'observer', 'notes', 'origin'];
 const CLEANING_COLS = ['nest_uuid', 'clean_date', 'shells', 'alive', 'dead', 'pink', 'phase_mode', 'phase_total',

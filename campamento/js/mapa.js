@@ -118,7 +118,7 @@ export function mapView(ctx) {
       aerialLayer.addLayer(layer);
     }
     maskLayer.clearLayers();
-    for (const m of store.masks()) {
+    for (const m of store.masks().filter((x) => x.nest_uuid)) {   // las propuestas sin revisar solo se ven en la bandeja
       const a = store.aerial(m.aerial_uuid);
       const fp = a && footprint(a);
       if (!fp || !m.polygon) continue;

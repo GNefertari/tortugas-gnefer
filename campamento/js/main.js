@@ -4,6 +4,7 @@
 import { usersView, settingsView } from './admin.js';
 import { client, IS_LOCAL_API, API } from './api.js';
 import { cargaView } from './carga.js';
+import { vuelosView } from './vuelos.js';
 import { can, roleName } from './catalog.js';
 import { openNest } from './ficha.js';
 import { createFilter } from './filters.js';
@@ -92,6 +93,7 @@ export async function start(slug) {
       ['mapa', 'Mapa', () => mapView(ctx)],
       ['nidos', 'Nidos', () => nestsView(ctx)],
       ['limpiezas', 'Limpiezas', () => cleaningsView(ctx)],
+      ...(can(user, 'capturista') ? [['vuelos', 'Vuelos', () => vuelosView(ctx)]] : []),
     ];
     if (can(user, 'experto')) sections.push(['carga', 'Cargar Excel', () => cargaView(ctx)]);
     if (can(user, 'coordinador')) sections.push(['usuarios', 'Usuarios', () => usersView(ctx)], ['ajustes', 'Ajustes', () => settingsView(ctx)]);

@@ -17,6 +17,7 @@ La parte pública del sitio (divulgación) no se toca.
 | Eliminar, fijar estado | experto+ | Depredado, salvaje, reubicado |
 | **Usuarios** | coordinador | Crear con contraseña temporal, cambiar rol, desactivar, nueva contraseña |
 | **Ajustes** | coordinador | Playas, modo de fase, días de incubación, regla de cercanía, zona UTM |
+| **Vuelos** | capturista+ / experto+ | Subir vuelo (fotos a la bandeja temporal) y bandeja de revisión de las propuestas de GNeST |
 | **Cargar Excel** | experto+ | Temporadas anteriores (nidos y limpiezas en hojas o CSV separados, enlazados por temporada y número) desde las plantillas o el Excel del experto: asignación de columnas (se recuerda), vista previa validada, actualizar u omitir los que ya existen, historial y deshacer |
 
 ## Cómo funciona
@@ -52,6 +53,8 @@ La parte pública del sitio (divulgación) no se toca.
 | `js/exportar.js` | CSV y KML |
 | `js/carga.js` | Cargar Excel: pantallas (archivo, columnas, vista previa, carga, historial) |
 | `js/carga_lectura.js` | Cargar Excel: columnas conocidas, lectura de fechas, coordenadas, especie y estado; validación por renglón; plantilla |
+| `js/vuelos.js` | Vuelos: lista, avisos y Subir vuelo |
+| `js/revision.js` | Bandeja de revisión de un vuelo: aceptar, ya registrado, descartar, dibujar |
 | `js/filters.js` | Filtro compartido por mapa y tablas |
 | `js/coords.js`, `js/geo.js`, `js/catalog.js` | Coordenadas, huella de la foto, catálogos |
 | `js/ui.js` | Elementos, ventanas, avisos, fechas |
@@ -67,6 +70,20 @@ La parte pública del sitio (divulgación) no se toca.
 - **Errores** (el renglón no se carga): limpieza cuyo nido no existe, sin número o fecha, fecha imposible, especie o estado desconocido, zona fuera de 1–3, acción fuera de 1–8, número repetido en el archivo, temporada que no coincide con la fecha.
 - La carga va en partes de 400 renglones y reintenta si se corta la conexión.
 
-## Pendiente (6)
+## Vuelos y bandeja de revisión (6a)
 
-- Bandeja de revisión de GNeST y "Subir vuelo".
+- **Vuelos** (capturista+): lista de vuelos con su estado (Subiendo fotos, Esperando a GNeST, Por revisar, Revisado), fotos y propuestas.
+- **Subir vuelo:** playa, fecha y las fotos del dron (.jpg). Van a la bandeja temporal de la nube con barra de avance; si se corta, «Continuar subida» y se eligen las mismas fotos (las que ya subieron no se repiten). Se borran solas a los 20 días si GNeST no las procesa.
+- **Avisos al coordinador:** fotos que se borran en 5 días o menos, y las que ya se borraron sin procesar.
+- **Bandeja de revisión** (experto+): foto por foto, con las máscaras de GNeST (amarillo = por revisar, verde = aceptada, rojo = descartada). En cada propuesta:
+  - **Aceptar:** nido nuevo, con el siguiente número libre de la temporada, Chelonia mydas, la fecha de la foto y la playa del vuelo (todo se puede cambiar); la eclosión se estima como en la app;
+  - **Ya registrado:** los nidos que cumplen la regla de cercanía (Ajustes: distancia, misma temporada, de N días antes a M después), con la **vista breve** (los dos recortes lado a lado) y «Es este nido»; o cualquier otro nido de la temporada;
+  - **Descartar** (y «Volver a revisar»).
+  - **Ajustar contorno** (como LabelNef), en propuestas, nidos aceptados y dibujos: mover puntos, tocar un borde para agregar uno, quitar el punto elegido, trasladar, agrandar o achicar desde las esquinas y girar con la manija; Deshacer, «Volver al de GNeST», teclas Supr, Ctrl+Z y Esc. Se guarda el contorno final y, aparte, el original de GNeST.
+  - **Dibujar** un nido que GNeST no vio: se marca el contorno tocando la foto y luego se acepta o enlaza.
+- Al revisar una propuesta pasa sola a la siguiente (también de foto). **El vuelo se cierra solo** al revisar la última; si GNeST no dejó ninguna, se cierra con «Cerrar vuelo».
+- En el mapa y en el visor solo se ven las máscaras ya enlazadas a un nido.
+
+## Pendiente (6b)
+
+- GNeST baja solo los vuelos subidos desde la web y la PC genera los recortes de los nidos dibujados.

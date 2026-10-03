@@ -65,7 +65,7 @@ export function openAerialViewer(ctx, items, start = 0) {
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
     svg.setAttribute('class', 'viewer-masks');
     target = null;
-    for (const mk of store.masks().filter((x) => x.aerial_uuid === a.uuid)) {
+    for (const mk of store.masks().filter((x) => x.aerial_uuid === a.uuid && x.nest_uuid)) {
       if (!mk.polygon) continue;
       const pts = [];
       for (let j = 0; j + 1 < mk.polygon.length; j += 2) pts.push((mk.polygon[j] * k).toFixed(1) + ',' + (mk.polygon[j + 1] * k).toFixed(1));

@@ -99,6 +99,29 @@ export function client(slug) {
     imports: () => call('GET', '/importar'),
     importPart: (body) => call('POST', '/importar', body),
     undoImport: (id) => call('POST', '/importar/' + encodeURIComponent(id) + '/deshacer'),
+    flights: () => call('GET', '/vuelos'),
+    createFlight: (v) => call('POST', '/vuelos', v),
+    flightPhotos: (id) => call('GET', '/vuelos/' + encodeURIComponent(id) + '/fotos'),
+    setFlightState: (id, estado) => call('POST', '/vuelos/' + encodeURIComponent(id) + '/estado', { estado }),
+    deleteFlight: (id) => call('DELETE', '/vuelos/' + encodeURIComponent(id)),
+    /** Sube una foto original a la bandeja temporal del vuelo; onProgress(bytes enviados). */
+    uploadFlightPhoto(id, file, onProgress) {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', base + '/vuelos/' + encodeURIComponent(id) + '/fotos/' + encodeURIComponent(file.name));
+        xhr.setRequestHeader('authorization', 'Bearer ' + token);
+        xhr.setRequestHeader('content-type', 'image/jpeg');
+        xhr.upload.onprogress = (e) => onProgress && onProgress(e.loaded);
+        xhr.onload = () => {
+          let data = {};
+          try { data = JSON.parse(xhr.responseText); } catch { /* sin cuerpo */ }
+          if (xhr.status >= 200 && xhr.status < 300) resolve(data);
+          else reject(new ApiError(xhr.status, data.error || 'Error ' + xhr.status));
+        };
+        xhr.onerror = () => reject(new ApiError(0, 'Sin conexión con el servidor'));
+        xhr.send(file);
+      });
+    },
     image,
   };
 }
