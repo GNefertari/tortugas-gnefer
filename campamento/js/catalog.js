@@ -22,7 +22,7 @@ export const ACTION_WILD = 8;
 export const ROLES = [
   ['lectura', 'Solo lectura', 'Consulta mapa, nidos y limpiezas'],
   ['capturista', 'Capturista', 'Además registra nidos y limpiezas'],
-  ['experto', 'Experto', 'Además borra y fija estados (depredado, salvaje, reubicado)'],
+  ['experto', 'Experto', 'Además borra, fija estados (depredado, salvaje, reubicado) y carga desde Excel o CSV'],
   ['coordinador', 'Coordinador', 'Todo, más usuarios y ajustes del campamento'],
 ];
 

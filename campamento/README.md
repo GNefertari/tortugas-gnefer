@@ -17,6 +17,7 @@ La parte pública del sitio (divulgación) no se toca.
 | Eliminar, fijar estado | experto+ | Depredado, salvaje, reubicado |
 | **Usuarios** | coordinador | Crear con contraseña temporal, cambiar rol, desactivar, nueva contraseña |
 | **Ajustes** | coordinador | Playas, modo de fase, días de incubación, regla de cercanía, zona UTM |
+| **Cargar Excel** | experto+ | Temporadas anteriores (nidos y limpiezas en hojas o CSV separados, enlazados por temporada y número) desde las plantillas o el Excel del experto: asignación de columnas (se recuerda), vista previa validada, actualizar u omitir los que ya existen, historial y deshacer |
 
 ## Cómo funciona
 
@@ -49,11 +50,23 @@ La parte pública del sitio (divulgación) no se toca.
 | `js/formularios.js` | Registrar y editar nido y limpieza |
 | `js/admin.js` | Usuarios y ajustes |
 | `js/exportar.js` | CSV y KML |
+| `js/carga.js` | Cargar Excel: pantallas (archivo, columnas, vista previa, carga, historial) |
+| `js/carga_lectura.js` | Cargar Excel: columnas conocidas, lectura de fechas, coordenadas, especie y estado; validación por renglón; plantilla |
 | `js/filters.js` | Filtro compartido por mapa y tablas |
 | `js/coords.js`, `js/geo.js`, `js/catalog.js` | Coordenadas, huella de la foto, catálogos |
 | `js/ui.js` | Elementos, ventanas, avisos, fechas |
 
-## Pendiente (5b y 6)
+## Cargar Excel (5b)
 
-- **5b:** carga masiva desde Excel/CSV (asignación de columnas, vista previa con validación, deshacer).
-- **6:** bandeja de revisión de GNeST y "Subir vuelo".
+- **Quién:** experto y coordinador. El experto deshace solo sus propias cargas; el coordinador, cualquiera.
+- **Nidos y limpiezas en hojas separadas.** Un Excel con las hojas «Nidos» y «Limpiezas», o dos CSV subidos juntos (también sirve solo uno). Cada limpieza se enlaza con su nido por **temporada y número de nido**: el nido puede venir en la hoja de nidos o estar ya registrado. Si no existe en ninguno de los dos, la limpieza es un error.
+- **Plantillas** («Descargar plantilla ▾»): Excel con las hojas Nidos, Limpiezas e Instrucciones; CSV de nidos; CSV de limpiezas (UTF-8 con BOM, separado por comas).
+- El tipo de cada hoja se detecta por su nombre o sus encabezados, y se puede cambiar. La asignación de columnas se recuerda por separado para nidos y limpiezas.
+- Los archivos se leen **en el navegador** con SheetJS (`cdn.sheetjs.com`, se descarga solo al usar la sección). Acepta .xlsx, .xls, .ods y .csv (UTF-8 o Windows-1252, con `,` o `;`).
+- **Lo que entiende:** fechas día/mes/año, ISO, de Excel o «12 de junio de 2024» (avisa si parecen mes/día); coordenadas decimales, GMS o UTM (detectadas por renglón, o la columna `formato_coordenada`), también en una sola celda; longitud sin signo → Oeste, latitud y longitud invertidas, punto a más de 60 km (aviso); especie (`C. mydas`, verde, blanca, caguama…), estado (`depredación`, `reubicado a vivero`…), playa sin importar mayúsculas ni acentos.
+- **Errores** (el renglón no se carga): limpieza cuyo nido no existe, sin número o fecha, fecha imposible, especie o estado desconocido, zona fuera de 1–3, acción fuera de 1–8, número repetido en el archivo, temporada que no coincide con la fecha.
+- La carga va en partes de 400 renglones y reintenta si se corta la conexión.
+
+## Pendiente (6)
+
+- Bandeja de revisión de GNeST y "Subir vuelo".

@@ -96,6 +96,9 @@ export function client(slug) {
     updateUser: (id, u) => call('PATCH', '/usuarios/' + id, u),
     pull: (since) => call('GET', '/sync/pull?desde=' + since),
     push: (rows) => call('POST', '/sync/push', { device_id: 'web', client_time: new Date().toISOString(), rows }),
+    imports: () => call('GET', '/importar'),
+    importPart: (body) => call('POST', '/importar', body),
+    undoImport: (id) => call('POST', '/importar/' + encodeURIComponent(id) + '/deshacer'),
     image,
   };
 }

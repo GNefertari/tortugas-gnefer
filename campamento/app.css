@@ -334,3 +334,37 @@ img.full { width: 100%; height: auto; border-radius: 10px; }
 .map .leaflet-container, .map { cursor: default; }
 .viewer-masks text.mine { fill: #4DD0E1; }
 .thumb img { cursor: zoom-in; }
+
+/* ───────── Carga masiva desde Excel (coordinador) */
+.carga .lead { color: var(--ink); line-height: 1.6; max-width: 820px; }
+.carga .section-title { font-size: .8rem; font-weight: 700; color: var(--turq-lt); letter-spacing: .1em; text-transform: uppercase; margin-top: 1rem; }
+.drop { display: flex; flex-direction: column; align-items: center; gap: .4rem; padding: 2.4rem 1rem; border: 2px dashed rgba(72, 202, 228, .45); border-radius: var(--radius); background: var(--panel); cursor: pointer; text-align: center; }
+.drop:hover, .drop.over { background: rgba(72, 202, 228, .1); border-color: var(--turq-lt); }
+.drop b { color: var(--white); font-size: 1.05rem; }
+.drop span { color: var(--muted); font-size: .85rem; }
+table.data.static tbody tr { cursor: default; }
+table.data.static tbody tr:hover td { background: none; }
+table.mapping td.samples { color: var(--muted); font-size: .82rem; max-width: 360px; overflow: hidden; text-overflow: ellipsis; }
+table.mapping td select { min-width: 260px; }
+.summary { display: flex; flex-wrap: wrap; gap: .6rem; }
+.stat { display: flex; align-items: baseline; gap: .45rem; padding: .55rem .9rem; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.stat b { font-size: 1.3rem; color: var(--white); }
+.stat span { font-size: .8rem; color: var(--muted); }
+.stat.ok b { color: var(--ok); }
+.stat.upd b { color: var(--turq-lt); }
+.stat.err b { color: var(--danger); }
+.stat.warn b { color: #FFD54F; }
+.chip-btn { background: var(--panel); border: 1px solid var(--line); color: var(--ink); border-radius: 999px; padding: .35rem .85rem; font-size: .82rem; cursor: pointer; }
+.chip-btn.on { background: var(--turq-lt); border-color: var(--turq-lt); color: #062238; font-weight: 600; }
+.badge { display: inline-block; padding: .15rem .55rem; border-radius: 999px; font-size: .75rem; font-weight: 700; }
+.badge.ok { background: rgba(102, 187, 106, .2); color: #A5D6A7; }
+.badge.err { background: rgba(229, 115, 115, .2); color: #FFAB91; }
+table.preview td.msgs { white-space: normal; min-width: 260px; font-size: .8rem; line-height: 1.4; }
+table.preview .err { color: #FFAB91; }
+table.preview .warn-msg { color: #FFD54F; }
+table.preview tr.bad td { background: rgba(229, 115, 115, .07); }
+.summary-title { align-self: center; min-width: 90px; font-size: .8rem; font-weight: 700; color: var(--turq-lt); letter-spacing: .08em; text-transform: uppercase; }
+.sheet-tabs { display: flex; gap: .4rem; border-bottom: 1px solid var(--line); }
+.sheet-tab { background: none; border: 0; border-bottom: 3px solid transparent; color: var(--muted); padding: .55rem 1rem; font-weight: 600; cursor: pointer; }
+.sheet-tab.on { color: var(--white); border-bottom-color: var(--turq-lt); }
+.carga fieldset { gap: .9rem; }
