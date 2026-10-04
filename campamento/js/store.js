@@ -34,6 +34,7 @@ function done(tx) {
 export function createStore(api) {
   const rows = Object.fromEntries(TABLES.map((t) => [t, new Map()]));
   let rev = 0;
+  let epoch = 0;             // «época» de la base: si el servidor la cambia (se vació), se descarta esta copia
   let settings = null;
   let names = {};            // user_id -> nombre (quién hizo cada cambio)
   let db = null;
@@ -55,6 +56,7 @@ export function createStore(api) {
       return;
     }
     rev = (await get('rev')) || 0;
+    epoch = (await get('epoch')) || 0;
     settings = (await get('settings')) || null;
     await Promise.all(TABLES.map((t) => new Promise((r) => {
       const q = tx.objectStore(t).getAll();
@@ -78,6 +80,7 @@ export function createStore(api) {
     const tx = db.transaction([...TABLES, 'meta'], 'readwrite');
     for (const t of TABLES) for (const r of changed[t] || []) tx.objectStore(t).put(r);
     tx.objectStore('meta').put(rev, 'rev');
+    tx.objectStore('meta').put(epoch, 'epoch');
     tx.objectStore('meta').put(userId, 'owner');
     if (settings) tx.objectStore('meta').put(settings, 'settings');
     await done(tx).catch(() => {});
@@ -88,6 +91,13 @@ export function createStore(api) {
     let total = 0;
     for (;;) {
       const d = await api.pull(rev);
+      if ((d.epoca || 0) !== epoch) {
+        // Se vació la base en el servidor: lo guardado aquí ya no vale; se baja todo de nuevo.
+        await clearCache();
+        epoch = d.epoca || 0;
+        total = 0;
+        continue;
+      }
       for (const t of TABLES) for (const r of d.filas[t] || []) rows[t].set(r.uuid, r);
       if (d.ajustes) settings = d.ajustes;
       if (d.nombres) names = d.nombres;

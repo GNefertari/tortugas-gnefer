@@ -78,6 +78,8 @@ export function reviewView(ctx, flightInfo, onBack) {
   const photoDate = (a) => (a && a.taken_at ? a.taken_at.slice(0, 10) : flightInfo.fecha);
   const pendingOf = (a) => photoMasks(a).filter((m) => m.status === 'propuesta').length;
   const current = () => photos[pi];
+  // En revisión en ValiNest: la web solo muestra (el equipo que lo tiene sube su revisión al terminar).
+  const locked = () => (flight().review_status || flightInfo.estado) === 'en_app';
   const currentMask = () => (selected === 'draft' ? draft : selected ? store.masks().find((m) => m.uuid === selected) : null);
 
   function loadPhotos() {
@@ -98,7 +100,8 @@ export function reviewView(ctx, flightInfo, onBack) {
         h('small.muted', photos.length + ' foto(s) · ' + pending + ' propuesta(s) por revisar · '
           + masks.filter((m) => m.nest_uuid).length + ' aceptada(s) · ' + masks.filter((m) => m.status === 'descartada').length + ' descartada(s)')),
       h('div.spacer'),
-      h('span.badge.' + (status === 'revisado' ? 'ok' : 'upd'), status === 'revisado' ? 'Revisado' : 'Por revisar'));
+      h('span.badge.' + (status === 'revisado' ? 'ok' : status === 'en_app' ? 'warn' : 'upd'),
+        status === 'revisado' ? 'Revisado' : status === 'en_app' ? 'En revisión en ValiNest' : 'Por revisar'));
   }
 
   // ───────────────────────────── foto (acercar, mover, tocar)
@@ -349,11 +352,16 @@ export function reviewView(ctx, flightInfo, onBack) {
             m.gnest_polygon ? 'contorno ajustado' : null, nest ? 'aceptada' : STATUS_TEXT[m.status] || m.status].filter(Boolean).join(' · ')));
       })) : h('p.muted', 'GNeST no encontró nidos en esta foto.'),
       h('div.review-actions', actionBox()),
-      mode !== 'dibujar' ? h('button.btn.ghost.small.block', { type: 'button', onclick: startDrawing }, '✎ Dibujar un nido que GNeST no vio') : null,
+      mode !== 'dibujar' && !locked() ? h('button.btn.ghost.small.block', { type: 'button', onclick: startDrawing }, '✎ Dibujar un nido que GNeST no vio') : null,
       h('p.hint', 'Rueda o pellizco para acercar · arrastra para moverte · toca una máscara para elegirla'));
   }
 
   function actionBox() {
+    if (locked()) {
+      const vn = flightInfo.valinest;
+      return h('p.notice.warn', '🔒 Este vuelo está en revisión en ValiNest' + (vn && vn.por ? ' (' + vn.por + ')' : '')
+        + ': aquí solo se puede ver. Para editarlo en la web, primero «Quitar bloqueo» en Vuelos.');
+    }
     if (mode === 'dibujar') return drawBox();
     const m = currentMask();
     if (!m) return h('p.muted', masks0() ? 'Elige una propuesta en la foto o en la lista.' : '');
@@ -682,6 +690,7 @@ export function reviewView(ctx, flightInfo, onBack) {
   // ───────────────────────────── guardar
 
   async function saveMask(m, changes, message, nests = [], opts = {}) {
+    if (locked()) throw new Error('El vuelo está en revisión en ValiNest');
     const isDraft = m === draft;
     const row = { ...rowOf(m, MASK_COLS), ...changes, updated_at: stampAfter(m.updated_at) };
     if (isDraft) row.created_at = row.updated_at;

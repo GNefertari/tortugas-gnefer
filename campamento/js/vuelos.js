@@ -1,7 +1,7 @@
 // Vuelos de dron (paso 6a): lista, Subir vuelo y entrada a la bandeja de revisión.
 //
 //   - Capturista o más: ve los vuelos y sube las fotos de un vuelo nuevo (van a la bandeja temporal
-//     de la nube hasta que GNeST las procese; se borran solas a los 20 días si no).
+//     de la nube hasta que GNeST las procese; se borran solas a los 10 días si no).
 //   - Experto o más: revisa los vuelos con propuestas de GNeST (revision.js).
 //   - Coordinador: ve los avisos de fotos por vencer o ya borradas, y puede borrar vuelos sin nidos.
 
@@ -13,7 +13,7 @@ const STATES = {
   subiendo: ['Subiendo fotos', ''],
   por_detectar: ['Esperando a GNeST', 'warn'],
   pendiente: ['Por revisar', 'upd'],
-  en_app: ['En revisión en la app', 'upd'],
+  en_app: ['En revisión en ValiNest', 'warn'],
   revisado: ['Revisado', 'ok'],
 };
 const MB = (b) => (b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(b >= 10485760 ? 0 : 1) + ' MB');
@@ -41,7 +41,7 @@ export function vuelosView(ctx) {
     put(
       h('div.list-head', h('h2', 'Vuelos'), h('span.count', list.length + ' vuelo(s)'), h('div.spacer'),
         h('button.btn.primary.small', { type: 'button', onclick: () => renderUpload(null) }, '+ Subir vuelo')),
-      h('p.lead', 'Las fotos que se suben esperan a GNeST en la nube (' + d.dias_bandeja + ' días como máximo). GNeST deja sus propuestas y el experto las revisa aquí: aceptar, ya registrado o descartar. El vuelo se cierra solo al revisar la última propuesta.'),
+      h('p.lead', 'Las fotos que se suben esperan a GNeST en la nube (' + d.dias_bandeja + ' días como máximo). GNeST deja sus propuestas y el experto las revisa aquí o en ValiNest: aceptar, ya registrado o descartar. El vuelo se cierra solo al revisar la última propuesta. Mientras un vuelo está en ValiNest, aquí solo se puede ver.'),
       notices.length ? h('div.notices', notices) : null,
       list.length ? h('div.table-wrap', h('table.data.static.flights',
         h('thead', h('tr', ['', 'Fecha', 'Playa', 'Estado', 'Fotos', 'Propuestas', 'Subió'].map((t) => h('th', t)))),
@@ -73,10 +73,13 @@ export function vuelosView(ctx) {
     if (v.estado === 'pendiente' && v.pendientes === 0 && can(user, 'experto')) {
       actions.push(h('button.btn.ghost.small', { type: 'button', onclick: (e) => closeFlight(v, e.currentTarget) }, 'Cerrar vuelo'));
     }
+    if (v.estado === 'en_app' && can(user, 'experto')) {
+      actions.push(h('button.btn.ghost.small', { type: 'button', onclick: (e) => releaseFlight(v, e.currentTarget) }, 'Quitar bloqueo'));
+    }
     if (v.estado === 'subiendo' && v.origen === 'web' && v.mio) {
       actions.push(h('button.btn.ghost.small', { type: 'button', onclick: () => renderUpload(v) }, 'Continuar subida'));
     }
-    if (can(user, 'coordinador') && !v.aceptadas) {
+    if (can(user, 'coordinador') && !v.aceptadas && v.estado !== 'en_app') {
       actions.push(h('button.btn.danger.small', { type: 'button', onclick: (e) => removeFlight(v, e.currentTarget) }, 'Borrar'));
     }
     const waiting = v.estado === 'por_detectar' && v.bandeja_vence && !v.bandeja_borrada
@@ -85,10 +88,14 @@ export function vuelosView(ctx) {
     const backup = v.estado !== 'revisado' ? null
       : v.respaldado && v.respaldo_rev >= v.rev_mascaras ? h('small.ok', 'Respaldado en la PC ✓')
         : h('small.muted', v.respaldado ? 'Cambió después del respaldo: GNeST lo actualiza en su próxima pasada' : 'Falta respaldarlo en la PC (GNeST)');
+    // ValiNest (revisión en el dispositivo): quién lo tiene y si la PC ya subió los originales.
+    const vn = v.valinest;
+    const app = vn ? h('small.muted', (vn.reabierto ? 'Reabierto para editar · ' : '') + (vn.por || 'otro equipo') + ' desde el ' + showDateTime(vn.desde)
+      + (v.originales === 'pedidos' ? ' · esperando los originales de la PC (GNeST)' : v.originales === 'listos' ? ' · originales en la nube' : '')) : null;
     return h('tr',
       h('td.row-btns', actions),
-      h('td', showDate(v.fecha)), h('td', v.playa),
-      h('td', h('span.badge.' + (kind || 'plain'), label), waiting, backup, v.bandeja_borrada ? h('small.error', 'Fotos borradas sin procesar') : null),
+      h('td', showDate(v.fecha), v.hora ? h('small.muted', v.hora) : null), h('td', v.playa),
+      h('td', h('span.badge.' + (kind || 'plain'), label), app, waiting, backup, v.bandeja_borrada ? h('small.error', 'Fotos borradas sin procesar') : null),
       h('td', String(v.fotos)),
       h('td', v.pendientes + v.aceptadas + v.descartadas
         ? (v.pendientes ? v.pendientes + ' por revisar · ' : '') + v.aceptadas + ' aceptada(s) · ' + v.descartadas + ' descartada(s)'
@@ -99,6 +106,12 @@ export function vuelosView(ctx) {
   async function closeFlight(v, btn) {
     if (!(await confirmBox('Cerrar vuelo', 'GNeST no dejó propuestas en este vuelo. ¿Marcarlo como revisado? Si viste algún nido, primero dibújalo en «Ver».', 'Cerrar vuelo'))) return;
     await busy(btn, async () => { await api.setFlightState(v.id, 'revisado'); toast('Vuelo revisado'); renderList(); });
+  }
+
+  async function releaseFlight(v, btn) {
+    const who = v.valinest && v.valinest.por ? v.valinest.por : 'otro equipo';
+    if (!(await confirmBox('Quitar bloqueo', 'Este vuelo lo tiene ' + who + ' en ValiNest. Si quitas el bloqueo, lo que todavía no haya subido ya no se podrá guardar y los originales se borran de la nube. Úsalo solo si ese equipo se perdió o ya no lo va a terminar.', 'Quitar bloqueo', true))) return;
+    await busy(btn, async () => { const r = await api.releaseFlight(v.id); toast(r.estado === 'revisado' ? 'Vuelo revisado' : 'El vuelo vuelve a estar por revisar'); await store.sync(user.id); renderList(); });
   }
 
   async function removeFlight(v, btn) {

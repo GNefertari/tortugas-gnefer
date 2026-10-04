@@ -104,6 +104,8 @@ export function client(slug) {
     flightPhotos: (id) => call('GET', '/vuelos/' + encodeURIComponent(id) + '/fotos'),
     setFlightState: (id, estado) => call('POST', '/vuelos/' + encodeURIComponent(id) + '/estado', { estado }),
     deleteFlight: (id) => call('DELETE', '/vuelos/' + encodeURIComponent(id)),
+    /** Quita el bloqueo de ValiNest (el vuelo vuelve a «por revisar» o «revisado»). */
+    releaseFlight: (id) => call('POST', '/vuelos/' + encodeURIComponent(id) + '/soltar', { forzar: true }),
     /** Sube una foto original a la bandeja temporal del vuelo; onProgress(bytes enviados). */
     uploadFlightPhoto(id, file, onProgress) {
       return new Promise((resolve, reject) => {
