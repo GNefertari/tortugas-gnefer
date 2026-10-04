@@ -1,5 +1,6 @@
 // Web de un campamento: inicio de sesión, menú según el rol y vistas.
-// Cada página (/punta-sur/, /san-martin/) llama a start('<campamento>').
+// Cada página (/punta-sur/, /san-martin/, /gnest/) llama a start('<campamento>').
+// /gnest/ es el conjunto de datos de GNeST: un «campamento» aparte con su propia numeración.
 
 import { usersView, settingsView } from './admin.js';
 import { client, IS_LOCAL_API, API } from './api.js';
@@ -15,13 +16,16 @@ import * as Coords from './coords.js';
 import { coordFormat, setCoordFormat } from './prefs.js';
 import { busy, clear, field, h, modal, passwordInput, toast } from './ui.js';
 
-const CAMP_NAMES = { 'punta-sur': 'Punta Sur', 'san-martin': 'San Martín' };
+const CAMP_NAMES = { 'punta-sur': 'Punta Sur', 'san-martin': 'San Martín', gnest: 'GNeST' };
+// Lo que va encima del nombre (barra superior, inicio de sesión y título de la pestaña).
+const CAMP_KIND = { gnest: 'Conjunto de datos' };
 const AUTO_SYNC_MS = 2 * 60 * 1000;
 
 export async function start(slug) {
   const root = document.getElementById('app');
   const campName = CAMP_NAMES[slug] || slug;
-  document.title = campName + ' · Monitoreo de nidos';
+  const campKind = CAMP_KIND[slug] || 'Monitoreo de nidos';
+  document.title = campName + ' · ' + campKind;
   const api = client(slug);
   let teardown = () => {};   // detiene la sesión anterior (actualización automática, mapa)
   api.onUnauthorized(() => { toast('La sesión terminó. Vuelve a entrar.', 'error'); showLogin(); });
@@ -38,7 +42,7 @@ export async function start(slug) {
     clear(root).append(h('div.login',
       h('div.login-card',
         h('a.brand', { href: '/' }, '🐢 Tortugas Marinas Cozumel'),
-        h('p.eyebrow-dark', 'Monitoreo de nidos'),
+        h('p.eyebrow-dark', campKind),
         h('h1', campName),
         h('form.form', { onsubmit: (e) => {
           e.preventDefault();
@@ -117,7 +121,7 @@ export async function start(slug) {
     clear(root).append(
       h('header.topbar',
         h('a.brand', { href: '/', title: 'Tortugas Marinas Cozumel' }, '🐢'),
-        h('div.camp', h('small', 'Monitoreo de nidos'), h('b', campName)),
+        h('div.camp', h('small', campKind), h('b', campName)),
         nav,
         h('div.spacer'),
         syncInfo,

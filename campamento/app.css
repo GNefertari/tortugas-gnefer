@@ -379,6 +379,7 @@ table.preview tr.bad td { background: rgba(229, 115, 115, .07); }
 .badge.warn { background: rgba(255, 213, 79, .18); color: #FFE082; }
 .badge.plain { background: var(--panel-2); color: var(--ink); }
 table.flights td small { display: block; margin-top: .2rem; white-space: normal; }
+table.flights td small.ok { color: #A5D6A7; }
 .progress { height: 10px; border-radius: 999px; background: var(--panel-2); overflow: hidden; }
 .progress i { display: block; height: 100%; width: 0; background: var(--turq); transition: width .2s; }
 

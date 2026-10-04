@@ -81,10 +81,14 @@ export function vuelosView(ctx) {
     }
     const waiting = v.estado === 'por_detectar' && v.bandeja_vence && !v.bandeja_borrada
       ? h('small.muted', v.bandeja_fotos + ' fotos en la nube (' + MB(v.bandeja_bytes) + '), se borran en ' + Math.max(0, daysLeft(v.bandeja_vence)) + ' días') : null;
+    // GNeST servidor (paso 6b) guarda en la PC los originales y la revisión del experto (entrenamiento de GNeST v2).
+    const backup = v.estado !== 'revisado' ? null
+      : v.respaldado && v.respaldo_rev >= v.rev_mascaras ? h('small.ok', 'Respaldado en la PC ✓')
+        : h('small.muted', v.respaldado ? 'Cambió después del respaldo: GNeST lo actualiza en su próxima pasada' : 'Falta respaldarlo en la PC (GNeST)');
     return h('tr',
       h('td.row-btns', actions),
       h('td', showDate(v.fecha)), h('td', v.playa),
-      h('td', h('span.badge.' + (kind || 'plain'), label), waiting, v.bandeja_borrada ? h('small.error', 'Fotos borradas sin procesar') : null),
+      h('td', h('span.badge.' + (kind || 'plain'), label), waiting, backup, v.bandeja_borrada ? h('small.error', 'Fotos borradas sin procesar') : null),
       h('td', String(v.fotos)),
       h('td', v.pendientes + v.aceptadas + v.descartadas
         ? (v.pendientes ? v.pendientes + ' por revisar · ' : '') + v.aceptadas + ' aceptada(s) · ' + v.descartadas + ' descartada(s)'
