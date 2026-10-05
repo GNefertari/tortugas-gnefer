@@ -51,6 +51,7 @@ La parte pública del sitio (divulgación) no se toca.
 | `js/formularios.js` | Registrar y editar nido y limpieza |
 | `js/admin.js` | Usuarios y ajustes |
 | `js/exportar.js` | CSV y KML |
+| `js/respaldo.js` | Respaldo (coordinador): .zip con filtros (temporada, playa, especie, fechas, fotos de campo) y restauración que no borra nada |
 | `js/carga.js` | Cargar Excel: pantallas (archivo, columnas, vista previa, carga, historial) |
 | `js/carga_lectura.js` | Cargar Excel: columnas conocidas, lectura de fechas, coordenadas, especie y estado; validación por renglón; plantilla |
 | `js/vuelos.js` | Vuelos: lista, avisos y Subir vuelo |

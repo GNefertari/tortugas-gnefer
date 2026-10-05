@@ -445,3 +445,8 @@ table.flights td small.ok { color: #A5D6A7; }
 .review-masks circle.vertex { fill: #4DD0E1; stroke: #0D2B4E; stroke-width: var(--stroke, 2px); cursor: pointer; }
 .review-masks circle.vertex.on { fill: #FF80AB; }
 .edit-help { margin: .4rem 0 .6rem 1.1rem; font-size: .8rem; color: var(--muted); line-height: 1.5; }
+
+/* ── respaldo ── */
+.respaldo .lead { color: var(--ink); line-height: 1.6; max-width: 900px; }
+.respaldo fieldset { max-width: 900px; }
+.checks { display: flex; flex-wrap: wrap; gap: .45rem 1.2rem; }

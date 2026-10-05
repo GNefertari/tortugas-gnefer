@@ -125,5 +125,31 @@ export function client(slug) {
       });
     },
     image,
+    /** La imagen como Blob (para el respaldo), o null si no está en la nube. */
+    async imageBlob(kind, uuid) {
+      let r;
+      try {
+        r = await fetch(base + '/archivos/' + kind + '/' + uuid, { headers: { authorization: 'Bearer ' + token } });
+      } catch {
+        throw new ApiError(0, 'Sin conexión con el servidor. Revisa tu internet.');
+      }
+      if (r.status === 404) return null;
+      if (!r.ok) throw new ApiError(r.status, 'Error ' + r.status + ' al bajar una imagen');
+      return r.blob();
+    },
+    /** Sube una imagen (al restaurar un respaldo). */
+    async putImage(kind, uuid, bytes) {
+      let r;
+      try {
+        r = await fetch(base + '/archivos/' + kind + '/' + uuid, { method: 'PUT',
+          headers: { authorization: 'Bearer ' + token, 'content-type': 'image/jpeg' }, body: bytes });
+      } catch {
+        throw new ApiError(0, 'Sin conexión con el servidor. Revisa tu internet.');
+      }
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new ApiError(r.status, data.error || 'Error ' + r.status);
+      return data;
+    },
+    setFlightTime: (id, hora) => call('POST', '/vuelos/' + encodeURIComponent(id) + '/hora', { hora }),
   };
 }

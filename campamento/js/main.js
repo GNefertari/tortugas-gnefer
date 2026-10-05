@@ -5,6 +5,7 @@
 import { usersView, settingsView } from './admin.js';
 import { client, IS_LOCAL_API, API } from './api.js';
 import { cargaView } from './carga.js';
+import { respaldoView } from './respaldo.js';
 import { vuelosView } from './vuelos.js';
 import { can, roleName } from './catalog.js';
 import { openNest } from './ficha.js';
@@ -100,7 +101,10 @@ export async function start(slug) {
       ...(can(user, 'capturista') ? [['vuelos', 'Vuelos', () => vuelosView(ctx)]] : []),
     ];
     if (can(user, 'experto')) sections.push(['carga', 'Cargar Excel', () => cargaView(ctx)]);
-    if (can(user, 'coordinador')) sections.push(['usuarios', 'Usuarios', () => usersView(ctx)], ['ajustes', 'Ajustes', () => settingsView(ctx)]);
+    if (can(user, 'coordinador')) {
+      sections.push(['usuarios', 'Usuarios', () => usersView(ctx)], ['respaldo', 'Respaldo', () => respaldoView(ctx)],
+        ['ajustes', 'Ajustes', () => settingsView(ctx)]);
+    }
     const views = {};
     const syncInfo = h('span.sync');
     const nav = h('nav.tabs', sections.map(([id, label]) => h('a', { href: '#' + id, 'data-id': id }, label)));

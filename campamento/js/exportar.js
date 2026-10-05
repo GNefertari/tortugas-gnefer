@@ -17,7 +17,8 @@ function csv(rows) {
 
 const fixed = (v, d) => (v == null ? null : Number(v).toFixed(d));
 
-export function exportNestsCsv(ctx, list) {
+/** Texto CSV de los nidos (también va en el respaldo). */
+export function nestsCsv(ctx, list) {
   const { store } = ctx;
   const zone = store.settings?.utm_zone || 16;
   const coords = (lat, lon) => {
@@ -40,17 +41,26 @@ export function exportNestsCsv(ctx, list) {
       store.masksOf(n.uuid).length, store.photosOf(n.uuid).length, store.cleaningOf(n.uuid) ? 'sí' : 'no',
       n.camp, n.observer, n.notes, n.created_at, n.updated_at]);
   }
-  downloadText('nidos_' + ctx.slug + '_' + todayIso() + '.csv', csv(rows), 'text/csv');
+  return csv(rows);
 }
 
-export function exportCleaningsCsv(ctx, list) {
+export function exportNestsCsv(ctx, list) {
+  downloadText('nidos_' + ctx.slug + '_' + todayIso() + '.csv', nestsCsv(ctx, list), 'text/csv');
+}
+
+/** Texto CSV de las limpiezas; list = [{k: limpieza, n: su nido}]. */
+export function cleaningsCsv(list) {
   const rows = [['nido', 'temporada', 'playa', 'fecha_limpieza', 'cascarones', 'vivas', 'muertas', 'rosa',
     'modo_fase', 'fase_total', 'fase1', 'fase2', 'fase3', 'notas', 'registrado_por', 'uuid_nido', 'uuid_limpieza']];
   for (const { k, n } of list) {
     rows.push([n.number, n.season, n.beach, k.clean_date, k.shells, k.alive, k.dead, k.pink,
       k.phase_mode, k.phase_total, k.phase1, k.phase2, k.phase3, k.notes, k.observer, n.uuid, k.uuid]);
   }
-  downloadText('limpiezas_' + ctx.slug + '_' + todayIso() + '.csv', csv(rows), 'text/csv');
+  return csv(rows);
+}
+
+export function exportCleaningsCsv(ctx, list) {
+  downloadText('limpiezas_' + ctx.slug + '_' + todayIso() + '.csv', cleaningsCsv(list), 'text/csv');
 }
 
 export function exportKml(ctx, list) {

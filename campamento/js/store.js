@@ -136,6 +136,9 @@ export function createStore(api) {
     masksOf: (nestUuid) => live('mask').filter((m) => m.nest_uuid === nestUuid),
     masks: () => live('mask'),
     photosOf: (nestUuid) => live('photo').filter((p) => p.nest_uuid === nestUuid),
+    /** Todas las filas de una tabla, también las borradas (respaldo y restauración). */
+    all: (t) => [...rows[t].values()],
+    row: (t, uuid) => rows[t].get(uuid),
     aerial: (uuid) => rows.aerial.get(uuid),
     flight: (uuid) => rows.flight.get(uuid),
     aerials: () => live('aerial'),
