@@ -6,7 +6,8 @@
 //   - solo experto o coordinador fijan estado (depredado, salvaje, reubicado) y borran;
 //   - una limpieza por nido; la fase se captura como total o por fase según el campamento.
 
-import { ACTION_WILD, can, SPECIES, STATUS_MANUAL, statusName } from './catalog.js';
+import { ACTION_WILD, can, MASK_COLS, SPECIES, STATUS_MANUAL, statusName } from './catalog.js';
+import { distance } from './geo.js';
 import * as Coords from './coords.js';
 import { coordFormat } from './prefs.js';
 import { addDays, busy, byNumber, confirmBox, field, h, modal, nowUtc, select, showDate, toast, todayIso } from './ui.js';
@@ -187,7 +188,12 @@ export function nestForm(ctx, uuid) {
       n.detected_date = date.value;
       const season = Number(date.value.slice(0, 4));
       const dup = store.nests().find((x) => x.uuid !== n.uuid && x.number === n.number && x.season === season);
-      if (dup) throw new Error('Ya existe el nido ' + n.number + ' en la temporada ' + season);
+      if (dup) {
+        // Un nido registrado dos veces (p. ej. el 100 era el 1): el experto puede enlazar sus imágenes al otro.
+        if (!old || !expert) throw new Error('Ya existe el nido ' + n.number + ' en la temporada ' + season);
+        if (await mergeNests(ctx, old, dup)) m.close();
+        return;
+      }
       readCoord(false);
       n.species = species.value || null;
       n.status_override = expert ? override.value || null : old ? old.status_override : null;
@@ -203,6 +209,51 @@ export function nestForm(ctx, uuid) {
       m.close();
     });
   }
+}
+
+/**
+ * «El nido 100 es el mismo que el 1»: sus imágenes aéreas (máscaras) y fotos de campo pasan al nido 1, su
+ * limpieza también si el 1 no tiene, y el 100 se elimina. Los datos del 1 no cambian (solo toma la
+ * coordenada desde imagen aérea si no tenía). Todo en una sola subida. Devuelve true si se hizo.
+ */
+async function mergeNests(ctx, from, to) {
+  const { store } = ctx;
+  const masks = store.masksOf(from.uuid);
+  const photos = store.photosOf(from.uuid);
+  const kFrom = store.cleaningOf(from.uuid), kTo = store.cleaningOf(to.uuid);
+  const ok = await confirmBox('El nido ' + to.number + ' ya existe',
+    '¿El nido ' + from.number + ' es el mismo que el nido ' + to.number + ' (temporada ' + to.season + ', detectado el '
+    + showDate(to.detected_date) + (to.beach ? ', ' + to.beach : '') + ')?\n\n'
+    + 'Se enlazan al nido ' + to.number + ': ' + masks.length + ' imagen(es) aérea(s) y ' + photos.length + ' foto(s) de campo'
+    + (kFrom ? (kTo ? '. La limpieza del nido ' + from.number + ' se descarta porque el ' + to.number + ' ya tiene una' : ' y su limpieza') : '')
+    + '.\nLuego se elimina el nido ' + from.number + '. Los datos del nido ' + to.number + ' no cambian.',
+    'Enlazar al nido ' + to.number);
+  if (!ok) return false;
+  const now = nowUtc();
+  const at = (row) => ({ ...row, updated_at: now, created_at: row.created_at || now });
+  const pFrom = [from.real_lat ?? from.photo_lat, from.real_lon ?? from.photo_lon];
+  const pTo = [to.real_lat ?? to.photo_lat, to.real_lon ?? to.photo_lon];
+  const meters = pFrom[0] != null && pTo[0] != null ? Math.round(distance(pFrom[0], pFrom[1], pTo[0], pTo[1]) * 100) / 100 : null;
+  const rows = {
+    nest: [at({ ...pick(from, NEST_COLS), deleted: 1 })],
+    mask: masks.map((x) => at({ ...pickCols(x, MASK_COLS), uuid: x.uuid, created_at: x.created_at,
+      nest_uuid: to.uuid, status: 'aceptada', link_method: 'manual', link_meters: meters })),
+    photo: photos.map((p) => at({ uuid: p.uuid, created_at: p.created_at, deleted: 0, nest_uuid: to.uuid })),
+    cleaning: kFrom ? [at({ ...pick(kFrom, CLEANING_COLS), ...(kTo ? { deleted: 1 } : { nest_uuid: to.uuid }) })] : [],
+  };
+  if (to.photo_lat == null && from.photo_lat != null) {
+    rows.nest.unshift(at({ ...pick(to, NEST_COLS), photo_lat: from.photo_lat, photo_lon: from.photo_lon }));
+  }
+  const res = await store.save(rows, ctx.user.id);
+  if (res.rechazados && res.rechazados.length) throw new Error('No se pudo enlazar: ' + res.rechazados[0].razon);
+  toast('Nido ' + from.number + ' enlazado al nido ' + to.number);
+  return true;
+}
+
+function pickCols(row, cols) {
+  const o = {};
+  for (const c of cols) o[c] = row[c] ?? null;
+  return o;
 }
 
 export async function deleteNest(ctx, n) {

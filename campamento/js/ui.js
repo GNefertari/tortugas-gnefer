@@ -75,7 +75,7 @@ export function confirmBox(title, text, okText = 'Aceptar', danger = false) {
   return new Promise((resolve) => {
     let answer = false;
     const m = modal(title, [
-      h('p', text),
+      h('p', { style: { whiteSpace: 'pre-line' } }, text),
       h('div.actions',
         h('button.btn.ghost', { type: 'button', onclick: () => m.close() }, 'Cancelar'),
         h('button.btn' + (danger ? '.danger' : '.primary'), { type: 'button', onclick: () => { answer = true; m.close(); } }, okText)),

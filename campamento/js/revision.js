@@ -10,14 +10,12 @@
 // También puede dibujar los nidos que GNeST no vio. Todo se guarda con sync/push, igual que la app;
 // el vuelo se cierra solo (en el servidor) cuando ya no quedan propuestas sin revisar.
 
-import { SPECIES, speciesName, statusName } from './catalog.js';
+import { MASK_COLS, SPECIES, speciesName, statusName } from './catalog.js';
 import { NEST_COLS } from './formularios.js';
 import { distance, footprint } from './geo.js';
 import { addDays, busy, byNumber, clear, field, h, modal, nowUtc, select, showDate, toast } from './ui.js';
 
 const SVG = 'http://www.w3.org/2000/svg';
-const MASK_COLS = ['nest_uuid', 'aerial_uuid', 'ann_index', 'polygon', 'cx', 'cy', 'lat', 'lon', 'crop_x', 'crop_y', 'crop_sample',
-  'source', 'score', 'status', 'link_method', 'link_meters', 'gnest_polygon', 'species_hint'];
 const DEFAULT_SPECIES = 'chelonia_mydas';   // la más frecuente en Cozumel
 const STATUS_TEXT = { propuesta: 'Por revisar', aceptada: 'Aceptada', descartada: 'Descartada' };
 

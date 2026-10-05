@@ -54,3 +54,7 @@ const RANK = ['lectura', 'capturista', 'experto', 'coordinador'];
 export function can(user, role) {
   return RANK.indexOf(user.rol) >= RANK.indexOf(role);
 }
+
+/** Columnas de una máscara que se suben (todas: el servidor reemplaza la fila completa). */
+export const MASK_COLS = ['nest_uuid', 'aerial_uuid', 'ann_index', 'polygon', 'cx', 'cy', 'lat', 'lon', 'crop_x', 'crop_y', 'crop_sample',
+  'source', 'score', 'status', 'link_method', 'link_meters', 'gnest_polygon', 'species_hint'];
