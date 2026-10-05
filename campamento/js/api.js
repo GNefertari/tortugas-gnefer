@@ -3,7 +3,7 @@
 // Para probar contra la API local: abrir la página con ?api=http://127.0.0.1:8787
 // (se recuerda en este navegador; ?api=produccion vuelve a la publicada).
 
-const PRODUCTION = 'https://tortugas-api.tortugas-prueba.workers.dev';
+const PRODUCTION = 'https://api.tortugas.gnefer.com';
 
 function store(k, v) {
   try {
