@@ -150,7 +150,8 @@ main { min-height: calc(100% - var(--top)); }
 
 /* filtros */
 .filters { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
-.filters > select, .filters > input.search { width: auto; min-width: 150px; padding: .45rem .7rem; font-size: .88rem; }
+.filters > select, .filters > input.search, .filters > input.num-filter { width: auto; min-width: 150px; padding: .45rem .7rem; font-size: .88rem; }
+.filters > input.num-filter { min-width: 0; width: 9.5rem; }
 .filters > input.search { min-width: 220px; }
 .date-range { display: inline-flex; align-items: center; gap: .35rem; font-size: .8rem; color: var(--muted); }
 .date-range input { width: 150px; padding: .4rem .5rem; font-size: .85rem; }
