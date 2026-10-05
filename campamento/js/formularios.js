@@ -189,8 +189,11 @@ export function nestForm(ctx, uuid) {
       const season = Number(date.value.slice(0, 4));
       const dup = store.nests().find((x) => x.uuid !== n.uuid && x.number === n.number && x.season === season);
       if (dup) {
-        // Un nido registrado dos veces (p. ej. el 100 era el 1): el experto puede enlazar sus imágenes al otro.
+        // Un nido registrado dos veces (p. ej. el 100 era el 1): el experto o coordinador puede enlazar sus imágenes
+        // al otro, solo desde una computadora (con ratón), para hacerlo con calma y en pantalla grande.
+        const pc = window.matchMedia && matchMedia('(pointer: fine)').matches && matchMedia('(hover: hover)').matches;
         if (!old || !expert) throw new Error('Ya existe el nido ' + n.number + ' en la temporada ' + season);
+        if (!pc) throw new Error('Ya existe el nido ' + n.number + ' en la temporada ' + season + '. Si son el mismo nido, enlázalos desde una computadora.');
         if (await mergeNests(ctx, old, dup)) m.close();
         return;
       }

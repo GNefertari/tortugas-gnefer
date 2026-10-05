@@ -51,9 +51,8 @@ export function mapView(ctx) {
   const legend = h('div.legend', STATUS.map(([code, name, color]) => h('span', h('i', { style: { background: color } }), name)));
   const count = h('span.count');
   const aerialToggle = h('input', { type: 'checkbox', checked: localStorage.getItem('fotosDron') !== '0' });
-  // Fotos de dron y máscaras: se prenden o apagan en el panel de filtros (como «Imágenes aéreas en el mapa» de la app).
-  const aerialLabel = h('label.check', aerialToggle, 'Fotos de dron y máscaras');
-  el.append(top, mapEl, h('div.map-bottom', legend, count));
+  el.append(top, mapEl, h('div.map-bottom', legend, count,
+    h('label.check', aerialToggle, 'Fotos de dron (al acercarse)')));
 
   const map = L.map(mapEl, { zoomControl: true, preferCanvas: true, maxZoom: 22 }).setView(COZUMEL, 11);
   const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -107,12 +106,14 @@ export function mapView(ctx) {
       return;
     }
     const view = map.getBounds().pad(0.3);
-    // Con filtro, como en la app: solo las máscaras de los nidos que se ven y las fotos donde aparecen.
-    const nestShown = (uuid) => { const n = store.nest(uuid); return !!n && !n.deleted && filter.matches(n); };
-    const masks = store.masks().filter((x) => x.nest_uuid && (!filter.active() || nestShown(x.nest_uuid)));
-    const allowed = filter.active() ? new Set(masks.map((x) => x.aerial_uuid)) : null;
+    // Solo las máscaras de nidos vigentes (si se elimina el nido, su máscara deja de verse) y las fotos que tienen alguna.
+    const masks = store.masks().filter((x) => { const n = x.nest_uuid && store.nest(x.nest_uuid); return !!n && !n.deleted; });
+    const withNest = new Set(masks.map((x) => x.aerial_uuid));
+    for (const a of [...shownAerials.keys()]) {
+      if (!withNest.has(a)) { const l = shownAerials.get(a); if (l) aerialLayer.removeLayer(l); shownAerials.delete(a); }
+    }
     for (const a of store.aerials()) {
-      if (shownAerials.has(a.uuid) || !a.file_size || (allowed && !allowed.has(a.uuid))) continue;
+      if (shownAerials.has(a.uuid) || !a.file_size || !withNest.has(a.uuid)) continue;
       const fp = footprint(a);
       if (!fp || !view.intersects(L.latLngBounds([fp.topLeft, fp.topRight, fp.bottomLeft, fp.bottomRight]))) continue;
       shownAerials.set(a.uuid, null);
@@ -162,19 +163,11 @@ export function mapView(ctx) {
   const toggle = h('button.btn.small.filters-toggle', { type: 'button', onclick: () => top.classList.toggle('open') });
   function refreshTop() {
     toggle.textContent = filter.active() ? 'Filtros (activos) ▾' : 'Filtros ▾';
-    const controls = filter.controls(store, { withText: false });
-    controls.append(aerialLabel);
-    clear(top).append(toggle, controls);
+    clear(top).append(toggle, filter.controls(store, { withText: false }));
   }
 
   const offStore = store.onChange(() => { refreshTop(); drawNests(); drawAerials(); });
-  const offFilter = filter.onChange(() => {
-    refreshTop();
-    drawNests();
-    aerialLayer.clearLayers();      // otras fotos según el filtro nuevo
-    shownAerials.clear();
-    drawAerials();
-  });
+  const offFilter = filter.onChange(() => { refreshTop(); drawNests(); });
 
   return {
     el,
