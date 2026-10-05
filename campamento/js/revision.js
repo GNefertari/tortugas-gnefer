@@ -17,7 +17,7 @@ import { addDays, busy, byNumber, clear, field, h, modal, nowUtc, select, showDa
 
 const SVG = 'http://www.w3.org/2000/svg';
 const MASK_COLS = ['nest_uuid', 'aerial_uuid', 'ann_index', 'polygon', 'cx', 'cy', 'lat', 'lon', 'crop_x', 'crop_y', 'crop_sample',
-  'source', 'score', 'status', 'link_method', 'link_meters', 'gnest_polygon'];
+  'source', 'score', 'status', 'link_method', 'link_meters', 'gnest_polygon', 'species_hint'];
 const DEFAULT_SPECIES = 'chelonia_mydas';   // la más frecuente en Cozumel
 const STATUS_TEXT = { propuesta: 'Por revisar', aceptada: 'Aceptada', descartada: 'Descartada' };
 
@@ -348,7 +348,7 @@ export function reviewView(ctx, flightInfo, onBack) {
         return h('button.mask-item' + (m.uuid === selected ? '.on' : '') + '.' + (m.nest_uuid ? 'ok' : m.status === 'descartada' ? 'no' : 'todo'),
           { type: 'button', onclick: () => select_(m.uuid) },
           h('b', nest ? 'Nido ' + nest.number : 'Propuesta ' + (idx + 1)),
-          h('small', [m.source === 'experto' ? 'dibujado' : m.score != null ? Math.round(m.score * 100) + ' % de confianza' : null,
+          h('small', [m.source === 'experto' ? 'dibujado' : m.source === 'labelnef' ? 'validada en LabelNef' : m.score != null ? Math.round(m.score * 100) + ' % de confianza' : null,
             m.gnest_polygon ? 'contorno ajustado' : null, nest ? 'aceptada' : STATUS_TEXT[m.status] || m.status].filter(Boolean).join(' · ')));
       })) : h('p.muted', 'GNeST no encontró nidos en esta foto.'),
       h('div.review-actions', actionBox()),
@@ -381,7 +381,7 @@ export function reviewView(ctx, flightInfo, onBack) {
     }
     const cands = candidates(m);
     return h('div.decide',
-      h('p', 'Propuesta ' + (m.source === 'experto' ? 'dibujada' : 'de GNeST') + (m.score != null ? ' · ' + Math.round(m.score * 100) + ' %' : '')
+      h('p', (m.source === 'labelnef' ? 'Validada en LabelNef' : 'Propuesta ' + (m.source === 'experto' ? 'dibujada' : 'de GNeST')) + (m.score != null ? ' · ' + Math.round(m.score * 100) + ' %' : '')
         + (cands.length ? ' · ' + cands.length + ' nido(s) registrado(s) cerca' : '')),
       h('div.decide-btns',
         h('button.btn.primary', { type: 'button', onclick: () => { mode = 'aceptar'; renderSide(); } }, '✓ Aceptar (nido nuevo)'),
@@ -406,7 +406,8 @@ export function reviewView(ctx, flightInfo, onBack) {
     const date0 = photoDate(current());
     const number = h('input', { value: nextNumber(Number(date0.slice(0, 4))), required: true, autocomplete: 'off' });
     const date = h('input', { type: 'date', value: date0, required: true });
-    const species = select(SPECIES.map((x) => [x[0], x[1] + ' — ' + x[2]]), DEFAULT_SPECIES);
+    // Máscara validada en LabelNef: la especie de su clase (nido_cm / nido_cc).
+    const species = select(SPECIES.map((x) => [x[0], x[1] + ' — ' + x[2]]), m.species_hint || DEFAULT_SPECIES);
     const beaches = [...new Set([...(settings.beaches || []), flightInfo.playa])];
     const beach = select(beaches, flightInfo.playa);
     date.addEventListener('change', () => { if (date.value) number.value = nextNumber(Number(date.value.slice(0, 4))); });
