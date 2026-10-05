@@ -115,7 +115,7 @@ export function vuelosView(ctx) {
   }
 
   async function removeFlight(v, btn) {
-    if (!(await confirmBox('Borrar vuelo', 'Se borrará el vuelo del ' + showDate(v.fecha) + ' (' + v.playa + ') con sus fotos y propuestas de la nube. Los originales que estén en la PC no se tocan.', 'Borrar vuelo', true))) return;
+    if (!(await confirmBox('Borrar vuelo', 'Se borrará el vuelo del ' + showDate(v.fecha) + ' (' + v.playa + ') con sus fotos y propuestas de la nube. En su siguiente pasada, servidor.bat mueve su carpeta de la PC a C:\\GNeST\\papelera (ahí se borra a mano).', 'Borrar vuelo', true))) return;
     await busy(btn, async () => { await api.deleteFlight(v.id); toast('Vuelo borrado'); await store.sync(user.id); renderList(); });
   }
 
